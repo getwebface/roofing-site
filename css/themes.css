@@ -1,0 +1,110 @@
+/* ============================================
+   THEME TOKENS - A/B Testing Style Variants
+   ============================================ */
+
+/* Theme A: Default - Warm & Trustworthy */
+[data-theme="themeA"] {
+  --theme-hero-bg: linear-gradient(135deg, #1a4d2e 0%, #0f2919 100%);
+  --theme-accent: var(--color-accent);
+  --theme-accent-hover: var(--color-accent-light);
+  --theme-cta-shadow: var(--shadow-md);
+  --theme-card-border: var(--color-border-light);
+  --theme-card-hover-shadow: var(--shadow-lg);
+}
+
+/* Theme B: Alternative - Bold & Confident */
+[data-theme="themeB"] {
+  --theme-hero-bg: linear-gradient(135deg, #0f2919 0%, #1a4d2e 100%);
+  --theme-accent: #c62828;          /* Deeper red */
+  --theme-accent-hover: #e53935;
+  --theme-cta-shadow: var(--shadow-lg);
+  --theme-card-border: var(--color-border);
+  --theme-card-hover-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* Apply theme tokens to components */
+[data-theme] .hero {
+  background: var(--theme-hero-bg);
+}
+
+[data-theme] .btn-primary {
+  background-color: var(--theme-accent);
+  border-color: var(--theme-accent);
+  box-shadow: var(--theme-cta-shadow);
+}
+
+[data-theme] .btn-primary:hover {
+  background-color: var(--theme-accent-hover);
+  border-color: var(--theme-accent-hover);
+}
+
+[data-theme] .card {
+  border: 1px solid var(--theme-card-border);
+}
+
+[data-theme] .card:hover {
+  box-shadow: var(--theme-card-hover-shadow);
+}
+
+/* Accent Color Tokens (optional overrides) */
+[data-accent="orange"] {
+  --theme-accent: #f57c00;
+  --theme-accent-hover: #fb8c00;
+}
+
+[data-accent="red"] {
+  --theme-accent: #d32f2f;
+  --theme-accent-hover: #e53935;
+}
+
+[data-accent="blue"] {
+  --theme-accent: #1976d2;
+  --theme-accent-hover: #2196f3;
+}
+
+[data-accent="green"] {
+  --theme-accent: #388e3c;
+  --theme-accent-hover: #4caf50;
+}
+
+/* Animation Preset Tokens */
+[data-animation="fadeUp"] {
+  animation: fadeUp 0.6s ease-out;
+}
+
+[data-animation="slideIn"] {
+  animation: slideIn 0.5s ease-out;
+}
+
+[data-animation="none"] {
+  animation: none;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  [data-animation] {
+    animation: none !important;
+  }
+}
