@@ -1,5 +1,10 @@
-name = "my-static-site"
-compatibility_date = "2026-01-03"
+name = "roofingworker"
+main = "src/worker.js"
+compatibility_date = "2024-01-01"
+# You MUST include this to fix the 403 error
+account_id = "f966126db685a7512c898ae749c1cf07" 
 
+# This uploads your current folder files (HTML) with the worker
 [assets]
 directory = "."
+binding = "ASSETS" # Explicitly names the binding for the code
