@@ -1,25 +1,32 @@
 /* ============================================
    THEME TOKENS - A/B Testing Style Variants
+   Navy/Orange Palette
    ============================================ */
 
-/* Theme A: Default - Warm & Trustworthy */
+/* Theme A: Calmer - More White, Softer Contrast */
 [data-theme="themeA"] {
-  --theme-hero-bg: linear-gradient(135deg, #1a4d2e 0%, #0f2919 100%);
-  --theme-accent: var(--color-accent);
-  --theme-accent-hover: var(--color-accent-light);
+  --theme-hero-bg: linear-gradient(135deg, var(--navy-light) 0%, var(--navy) 100%);
+  --theme-accent: var(--orange);
+  --theme-accent-hover: var(--orange-light);
   --theme-cta-shadow: var(--shadow-md);
   --theme-card-border: var(--color-border-light);
   --theme-card-hover-shadow: var(--shadow-lg);
+  --theme-section-bg: var(--white);
+  --theme-section-alt-bg: var(--gray-50);
+  --theme-text-emphasis: var(--navy);
 }
 
-/* Theme B: Alternative - Bold & Confident */
+/* Theme B: Bolder - More Navy Panels, Stronger Orange, High Contrast */
 [data-theme="themeB"] {
-  --theme-hero-bg: linear-gradient(135deg, #0f2919 0%, #1a4d2e 100%);
-  --theme-accent: #c62828;          /* Deeper red */
-  --theme-accent-hover: #e53935;
-  --theme-cta-shadow: var(--shadow-lg);
+  --theme-hero-bg: linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 100%);
+  --theme-accent: var(--orange-dark);
+  --theme-accent-hover: var(--orange);
+  --theme-cta-shadow: var(--shadow-xl);
   --theme-card-border: var(--color-border);
-  --theme-card-hover-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  --theme-card-hover-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  --theme-section-bg: var(--white);
+  --theme-section-alt-bg: var(--navy-light);
+  --theme-text-emphasis: var(--orange);
 }
 
 /* Apply theme tokens to components */
@@ -46,25 +53,50 @@
   box-shadow: var(--theme-card-hover-shadow);
 }
 
-/* Accent Color Tokens (optional overrides) */
-[data-accent="orange"] {
-  --theme-accent: #f57c00;
-  --theme-accent-hover: #fb8c00;
+/* Theme B specific overrides */
+[data-theme="themeB"] section[data-bg="alt"] {
+  background-color: var(--theme-section-alt-bg);
+  color: var(--white);
 }
 
-[data-accent="red"] {
-  --theme-accent: #d32f2f;
-  --theme-accent-hover: #e53935;
+[data-theme="themeB"] section[data-bg="alt"] h1,
+[data-theme="themeB"] section[data-bg="alt"] h2,
+[data-theme="themeB"] section[data-bg="alt"] h3 {
+  color: var(--white);
 }
 
-[data-accent="blue"] {
-  --theme-accent: #1976d2;
-  --theme-accent-hover: #2196f3;
+[data-theme="themeB"] section[data-bg="alt"] p {
+  color: rgba(255, 255, 255, 0.9);
 }
 
-[data-accent="green"] {
-  --theme-accent: #388e3c;
-  --theme-accent-hover: #4caf50;
+[data-theme="themeB"] .trust-badge-icon {
+  background: var(--orange);
+}
+
+[data-theme="themeB"] .symptom-icon,
+[data-theme="themeB"] .card-icon {
+  background: var(--orange-dark);
+}
+
+/* Weather-based theme adjustments */
+[data-weather-mode="storm"] .wx-badge {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+[data-weather-mode="rain"] .wx-badge {
+  background: rgba(59, 130, 246, 0.2);
+  border-color: rgba(59, 130, 246, 0.4);
+}
+
+[data-weather-mode="wind"] .wx-badge {
+  background: rgba(245, 158, 11, 0.2);
+  border-color: rgba(245, 158, 11, 0.4);
+}
+
+[data-weather-mode="calm"] .wx-badge {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: rgba(16, 185, 129, 0.4);
 }
 
 /* Animation Preset Tokens */
