@@ -7,13 +7,13 @@ export const FormAsset = {
   // Form configurations (Google Form embed URLs)
   forms: {
     lead_default: {
-      embedUrl: 'https://docs.google.com/forms/d/e/YOUR_FORM_ID/viewform?embedded=true',
+      embedUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSfA3rKzlgI0-53nK4yXU7l78tlOzQbJ7aTvopgDlOS3JaIEZg/viewform?embedded=true',
       height: '600px',
       title: 'Request Free Inspection'
     },
     // Add more form variants as needed
     lead_storm: {
-      embedUrl: 'https://docs.google.com/forms/d/e/YOUR_FORM_ID_STORM/viewform?embedded=true',
+      embedUrl: '<https://docs.google.com/forms/d/e/1FAIpQLSfA3rKzlgI0-53nK4yXU7l78tlOzQbJ7aTvopgDlOS3JaIEZg/viewform?embedded=true',
       height: '600px',
       title: 'Emergency Storm Damage Assessment'
     }
