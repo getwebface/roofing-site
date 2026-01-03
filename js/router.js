@@ -11,7 +11,7 @@ import { FormAsset } from './form-asset.js';
 export const Router = {
   // Configuration
   config: {
-    sheetsEndpoint: 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec',
+    sheetsEndpoint: 'https://script.google.com/macros/s/AKfycbwADS3bPMhTMpCn9irmp5ajAqk6EPVfEDpIiH_5FnaX14ttuOf-hysKi4FXK0F_qFWrSg/exec',
     enableSheetsFetch: false, // Set to true when sheets are ready
     fallbackToDefaults: true
   },
