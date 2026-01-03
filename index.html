@@ -15,24 +15,273 @@
 </head>
 <body>
 
-  <!-- Nav -->
-  <nav class="nav" data-section="nav" data-section-id="nav-001">
-    <div class="container">
-      <a href="#" class="nav-logo">Melbourne Roof Repairs</a>
-      <ul class="nav-links">
-        <li><a href="#services">Services</a></li>
-        <li><a href="#about">About</a></li>
-        <li><a href="#contact">Contact</a></li>
-      </ul>
+  <!-- ===== GLOBAL HEADER ===== -->
+  <header class="site-header" data-section="nav" data-section-id="nav-001">
+    <div class="header-container">
+      <a href="#" class="header-logo">Melbourne Roof Repairs</a>
+      
+      <nav class="header-nav">
+        <ul class="nav-links" id="navLinks">
+          <li><a href="#services">Services</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+        
+        <div class="header-cta">
+          <a href="tel:0482022493" class="btn btn-primary smart-call-btn" id="headerCallBtn" data-goal="nav-call">
+            <span class="btn-text">Call Now</span>
+          </a>
+        </div>
+        
+        <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </nav>
     </div>
-  </nav>
+  </header>
 
-  <!-- Rest of the HTML content remains the same -->
-
-  <!-- Footer -->
-  <footer class="footer" data-section="footer" data-section-id="footer-001">
+  <!-- ===== HERO LEAD WEATHER ===== -->
+  <section class="hero" data-section="hero-lead-weather" data-section-id="hero-home-001" data-theme="themeA">
     <div class="container">
-      <p>&copy; 2026 Melbourne Roof Repairs. All rights reserved.</p>
+      <!-- Weather Badge -->
+      <div class="wx-badge" data-slot="wx_banner_text" data-mode="calm">
+        <span class="wx-badge-icon">☀️</span>
+        <span>Perfect weather for roof inspections in Melbourne</span>
+      </div>
+      
+      <div class="hero-content">
+        <h1 data-slot="headline">Professional Roof Repairs & Restoration in Melbourne</h1>
+        <p data-slot="body">Fast response, guaranteed workmanship, 20+ years experience. From leak detection to complete re-bedding, we fix it right the first time. Fully insured with 10-year warranty.</p>
+        
+        <div class="hero-cta-group">
+          <a href="tel:0482022493" class="btn btn-primary btn-large smart-call-btn" data-slot="cta_primary_text" data-goal="cta-hero-primary">
+            <span class="btn-text">Get Free Quote</span>
+          </a>
+          <a href="#services" class="btn btn-secondary btn-large" data-slot="cta_secondary_text" data-goal="cta-hero-secondary">
+            View Services
+          </a>
+        </div>
+        
+        <p class="hero-microcopy" data-slot="microcopy">
+          ✓ Same-day emergency response available
+        </p>
+        
+        <!-- Form Mount Point -->
+        <div class="lead-form-mount" data-slot="lead_form_mount" data-form-key="lead_default"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TRUST STRIP ===== -->
+  <section class="trust-strip" data-section="trust-strip" data-section-id="trust-home-001">
+    <div class="container">
+      <div class="trust-badges">
+        <div class="trust-badge" data-slot="proof_badge_1">
+          <div class="trust-badge-icon">20</div>
+          <div class="trust-badge-text">Years Experience</div>
+          <div class="trust-badge-subtext">Since 2004</div>
+        </div>
+        <div class="trust-badge" data-slot="proof_badge_2">
+          <div class="trust-badge-icon">✓</div>
+          <div class="trust-badge-text">Fully Insured</div>
+          <div class="trust-badge-subtext">$20M Coverage</div>
+        </div>
+        <div class="trust-badge" data-slot="proof_badge_3">
+          <div class="trust-badge-icon">⭐</div>
+          <div class="trust-badge-text">5-Star Rated</div>
+          <div class="trust-badge-subtext">200+ Reviews</div>
+        </div>
+        <div class="trust-badge" data-slot="proof_badge_4">
+          <div class="trust-badge-icon">10</div>
+          <div class="trust-badge-text">Year Warranty</div>
+          <div class="trust-badge-subtext">On All Work</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PROBLEM SYMPTOMS ===== -->
+  <section class="problem-symptoms" data-section="problem-symptoms" data-section-id="symptoms-home-001">
+    <div class="container">
+      <h2 data-slot="headline">Common Roofing Problems We Fix</h2>
+      
+      <div class="symptoms-grid">
+        <div class="symptom-card" data-slot="symptom_1">
+          <div class="symptom-icon">💧</div>
+          <h3 class="symptom-title">Active Leaks</h3>
+          <p class="symptom-description">Water stains, damp patches, or dripping water indicate urgent roof damage requiring immediate attention.</p>
+        </div>
+        
+        <div class="symptom-card" data-slot="symptom_2">
+          <div class="symptom-icon">🔨</div>
+          <h3 class="symptom-title">Broken Tiles</h3>
+          <p class="symptom-description">Cracked or missing tiles expose your roof structure to weather damage and water penetration.</p>
+        </div>
+        
+        <div class="symptom-card" data-slot="symptom_3">
+          <div class="symptom-icon">🌿</div>
+          <h3 class="symptom-title">Deteriorated Mortar</h3>
+          <p class="symptom-description">Old pointing and bedding allows tiles to shift and water to enter your roof cavity.</p>
+        </div>
+        
+        <div class="symptom-card" data-slot="symptom_4">
+          <div class="symptom-icon">⚡</div>
+          <h3 class="symptom-title">Rusted Valleys</h3>
+          <p class="symptom-description">Corroded valley irons are a primary leak source in Melbourne's older tile roofs.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== GRID CARDS (SERVICES) ===== -->
+  <section class="grid-cards" data-section="grid-cards" data-section-id="services-home-001" data-bg="alt" id="services">
+    <div class="container">
+      <h2 data-slot="headline">Our Services</h2>
+      
+      <div class="cards-grid">
+        <a href="services/leak-repair.html" class="card" data-slot="card_1" data-goal="service-card-leak">
+          <div class="card-icon">🔧</div>
+          <h3 class="card-title">Leak Repair</h3>
+          <p class="card-description">Fast diagnosis and permanent leak fixes. We find the source and repair it properly, with warranty.</p>
+          <span class="card-link">Learn more →</span>
+        </a>
+        
+        <a href="services/restoration.html" class="card" data-slot="card_2" data-goal="service-card-restoration">
+          <div class="card-icon">✨</div>
+          <h3 class="card-title">Roof Restoration</h3>
+          <p class="card-description">Complete roof renewal including cleaning, repairs, and protective coating for extended life.</p>
+          <span class="card-link">Learn more →</span>
+        </a>
+        
+        <a href="services/rebedding.html" class="card" data-slot="card_3" data-goal="service-card-rebedding">
+          <div class="card-icon">🧱</div>
+          <h3 class="card-title">Re-bedding & Pointing</h3>
+          <p class="card-description">Replace deteriorated mortar to secure tiles and prevent water penetration.</p>
+          <span class="card-link">Learn more →</span>
+        </a>
+        
+        <a href="services/valley-repair.html" class="card" data-slot="card_4" data-goal="service-card-valley">
+          <div class="card-icon">⚙️</div>
+          <h3 class="card-title">Valley Repair</h3>
+          <p class="card-description">Replace rusted valley irons with modern materials. Stop leaks at vulnerable points.</p>
+          <span class="card-link">Learn more →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FAQ ACCORDION ===== -->
+  <section class="faq-accordion" data-section="faq-accordion" data-section-id="faq-home-001">
+    <div class="container">
+      <h2 data-slot="headline">Frequently Asked Questions</h2>
+      
+      <div class="faq-list">
+        <div class="faq-item" data-slot="faq_1" data-open="false">
+          <button class="faq-question" aria-expanded="false">
+            <span>How quickly can you respond?</span>
+            <span class="faq-icon">▼</span>
+          </button>
+          <div class="faq-answer">
+            <p>We offer same-day emergency response for active leaks. We'll make your roof watertight immediately, then schedule permanent repairs within 3-5 days.</p>
+          </div>
+        </div>
+        
+        <div class="faq-item" data-slot="faq_2" data-open="false">
+          <button class="faq-question" aria-expanded="false">
+            <span>Do you provide warranties?</span>
+            <span class="faq-icon">▼</span>
+          </button>
+          <div class="faq-answer">
+            <p>Yes, all our work comes with a 10-year workmanship warranty. Materials carry manufacturer warranties ranging from 10-25 years.</p>
+          </div>
+        </div>
+        
+        <div class="faq-item" data-slot="faq_3" data-open="false">
+          <button class="faq-question" aria-expanded="false">
+            <span>Are you licensed and insured?</span>
+            <span class="faq-icon">▼</span>
+          </button>
+          <div class="faq-answer">
+            <p>Absolutely. We're fully licensed roofing contractors with $20 million public liability insurance and WorkCover for all team members.</p>
+          </div>
+        </div>
+        
+        <div class="faq-item" data-slot="faq_4" data-open="false">
+          <button class="faq-question" aria-expanded="false">
+            <span>Do you offer free inspections?</span>
+            <span class="faq-icon">▼</span>
+          </button>
+          <div class="faq-answer">
+            <p>Yes! We provide free, no-obligation roof inspections and detailed quotes. Contact us to schedule your inspection.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FINAL CTA ===== -->
+  <section class="final-cta" data-section="final-cta" data-section-id="cta-final-home-001">
+    <div class="container">
+      <h2 data-slot="headline">Ready to Fix Your Roof?</h2>
+      <p data-slot="body">Get a free, no-obligation inspection and quote. We'll assess your roof and provide honest recommendations.</p>
+      
+      <div class="final-cta-actions">
+        <a href="tel:0482022493" class="btn btn-primary btn-large smart-call-btn" data-slot="cta_primary_text" data-goal="cta-final-primary">
+          <span class="btn-text">Request Free Quote</span>
+        </a>
+        <a href="tel:0482022493" class="btn btn-secondary btn-large" data-slot="cta_secondary_text" data-goal="cta-final-secondary">
+          Call for Emergency
+        </a>
+      </div>
+      
+      <a href="tel:0482022493" class="final-cta-phone" data-slot="phone_number">
+        📞 0482 022 493
+      </a>
+    </div>
+  </section>
+
+  <!-- ===== GLOBAL FOOTER ===== -->
+  <footer class="site-footer" data-section="footer" data-section-id="footer-001">
+    <div class="footer-container">
+      <div class="footer-grid">
+        <div class="footer-column">
+          <h3>Melbourne Roof Repairs</h3>
+          <p>Professional roof repairs and restoration in Melbourne. Fast response, guaranteed workmanship, 20+ years experience. Free inspections available.</p>
+        </div>
+        
+        <div class="footer-column">
+          <h3>Services</h3>
+          <ul>
+            <li><a href="#services">Our Services</a></li>
+            <li><a href="#about">About Us</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-column">
+          <h3>Why Choose Us</h3>
+          <ul>
+            <li>20+ Years Experience</li>
+            <li>Fully Insured</li>
+            <li>10-Year Warranty</li>
+            <li>Free Inspections</li>
+          </ul>
+        </div>
+        
+        <div class="footer-column footer-contact">
+          <h3>Contact</h3>
+          <p><strong>Phone:</strong> <a href="tel:0482022493" data-goal="footer-call">0482 022 493</a></p>
+          <p><strong>Email:</strong> <a href="mailto:info@melbourneroofrepairs.com.au">info@melbourneroofrepairs.com.au</a></p>
+          <p><strong>Hours:</strong> Mon-Fri 9am-5pm AEST</p>
+          <p><strong>Emergency:</strong> 24/7 Available</p>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>&copy; 2026 Melbourne Roof Repairs. All rights reserved. | Licensed & Insured</p>
+      </div>
     </div>
   </footer>
 
@@ -58,6 +307,13 @@
         item.setAttribute('data-open',!isOpen);
         button.setAttribute('aria-expanded',!isOpen);
       });
+    });
+  </script>
+  
+  <!-- Mobile Menu Toggle -->
+  <script>
+    document.getElementById('mobileMenuToggle')?.addEventListener('click', () => {
+      document.getElementById('navLinks')?.classList.toggle('active');
     });
   </script>
 </body>
