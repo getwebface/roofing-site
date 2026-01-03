@@ -1,3 +1,5 @@
-name = "my-project-name"
-main = "src/index.ts"
+name = "my-website-name"
 compatibility_date = "2026-01-03"
+
+[assets]
+directory = "./dist"
