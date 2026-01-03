@@ -532,7 +532,7 @@ export const Tracker = {
     
     try {
       // Use sendBeacon for reliability on page exit
-      const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
+      const blob = new Blob([JSON.stringify(payload)], { type: 'text/plain' });
       const queued = navigator.sendBeacon(this.config.webhookUrl, blob);
       
       if (queued) {
@@ -541,7 +541,7 @@ export const Tracker = {
         // Fallback to fetch
         await fetch(this.config.webhookUrl, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'text/plain' },
           body: JSON.stringify(payload),
           keepalive: true
         });
