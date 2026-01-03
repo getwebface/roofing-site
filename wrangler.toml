@@ -1,7 +1,7 @@
 name = "roofingworker"
 # FIX: 'main' must point to the specific FILE, not the folder '.'
 # This tells Wrangler to look for worker.js in the root, not inside src/
-main = "worker.js" 
+main = "." 
 compatibility_date = "2026-01-03"
 account_id = "f966126db685a7512c898ae749c1cf07"
 
