@@ -34,7 +34,7 @@ export const Router = {
     
     // 2. Initialize tracker
     Tracker.init({
-      webhookUrl: 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec'
+      webhookUrl: 'https://script.google.com/macros/s/AKfycbwADS3bPMhTMpCn9irmp5ajAqk6EPVfEDpIiH_5FnaX14ttuOf-hysKi4FXK0F_qFWrSg/exec'
     });
     
     // 3. Fetch weather (async, non-blocking)
