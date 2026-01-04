@@ -1,0 +1,604 @@
+/**
+ * ROOF API - MASTER Apps Script (Conduit)
+ *
+ * FULL VERSION (Schema-aware + Weather + Variant resolution)
+ *
+ * Goals:
+ *  - GET content from `pages` by (slug + pageType)
+ *  - Return canonical `copy` keys that match templates' data-slot attributes
+ *    (schema-driven: returns many slots, not just 6)
+ *  - Resolve modifiers using schema order:
+ *      1) {slot}_{weather}_{variant}
+ *      2) {slot}_{weather}
+ *      3) {slot}_{variant}
+ *      4) {slot}
+ *    + supports legacy *_copyA_v1 columns as a fallback
+ *  - Preserve full sheet row in `raw` for debugging
+ *  - POST telemetry into `telemetry` sheet safely (header-driven, order-safe)
+ *  - Strong error visibility via debug=1
+ *  - Optional shared secret key (Worker holds the key, browsers do not)
+ */
+
+// ============================
+// CONFIG
+// ============================
+
+const SPREADSHEET_ID = "14PFOJfOLpO4Mg1uZEFzoxW6Z8v4A1iHpLRyg9P19duM";
+
+const REQUIRE_KEY = false;                 // set true when you want to lock down GET/POST
+const API_KEY = "roof-2026-prod-9f3kLm8x"; // must match Worker API_KEY when REQUIRE_KEY=true
+
+const CACHE_SECONDS = 300;
+
+const SHEET_PAGES = "pages";
+const SHEET_TELEMETRY = "telemetry";
+const TELEMETRY_MAX_ROWS = 10000;
+
+// If your system uses these modifier vocabularies, keep them aligned.
+const ALLOWED_WEATHER = new Set(["calm", "storm", "rain", "wind"]);
+const ALLOWED_VARIANT = new Set(["varianta", "variantb"]); // normalize to lower
+
+// ============================
+// GET: Serve page content
+// ============================
+function doGet(e) {
+  const started = Date.now();
+  const debug = (e?.parameter?.debug === "1");
+
+  try {
+    if (REQUIRE_KEY) requireKey_(e);
+
+    // Strategy A inputs (slug-only)
+    const slug = normalizeSlug_(e?.parameter?.slug ?? "home");
+    const pageType = normalizeType_(e?.parameter?.pageType ?? "home");
+
+    // Optional context for resolution (can come from Worker or client)
+    // Example:
+    //   ?weatherMode=storm&copyBucket=variantA
+    const ctx = {
+      weatherMode: normalizeWeather_(e?.parameter?.weatherMode ?? ""),
+      copyBucket: normalizeVariant_(e?.parameter?.copyBucket ?? e?.parameter?.variant ?? ""),
+    };
+
+    // Cache (skip cache in debug mode)
+    // IMPORTANT: include context in cache key ONLY if you plan to vary server responses by it.
+    // If you want "same URL => same cached response", do not include ctx.
+    // Here: we DO vary response by ctx (weather/variant), so cache key includes it.
+    const cacheKey = `page:${slug}:${pageType}:${ctx.weatherMode || "none"}:${ctx.copyBucket || "none"}`;
+    const cache = CacheService.getScriptCache();
+    if (!debug) {
+      const cached = cache.get(cacheKey);
+      if (cached) return jsonOut_(cached);
+    }
+
+    // Fetch page
+    const payload = getPageData_(slug, pageType, ctx, debug);
+
+    const json = JSON.stringify({
+      ...payload,
+      fetchedAt: new Date().toISOString(),
+      ms: Date.now() - started,
+    });
+
+    if (!debug) cache.put(cacheKey, json, CACHE_SECONDS);
+    return jsonOut_(json);
+
+  } catch (err) {
+    return jsonOut_(JSON.stringify({
+      success: false,
+      error: String(err),
+      stack: debug ? String(err?.stack || "") : "",
+      ms: Date.now() - started,
+    }));
+  }
+}
+
+function getPageData_(slug, pageType, ctx, debug) {
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const sheet = ss.getSheetByName(SHEET_PAGES);
+
+  if (!sheet) {
+    return debug
+      ? { success: true, exists: false, slug, pageType, copy: {}, raw: {}, debug: { reason: "pages_sheet_missing", sheetName: SHEET_PAGES, ctx } }
+      : { success: true, exists: false, slug, pageType, copy: {}, raw: {} };
+  }
+
+  const values = sheet.getDataRange().getValues();
+  if (values.length < 2) {
+    return debug
+      ? { success: true, exists: false, slug, pageType, copy: {}, raw: {}, debug: { reason: "pages_sheet_empty", ctx } }
+      : { success: true, exists: false, slug, pageType, copy: {}, raw: {} };
+  }
+
+  const headersRaw = values[0].map(h => String(h ?? "").trim());
+  const headerMap = buildPagesHeaderMap_(headersRaw);
+
+  // IMPORTANT: avoid "falsy index" bug (slug col often 0)
+  if (headerMap.slug === undefined || headerMap.pagetype === undefined) {
+    throw new Error(
+      `pages sheet must contain headers "slug" and "pageType". Found: ${headersRaw.join(", ")}`
+    );
+  }
+
+  const slugCol = headerMap.slug;
+  const typeCol = headerMap.pagetype;
+
+  // Find row by normalized slug + normalized pageType
+  let foundRow = null;
+  let foundRowIndex = -1;
+
+  for (let r = 1; r < values.length; r++) {
+    const row = values[r];
+
+    const rowSlug = normalizeSlug_(row[slugCol]);
+    const rowType = normalizeType_(row[typeCol]);
+
+    if (rowSlug === slug && rowType === pageType) {
+      foundRow = row;
+      foundRowIndex = r + 1; // 1-based row number for humans
+      break;
+    }
+  }
+
+  if (!foundRow) {
+    return debug
+      ? {
+          success: true,
+          exists: false,
+          slug,
+          pageType,
+          copy: {},
+          raw: {},
+          debug: {
+            reason: "no_matching_row",
+            matchOn: { slug, pageType },
+            slugCol,
+            typeCol,
+            ctx,
+            sampleFirstDataRow: values[1] ? {
+              slug: normalizeSlug_(values[1][slugCol]),
+              pageType: normalizeType_(values[1][typeCol])
+            } : null
+          }
+        }
+      : { success: true, exists: false, slug, pageType, copy: {}, raw: {} };
+  }
+
+  // Build RAW row copy (all columns) -> rawCopy
+  const rawCopy = {};
+  for (let c = 0; c < headersRaw.length; c++) {
+    const key = headersRaw[c];
+    if (!key) continue;
+
+    const v = foundRow[c];
+    // keep 0/false; skip only truly blank
+    if (v === "" || v === null || typeof v === "undefined") continue;
+
+    rawCopy[key] = v;
+  }
+
+  // Build CANONICAL copy used by templates (FULL schema resolution)
+  const canonicalCopy = deriveResolvedCopy_(rawCopy, ctx);
+
+  return debug
+    ? {
+        success: true,
+        exists: true,
+        slug,
+        pageType,
+        copy: canonicalCopy,
+        raw: rawCopy,
+        debug: {
+          matchedRowNumber: foundRowIndex,
+          slugCol,
+          typeCol,
+          headerCount: headersRaw.length,
+          ctx,
+          notes: [
+            "copy includes base slots + resolved overrides (weather/variant) when ctx supplied",
+            "legacy *_copyA_v1 columns are also supported as fallback"
+          ]
+        }
+      }
+    : { success: true, exists: true, slug, pageType, copy: canonicalCopy, raw: rawCopy };
+}
+
+// ============================
+// POST: Telemetry intake
+// ============================
+function doPost(e) {
+  try {
+    if (REQUIRE_KEY) requireKey_(e);
+
+    const body = (e && e.postData && e.postData.contents) ? e.postData.contents : "";
+    const parsed = body ? JSON.parse(body) : null;
+
+    const events = normalizeTelemetryBatch_(parsed);
+
+    // Guardrails (tune as you like)
+    const MAX_EVENTS_PER_REQUEST = 50;
+    if (events.length > MAX_EVENTS_PER_REQUEST) {
+      return jsonOut_(JSON.stringify({
+        success: false,
+        error: `Too many events: ${events.length} (max ${MAX_EVENTS_PER_REQUEST})`
+      }));
+    }
+
+    const result = appendTelemetryBatch_(events);
+
+    return jsonOut_(JSON.stringify({
+      success: true,
+      received: events.length,
+      written: result.written,
+      skipped: result.skipped,
+      errors: result.errors
+    }));
+  } catch (err) {
+    return jsonOut_(JSON.stringify({ success: false, error: String(err) }));
+  }
+}
+
+function normalizeTelemetryBatch_(payload) {
+  if (!payload) return [];
+
+  // Wrapper: { batch: [...] }
+  if (typeof payload === "object" && !Array.isArray(payload) && Array.isArray(payload.batch)) {
+    return payload.batch.filter(Boolean);
+  }
+
+  // Direct array: [ {...}, {...} ]
+  if (Array.isArray(payload)) {
+    return payload.filter(Boolean);
+  }
+
+  // Single event object: { ... }
+  if (typeof payload === "object") {
+    return [payload];
+  }
+
+  return [];
+}
+
+function appendTelemetryBatch_(events) {
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+
+  let written = 0;
+  let skipped = 0;
+  const errors = [];
+
+  try {
+    // Open sheet ONCE for the batch (faster + consistent)
+    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    let sheet = ss.getSheetByName(SHEET_TELEMETRY);
+
+    if (!sheet) {
+      sheet = ss.insertSheet(SHEET_TELEMETRY);
+      sheet.appendRow(getTelemetryHeaderDefault_());
+    }
+
+    // Archive rollover (keep header row)
+    if (sheet.getLastRow() > TELEMETRY_MAX_ROWS) {
+      const archiveName = `${SHEET_TELEMETRY}_${Utilities.formatDate(new Date(), "GMT", "yyyyMMdd")}`;
+      sheet.copyTo(ss).setName(archiveName);
+      const last = sheet.getLastRow();
+      if (last > 1) sheet.deleteRows(2, last - 1);
+    }
+
+    // Read headers ONCE
+    const headerRow = sheet
+      .getRange(1, 1, 1, sheet.getLastColumn())
+      .getValues()[0]
+      .map(h => String(h ?? "").trim());
+
+    const headerIndex = {};
+    for (let i = 0; i < headerRow.length; i++) {
+      const k = String(headerRow[i] || "").trim();
+      if (k && headerIndex[k] === undefined) headerIndex[k] = i;
+    }
+
+    const rowsToAppend = [];
+
+    for (let i = 0; i < events.length; i++) {
+      const p = events[i];
+
+      if (!p || typeof p !== "object" || Array.isArray(p)) {
+        skipped++;
+        continue;
+      }
+
+      try {
+        const row = buildTelemetryRow_(p, headerRow, headerIndex);
+
+        // If it's literally all blanks, skip (prevents empty rows from bad payloads)
+        if (row.every(v => v === "" || v === null || typeof v === "undefined")) {
+          skipped++;
+          continue;
+        }
+
+        rowsToAppend.push(row);
+        written++;
+      } catch (err) {
+        errors.push({ index: i, error: String(err) });
+      }
+    }
+
+    // Append in one go (much faster than appendRow in a loop)
+    if (rowsToAppend.length) {
+      const startRow = sheet.getLastRow() + 1;
+      sheet.getRange(startRow, 1, rowsToAppend.length, headerRow.length).setValues(rowsToAppend);
+    }
+
+  } finally {
+    lock.releaseLock();
+  }
+
+  return { written, skipped, errors };
+}
+
+function buildTelemetryRow_(p, headerRow, headerIndex) {
+  const row = new Array(headerRow.length).fill("");
+
+  const set = (name, value) => {
+    const idx = headerIndex[name];
+    if (idx === undefined) return;
+    row[idx] = value;
+  };
+
+  // Matches your telemetry schema (header-driven, order-safe)
+  set("timestamp", new Date(p.timestamp || Date.now()));
+  set("sessionId", s_(p.sessionId));
+  set("pageUrl", s_(p.pageUrl));
+  set("pagePath", s_(p.pagePath));
+  set("pageType", s_(p.pageType));
+  set("componentId", s_(p.componentId));
+  set("referrer", s_(p.referrer));
+  set("utmSource", s_(p.utmSource));
+  set("utmMedium", s_(p.utmMedium));
+  set("utmCampaign", s_(p.utmCampaign));
+
+  set("copyBucket", s_(p.copyBucket ?? p.exposure?.copyBucket));
+  set("styleBucket", s_(p.styleBucket ?? p.exposure?.styleBucket));
+  set("cell", s_(p.cell ?? p.exposure?.cell));
+
+  set("weatherMode", s_(p.weatherMode ?? p.weather?.derived?.mode));
+  set("weatherTemp", s_(p.weatherTemp ?? p.weather?.current?.temp));
+  set("weatherRain", s_(p.weatherRain ?? p.weather?.current?.rain));
+  set("weatherWind", s_(p.weatherWind ?? p.weather?.current?.wind));
+  set("stormLikely24h", !!(p.stormLikely24h ?? p.weather?.derived?.stormLikely24h));
+
+  set("timeOnSectionMs", n_(p.timeOnSectionMs));
+  set("maxVisibilityRatio", n_(p.maxVisibilityRatio));
+  set("scrolledPastFast", !!p.scrolledPastFast);
+  set("maxScrollVelocity", n_(p.maxScrollVelocity));
+  set("avgScrollVelocity", n_(p.avgScrollVelocity));
+
+  set("firstActionDelayMs", s_(p.firstActionDelayMs));
+  set("firstClickDelayMs", s_(p.firstClickDelayMs));
+  set("firstInputDelayMs", s_(p.firstInputDelayMs));
+
+  set("status", s_(p.status));
+  set("capturedEmail", s_(p.capturedEmail));
+
+  set("clickCount", n_(p.clickCount));
+  set("rageClickCount", n_(p.rageClickCount));
+  set("pointerDistance", n_(p.pointerDistance));
+  set("deviceGuess", s_(p.deviceGuess));
+  set("enterToScrollDelay", s_(p.enterToScrollDelay));
+  set("idleWhileVisibleMs", n_(p.idleWhileVisibleMs));
+  set("weatherFetchStatus", s_(p.weatherFetchStatus));
+  set("jsErrorCount", n_(p.jsErrorCount ?? (p.jsErrors ? p.jsErrors.length : 0)));
+
+  set("payloadJson", JSON.stringify(p || {}));
+
+  return row;
+}
+
+
+function getTelemetryHeaderDefault_() {
+  return [
+    "timestamp","sessionId","pageUrl","pagePath","pageType","componentId","referrer",
+    "utmSource","utmMedium","utmCampaign","copyBucket","styleBucket","cell",
+    "weatherMode","weatherTemp","weatherRain","weatherWind","stormLikely24h",
+    "timeOnSectionMs","maxVisibilityRatio","scrolledPastFast","maxScrollVelocity","avgScrollVelocity",
+    "firstActionDelayMs","firstClickDelayMs","firstInputDelayMs",
+    "status","capturedEmail","clickCount","rageClickCount","pointerDistance","deviceGuess",
+    "enterToScrollDelay","idleWhileVisibleMs","weatherFetchStatus","jsErrorCount","payloadJson"
+  ];
+}
+
+// ============================
+// FULL Schema Resolution
+// ============================
+
+/**
+ * Produces canonical copy keys for templates.
+ * - Includes all "base slots" found in the row (including underscores like cta_primary_text)
+ * - Resolves overrides based on ctx (weather + variant) using priority:
+ *    1) slot_weather_variant
+ *    2) slot_weather
+ *    3) slot_variant
+ *    4) slot
+ * - Also supports legacy "*_copyA_v1" columns as fallback when base slot is absent/blank
+ *
+ * NOTE: This function does NOT strip HTML. Your Worker currently injects as TEXT ONLY,
+ * so HTML will render as text (safe). If you later want rich HTML slots, you’ll need
+ * Worker-side logic to allow HTML only for whitelisted slots.
+ */
+function deriveResolvedCopy_(rowCopy, ctx) {
+  const out = {};
+
+  const weather = normalizeWeather_(ctx?.weatherMode || "");
+  const variant = normalizeVariant_(ctx?.copyBucket || "");
+
+  // 1) Build a set of base slot names from keys
+  // Base slot = key with any supported modifiers removed.
+  const baseSlots = new Set();
+
+  for (const key of Object.keys(rowCopy || {})) {
+    if (!key) continue;
+    if (key === "slug" || key === "pageType") continue;
+
+    // Legacy columns are handled later; but we still want base slot name available.
+    const legacyBase = legacyBaseSlotFromKey_(key);
+    if (legacyBase) {
+      baseSlots.add(legacyBase);
+      continue;
+    }
+
+    const base = stripModifiers_(key);
+    if (base) baseSlots.add(base);
+  }
+
+  // 2) For each base slot, pick best value by resolution order
+  for (const slot of baseSlots) {
+    // Skip control columns just in case
+    if (slot === "slug" || slot === "pageType") continue;
+
+    const candidates = [];
+
+    if (weather && variant) candidates.push(`${slot}_${weather}_${variant}`);
+    if (weather) candidates.push(`${slot}_${weather}`);
+    if (variant) candidates.push(`${slot}_${variant}`);
+    candidates.push(slot);
+
+    // Legacy fallback variants (copyA_v1) for older sheets
+    // Example: headline_copyA_v1, body_copyA_v1, cta_primary_text_copyA_v1
+    candidates.push(`${slot}_copyA_v1`);
+
+    const v = pick_(rowCopy, candidates);
+    if (v !== "") out[slot] = v;
+  }
+
+  return out;
+}
+
+/**
+ * Remove supported modifier suffixes from a key, returning the base slot name.
+ * Examples:
+ *  - headline_storm_variantA -> headline
+ *  - cta_primary_text_variantB -> cta_primary_text
+ *  - microcopy_rain -> microcopy
+ *  - long_body_1 -> long_body_1  (NOT stripped; not a modifier)
+ */
+function stripModifiers_(key) {
+  const k = String(key || "").trim();
+  if (!k) return "";
+
+  // Legacy column: handled elsewhere
+  if (/_copyA_v1$/i.test(k)) {
+    return k.replace(/_copyA_v1$/i, "");
+  }
+
+  // Remove:
+  //   _{weather}_{variant}
+  //   _{weather}
+  //   _{variant}
+  // Only when suffix matches allowed tokens.
+  const parts = k.split("_");
+  if (parts.length <= 1) return k;
+
+  const last = parts[parts.length - 1].toLowerCase();
+  const secondLast = parts.length >= 2 ? parts[parts.length - 2].toLowerCase() : "";
+
+  const isVariant = (s) => ALLOWED_VARIANT.has(String(s || "").toLowerCase());
+  const isWeather = (s) => ALLOWED_WEATHER.has(String(s || "").toLowerCase());
+
+  // ..._{weather}_{variant}
+  if (isVariant(last) && isWeather(secondLast)) {
+    return parts.slice(0, -2).join("_");
+  }
+
+  // ..._{weather}
+  if (isWeather(last)) {
+    return parts.slice(0, -1).join("_");
+  }
+
+  // ..._{variant}
+  if (isVariant(last)) {
+    return parts.slice(0, -1).join("_");
+  }
+
+  // Not a modifier suffix (e.g., cta_primary_text, long_body_1)
+  return k;
+}
+
+/**
+ * Detect legacy keys like "headline_copyA_v1" -> returns "headline"
+ * Returns "" if not legacy format.
+ */
+function legacyBaseSlotFromKey_(key) {
+  const k = String(key || "").trim();
+  if (!k) return "";
+  if (/_copyA_v1$/i.test(k)) return k.replace(/_copyA_v1$/i, "");
+  return "";
+}
+
+function pick_(obj, keys) {
+  for (const k of keys) {
+    const v = obj?.[k];
+    if (v !== undefined && v !== null && String(v).trim() !== "") return String(v);
+  }
+  return "";
+}
+
+// ============================
+// Helpers
+// ============================
+
+function buildPagesHeaderMap_(headersRaw) {
+  // Normalizes headers so "pageType", "pagetype", "Page Type" etc. still map correctly
+  const map = {};
+  for (let i = 0; i < headersRaw.length; i++) {
+    const raw = String(headersRaw[i] || "");
+    const norm = raw.toLowerCase().replace(/\s+/g, "").trim(); // "pageType" -> "pagetype"
+    if (!norm) continue;
+    if (map[norm] === undefined) map[norm] = i;
+  }
+  return {
+    slug: map["slug"],
+    pagetype: map["pagetype"]
+  };
+}
+
+function normalizeSlug_(v) {
+  return String(v ?? "")
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9-]/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "") || "home";
+}
+
+function normalizeType_(v) {
+  return String(v ?? "").toLowerCase().trim() || "home";
+}
+
+function normalizeWeather_(v) {
+  const s = String(v ?? "").toLowerCase().trim();
+  if (!s) return "";
+  // accept "Storm" etc; only allow known tokens
+  return ALLOWED_WEATHER.has(s) ? s : "";
+}
+
+function normalizeVariant_(v) {
+  const s = String(v ?? "").toLowerCase().trim();
+  if (!s) return "";
+  // allow "A"/"B" convenience too
+  if (s === "a") return "varianta";
+  if (s === "b") return "variantb";
+  return ALLOWED_VARIANT.has(s) ? s : "";
+}
+
+function jsonOut_(jsonString) {
+  return ContentService.createTextOutput(jsonString)
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function requireKey_(e) {
+  const key = e && e.parameter ? e.parameter.key : "";
+  if (!key || key !== API_KEY) throw new Error("Forbidden");
+}
+
+function s_(v) { return (v === null || typeof v === "undefined") ? "" : String(v); }
+function n_(v) { const n = Number(v); return isFinite(n) ? n : 0; }

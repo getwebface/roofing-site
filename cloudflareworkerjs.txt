@@ -1,0 +1,317 @@
+// Cloudflare Worker — Roofing Router (Strategy A: slug-only) + Debug + Telemetry Proxy
+// Env vars required:
+//   SHEETS_API   e.g. https://script.google.com/macros/s/XXXX/exec
+//   API_KEY      shared secret (or leave empty if your Apps Script doesn't require it)
+//   ASSET_ORIGIN e.g. https://your-static-site.example.com   (NO trailing slash)
+//
+// Env vars optional:
+//   DEFAULT_TEMPLATE  default "/index.html"
+//   SERVICE_TEMPLATE  default "/services/template-service.html"
+//   AREA_TEMPLATE     default "/areas/template-local-area.html"
+//
+// Routes:
+//   /                      -> {pageType:"home",   slug:"home"}     uses DEFAULT_TEMPLATE
+//   /services/<slug>       -> {pageType:"service",slug:<slug>}     uses SERVICE_TEMPLATE
+//   /areas/<slug>          -> {pageType:"local",  slug:<slug>}     uses AREA_TEMPLATE
+//
+// Debug:
+//   Add ?debug=1 to any page request to get JSON explaining what failed.
+//   Example: /services/leak-repair?debug=1
+//
+// Telemetry:
+//   Browser posts to /t  (Worker forwards to Apps Script with key server-side)
+//   This avoids Apps Script CORS/preflight issues.
+
+export default {
+  async fetch(request, env) {
+    const url = new URL(request.url);
+    const debug = url.searchParams.get("debug") === "1";
+
+    const SHEETS_API = env.SHEETS_API;
+    const API_KEY = env.API_KEY || "";
+    const ASSET_ORIGIN = (env.ASSET_ORIGIN || "").replace(/\/+$/, "");
+
+    const DEFAULT_TEMPLATE = env.DEFAULT_TEMPLATE || "/index.html";
+    const SERVICE_TEMPLATE = env.SERVICE_TEMPLATE || "/services/template-service.html";
+    const AREA_TEMPLATE = env.AREA_TEMPLATE || "/areas/template-local-area.html";
+
+    if (!SHEETS_API || !ASSET_ORIGIN) {
+      return new Response(
+        "Missing env vars: SHEETS_API and/or ASSET_ORIGIN",
+        { status: 500 }
+      );
+    }
+
+    // ---- OPTIONS (CORS) ----
+    if (request.method === "OPTIONS") {
+      return new Response(null, { status: 204, headers: corsHeaders(request) });
+    }
+
+    // ---- Telemetry proxy ----
+    if (url.pathname === "/t") {
+      if (request.method !== "POST") {
+        return new Response("Method Not Allowed", {
+          status: 405,
+          headers: corsHeaders(request),
+        });
+      }
+
+      const forwardURL = new URL(SHEETS_API);
+      if (API_KEY) forwardURL.searchParams.set("key", API_KEY);
+
+      const bodyText = await request.text();
+
+      let forwardRes;
+      try {
+        forwardRes = await fetch(forwardURL.toString(), {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: bodyText,
+          cf: { cacheTtl: 0, cacheEverything: false },
+        });
+      } catch (err) {
+        return debugJson(
+          debug,
+          502,
+          { where: "telemetry_fetch", error: String(err), forwardURL: forwardURL.toString() },
+          "Bad Gateway"
+        );
+      }
+
+      const outText = await forwardRes.text();
+      return new Response(outText, {
+        status: forwardRes.status,
+        headers: {
+          "content-type": forwardRes.headers.get("content-type") || "application/json",
+          "cache-control": "no-store",
+          ...corsHeaders(request),
+        },
+      });
+    }
+
+    // ---- Static asset passthrough ----
+    // If it looks like a file, pull it from ASSET_ORIGIN.
+    if (/\.[a-zA-Z0-9]{2,6}$/.test(url.pathname)) {
+      return fetch(`${ASSET_ORIGIN}${url.pathname}`, request);
+    }
+
+    // ---- Routing (Strategy A: slug-only) ----
+    let templatePath = DEFAULT_TEMPLATE;
+    let pageType = "home";
+    let slug = "home";
+
+    if (url.pathname === "/" || url.pathname === "") {
+      templatePath = DEFAULT_TEMPLATE;
+      pageType = "home";
+      slug = "home";
+    } else if (url.pathname.startsWith("/services/")) {
+      templatePath = SERVICE_TEMPLATE;
+      pageType = "service";
+      slug = normalizeSlug(lastSegment(url.pathname));
+    } else if (url.pathname.startsWith("/areas/")) {
+      templatePath = AREA_TEMPLATE;
+      pageType = "local";
+      slug = normalizeSlug(lastSegment(url.pathname));
+    } else {
+      return debugJson(
+        debug,
+        404,
+        { where: "routing", requestPath: url.pathname, hint: "Expected /, /services/<slug>, /areas/<slug>" },
+        "Not found"
+      );
+    }
+
+    // ---- Fetch template (force GET) ----
+    const templateURL = `${ASSET_ORIGIN}${templatePath}`;
+    let templateRes;
+    try {
+      templateRes = await fetch(new Request(templateURL, { method: "GET" }));
+    } catch (err) {
+      return debugJson(
+        debug,
+        502,
+        {
+          where: "template_fetch",
+          error: String(err),
+          templateURL,
+          ASSET_ORIGIN,
+          templatePath,
+          pageType,
+          slug,
+        },
+        "Bad Gateway"
+      );
+    }
+
+    if (!templateRes.ok) {
+      return debugJson(
+        debug,
+        404,
+        {
+          where: "template_status",
+          templateStatus: templateRes.status,
+          templateURL,
+          ASSET_ORIGIN,
+          templatePath,
+          pageType,
+          slug,
+        },
+        `Template not found: ${templateURL}`
+      );
+    }
+
+    // ---- Fetch data from Apps Script ----
+    const dataURL = new URL(SHEETS_API);
+    if (API_KEY) dataURL.searchParams.set("key", API_KEY);
+    dataURL.searchParams.set("slug", slug);
+    dataURL.searchParams.set("pageType", pageType);
+
+    let dataRes;
+    try {
+      dataRes = await fetch(dataURL.toString(), {
+        method: "GET",
+        cf: { cacheTtl: 0, cacheEverything: false },
+      });
+    } catch (err) {
+      return debugJson(
+        debug,
+        502,
+        { where: "data_fetch", error: String(err), dataURL: dataURL.toString(), pageType, slug },
+        "Bad Gateway"
+      );
+    }
+
+    let sheetData = {};
+    const ct = dataRes.headers.get("content-type") || "";
+
+    if (dataRes.ok && ct.includes("application/json")) {
+      try {
+        sheetData = await dataRes.json();
+      } catch (err) {
+        sheetData = {};
+      }
+    } else if (debug) {
+      // If debug=1, capture a little of the body even if it's not JSON
+      let bodyPreview = "";
+      try {
+        const t = await dataRes.text();
+        bodyPreview = t.slice(0, 600);
+      } catch {}
+      return debugJson(
+        true,
+        502,
+        {
+          where: "data_non_json_or_error",
+          dataStatus: dataRes.status,
+          contentType: ct,
+          dataURL: dataURL.toString(),
+          bodyPreview,
+          pageType,
+          slug,
+        },
+        "Upstream data error"
+      );
+    }
+
+    // ---- Not found if data says doesn't exist (except home) ----
+    if (!sheetData?.exists && slug !== "home") {
+      return debugJson(
+        debug,
+        404,
+        {
+          where: "data_not_found",
+          dataURL: dataURL.toString(),
+          dataStatus: dataRes.status,
+          contentType: ct,
+          sheetData,
+          pageType,
+          slug,
+        },
+        "Not found"
+      );
+    }
+
+    // ---- HTML rewrite (safe text injection) ----
+    const rewriter = new HTMLRewriter();
+
+    if (sheetData?.copy && typeof sheetData.copy === "object") {
+      for (const [key, rawVal] of Object.entries(sheetData.copy)) {
+        const value = rawVal == null ? "" : String(rawVal);
+
+        rewriter.on(`[data-slot="${cssEscape(key)}"]`, {
+          element(el) {
+            const tag = (el.tagName || "").toLowerCase();
+            if (tag === "img") el.setAttribute("src", value);
+            else if (tag === "a") el.setAttribute("href", value);
+            else el.setInnerContent(value, { html: false }); // TEXT ONLY
+          },
+        });
+      }
+    }
+
+    // Embed JSON in head for inspection / client JS (non-executable)
+    rewriter.on("head", {
+      element(el) {
+        const json = safeJsonForHtml(sheetData);
+        el.append(
+          `<script type="application/json" id="__INITIAL_DATA__">${json}</script>`,
+          { html: true }
+        );
+      },
+    });
+
+    const out = rewriter.transform(templateRes);
+    out.headers.set("content-type", "text/html; charset=utf-8");
+    out.headers.set("cache-control", "no-store");
+    out.headers.set("x-router", `${pageType}:${slug}:${templatePath}`); // helpful always
+    return out;
+  },
+};
+
+// ---------- helpers ----------
+function debugJson(isDebug, status, obj, fallbackText) {
+  if (!isDebug) return new Response(fallbackText || "Error", { status });
+  return new Response(JSON.stringify(obj, null, 2), {
+    status,
+    headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" },
+  });
+}
+
+function lastSegment(pathname) {
+  const parts = pathname.split("/").filter(Boolean);
+  const seg = parts.length ? parts[parts.length - 1] : "";
+  return seg.replace(/\.html$/i, "");
+}
+
+function normalizeSlug(input) {
+  return (
+    String(input || "")
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9-]/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "") || "home"
+  );
+}
+
+function cssEscape(str) {
+  return String(str).replace(/["\\]/g, "\\$&");
+}
+
+function safeJsonForHtml(obj) {
+  return JSON.stringify(obj ?? {})
+    .replace(/</g, "\\u003c")
+    .replace(/>/g, "\\u003e")
+    .replace(/&/g, "\\u0026");
+}
+
+function corsHeaders(request) {
+  const origin = request.headers.get("origin") || "*";
+  return {
+    "access-control-allow-origin": origin,
+    "access-control-allow-methods": "GET,POST,OPTIONS",
+    "access-control-allow-headers": "content-type",
+    "access-control-max-age": "86400",
+    vary: "Origin",
+  };
+}
