@@ -5,7 +5,6 @@
 
 import { Weather } from './weather.js';
 import { Experiments } from './experiments.js';
-import { Tracker } from './tracker.js';
 import { FormAsset } from './form-asset.js';
 import { Schema } from './schema.js';
 
@@ -37,7 +36,7 @@ export const Router = {
     this.detectPage();
     
     // 2. Initialize tracker
-    Tracker.init({
+    window.Tracker.init({
       webhookUrl: "/t"
     });
     
@@ -97,7 +96,7 @@ export const Router = {
   async fetchWeather() {
     try {
       this.weatherData = await Weather.fetch();
-      Tracker.setWeatherData(this.weatherData);
+      window.Tracker.setWeatherData(this.weatherData);
       console.log('[Router] Weather fetched:', this.weatherData.derived.mode);
     } catch (error) {
       console.error('[Router] Weather fetch failed:', error);
@@ -172,7 +171,7 @@ export const Router = {
       
     } catch (error) {
       console.error('[Router] Sheet fetch failed:', error);
-      Tracker.logEvent('sheet_fetch_error', { error: error.message });
+      window.Tracker.logEvent('sheet_fetch_error', { error: error.message });
       
       if (this.config.fallbackToDefaults) {
         console.log('[Router] Falling back to hardcoded defaults');
@@ -299,8 +298,8 @@ export const Router = {
         this.buckets,
         this.getCopiedApplied(section)
       );
-      Tracker.registerSection(section, { exposure });
-      Tracker.setExposure(sectionId, exposure);
+      window.Tracker.registerSection(section, { exposure });
+      window.Tracker.setExposure(sectionId, exposure);
     });
     
     console.log(`[Router] Processed ${sections.length} sections`);
@@ -550,7 +549,7 @@ export const Router = {
       buckets: this.buckets,
       weatherMode: this.weatherData?.derived.mode,
       sheetDataLoaded: !!this.sheetData,
-      sectionsRegistered: Tracker.sectionSensors.size
+      sectionsRegistered: window.Tracker.sectionSensors.size
     };
   }
 };

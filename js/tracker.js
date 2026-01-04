@@ -3,9 +3,9 @@
    Comprehensive telemetry with section sensors
    ============================================ */
 
- export const Tracker = {
+ const Tracker = {
   config: {
-    webhookUrl: new URL("/t", window.location.origin).toString(),
+    webhookUrl: "/t",
     eventQueueMaxSize: 60,
     idleThreshold: 1200,
     rageClickThreshold: 3,
@@ -738,13 +738,12 @@
       sensor.lastScrollY = currentScrollY;
       sensor.lastScrollTime = now;
     });
-  window.Tracker = Tracker;
   }
 
 
 };
 
-
+window.Tracker = Tracker;
 
 // Setup scroll listener
 if (typeof window !== 'undefined') {
@@ -757,6 +756,4 @@ if (typeof window !== 'undefined') {
       }
     }, 100);
   }, { passive: true });
-  
-  window.Tracker = Tracker;
 }
