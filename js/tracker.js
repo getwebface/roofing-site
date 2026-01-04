@@ -22,6 +22,10 @@ export const Tracker = {
   weatherData: null,
   pageContext: null,
   
+  // Telemetry buffer (Phase 1: Optimization)
+  pendingPayloads: [],
+  sendInterval: null,
+  
   // Observers
   intersectionObserver: null,
   
@@ -42,6 +46,9 @@ export const Tracker = {
     
     // Set up intersection observer
     this.setupIntersectionObserver();
+    
+    // Start telemetry send interval (30 seconds)
+    this.startSendInterval();
     
     console.log('[Tracker] Initialized', { sessionId: this.sessionId });
   },
@@ -258,8 +265,8 @@ export const Tracker = {
           }
           this.logEvent('exit_zone', { sectionId });
           
-          // Send final payload for this section
-          this.sendSectionPayload(sensor);
+          // Buffer payload instead of immediate send
+          this.bufferPayload(sensor);
         }
       });
     }, options);
@@ -524,7 +531,62 @@ export const Tracker = {
   },
 
   /**
-   * Send section payload to webhook
+   * Buffer payload for batch sending
+   * @param {Object} sensor - Sensor object
+   */
+  bufferPayload(sensor) {
+    const payload = this.assembleFinalPayload(sensor);
+    this.pendingPayloads.push(payload);
+    
+    // Cap buffer size (prevent memory issues)
+    if (this.pendingPayloads.length > 50) {
+      this.pendingPayloads.shift();
+    }
+    
+    console.log('[Tracker] Payload buffered', sensor.sectionId, `(${this.pendingPayloads.length} pending)`);
+  },
+
+  /**
+   * Start interval for batch sending payloads
+   */
+  startSendInterval() {
+    // Send buffered payloads every 30 seconds
+    this.sendInterval = setInterval(() => {
+      if (this.pendingPayloads.length > 0) {
+        this.sendBatchPayloads();
+      }
+    }, 30000); // 30 seconds
+    
+    console.log('[Tracker] Send interval started (30s)');
+  },
+
+  /**
+   * Send batch of payloads to webhook
+   */
+  async sendBatchPayloads() {
+    if (this.pendingPayloads.length === 0) return;
+    
+    const batch = [...this.pendingPayloads];
+    this.pendingPayloads = []; // Clear buffer
+    
+    try {
+      const response = await fetch(this.config.webhookUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ batch, batchSize: batch.length }),
+        keepalive: true
+      });
+      
+      console.log('[Tracker] Batch sent', { count: batch.length, status: response.status });
+    } catch (error) {
+      console.error('[Tracker] Batch send failed:', error);
+      // Re-buffer failed payloads
+      this.pendingPayloads.push(...batch.slice(0, 10)); // Keep last 10
+    }
+  },
+
+  /**
+   * Send single payload immediately (for conversions)
    * @param {Object} sensor - Sensor object
    */
   async sendSectionPayload(sensor) {
@@ -612,19 +674,37 @@ export const Tracker = {
    * Setup page exit handlers
    */
   setupExitHandlers() {
-    // Send all pending payloads on page exit
-    const sendAll = () => {
+    // Flush all pending payloads on page exit
+    const flushAll = () => {
+      // Stop interval
+      if (this.sendInterval) {
+        clearInterval(this.sendInterval);
+      }
+      
+      // Buffer any visible sections
       this.sectionSensors.forEach(sensor => {
         if (sensor.isVisible || sensor.timeOnSectionMs > 0) {
-          this.sendSectionPayload(sensor);
+          this.bufferPayload(sensor);
         }
       });
+      
+      // Send all buffered payloads via sendBeacon
+      if (this.pendingPayloads.length > 0) {
+        const batch = { batch: this.pendingPayloads, batchSize: this.pendingPayloads.length };
+        const blob = new Blob([JSON.stringify(batch)], { type: 'application/json' });
+        const queued = navigator.sendBeacon(this.config.webhookUrl, blob);
+        
+        console.log('[Tracker] Final flush via sendBeacon', { 
+          count: this.pendingPayloads.length, 
+          queued 
+        });
+      }
     };
     
-    window.addEventListener('pagehide', sendAll);
+    window.addEventListener('pagehide', flushAll);
     window.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'hidden') {
-        sendAll();
+        flushAll();
       }
     });
   },

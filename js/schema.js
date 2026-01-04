@@ -6,8 +6,12 @@
 export const Schema = {
   // Allowed slot names (whitelist)
   allowedSlots: [
+    // Basic copy slots
     'headline',
+    'subheadline',
     'body',
+    'intro_text',
+    'closing_text',
     'microcopy',
     'cta_primary_text',
     'cta_secondary_text',
@@ -15,36 +19,104 @@ export const Schema = {
     'wx_badge',
     'lead_form_mount',
     'phone_number',
+    
+    // Rich text slots (innerHTML support)
+    'long_body_1',
+    'long_body_2',
+    'long_body_3',
+    'benefit_list',
+    'feature_set',
+    
+    // Media slots
+    'hero_bg_image',
+    'section_bg_image',
+    'hero_video_url',
+    'gallery_image_1',
+    'gallery_image_2',
+    'gallery_image_3',
+    'gallery_image_4',
+    'gallery_image_5',
+    'gallery_image_6',
+    'before_image_1',
+    'before_image_2',
+    'before_image_3',
+    'after_image_1',
+    'after_image_2',
+    'after_image_3',
+    'service_icon_url',
+    'trust_logo_1',
+    'trust_logo_2',
+    'trust_logo_3',
+    
+    // Weather-aware background slots
+    'bg_calm',
+    'bg_storm',
+    'bg_rain',
+    'bg_wind',
+    
+    // Social proof & stats
+    'social_proof_stat',
+    'urgency_text',
+    'area_description',
+    'service_description',
+    
+    // Proof badges
     'proof_badge_1',
     'proof_badge_2',
     'proof_badge_3',
     'proof_badge_4',
+    
+    // Symptoms
     'symptom_1',
     'symptom_2',
     'symptom_3',
     'symptom_4',
     'symptom_5',
     'symptom_6',
+    
+    // Cards
     'card_1',
     'card_2',
     'card_3',
     'card_4',
+    'card_5',
+    'card_6',
+    
+    // Steps
     'step_1',
     'step_2',
     'step_3',
     'step_4',
+    'step_5',
+    'step_6',
+    
+    // Gallery
     'gallery_1',
     'gallery_2',
     'gallery_3',
+    'gallery_4',
+    'gallery_5',
+    'gallery_6',
+    
+    // Testimonials
     'testimonial_1',
     'testimonial_2',
     'testimonial_3',
+    'testimonial_4',
+    'testimonial_5',
+    'testimonial_6',
+    
+    // FAQs
     'faq_1',
     'faq_2',
     'faq_3',
     'faq_4',
     'faq_5',
     'faq_6',
+    'faq_7',
+    'faq_8',
+    
+    // Areas
     'area_1',
     'area_2',
     'area_3',
@@ -62,12 +134,27 @@ export const Schema = {
   // Maximum string lengths per slot type
   maxLengths: {
     headline: 200,
+    subheadline: 150,
     body: 1000,
+    intro_text: 500,
+    closing_text: 500,
     microcopy: 200,
     cta_primary_text: 50,
     cta_secondary_text: 50,
     wx_banner_text: 150,
     phone_number: 30,
+    long_body_1: 3000,
+    long_body_2: 3000,
+    long_body_3: 3000,
+    benefit_list: 2000,
+    feature_set: 2000,
+    social_proof_stat: 100,
+    urgency_text: 200,
+    area_description: 1000,
+    service_description: 1000,
+    hero_bg_image: 500,
+    section_bg_image: 500,
+    hero_video_url: 500,
     default: 500
   },
 
@@ -290,6 +377,86 @@ export const Schema = {
     const phoneRegex = /^(04\d{8}|0[2-9]\d{8}|1[38]00\d{6})$/;
     
     return phoneRegex.test(cleaned);
+  },
+
+  /**
+   * Check if slot supports rich HTML (innerHTML)
+   * @param {string} slotName - Slot name
+   * @returns {boolean} Supports rich HTML
+   */
+  isRichSlot(slotName) {
+    const richSlots = [
+      'long_body_1',
+      'long_body_2',
+      'long_body_3',
+      'benefit_list',
+      'feature_set'
+    ];
+    return richSlots.includes(slotName);
+  },
+
+  /**
+   * Check if slot is a media/image slot
+   * @param {string} slotName - Slot name
+   * @returns {boolean} Is media slot
+   */
+  isMediaSlot(slotName) {
+    return slotName.includes('_image') || 
+           slotName.includes('_video') || 
+           slotName.includes('_icon') ||
+           slotName.includes('_logo') ||
+           slotName.includes('bg_');
+  },
+
+  /**
+   * Check if slot is a JSON array slot
+   * @param {string} slotName - Slot name
+   * @returns {boolean} Is JSON slot
+   */
+  isJsonSlot(slotName) {
+    return slotName === 'benefit_list' || slotName === 'feature_set';
+  },
+
+  /**
+   * Parse and validate JSON slot data
+   * @param {string} jsonString - JSON string
+   * @returns {Array|null} Parsed array or null
+   */
+  parseJsonSlot(jsonString) {
+    try {
+      const parsed = JSON.parse(jsonString);
+      if (!Array.isArray(parsed)) {
+        console.warn('[Schema] JSON slot must be an array');
+        return null;
+      }
+      // Limit array size
+      return parsed.slice(0, 20);
+    } catch (error) {
+      console.warn('[Schema] Invalid JSON in slot:', error);
+      return null;
+    }
+  },
+
+  /**
+   * Sanitize HTML for rich slots (allow limited tags)
+   * @param {string} html - HTML string
+   * @returns {string} Sanitized HTML
+   */
+  sanitizeRichHTML(html) {
+    if (typeof html !== 'string') return '';
+    
+    // Allow only safe tags
+    const allowedTags = ['p', 'br', 'strong', 'em', 'b', 'i', 'ul', 'ol', 'li', 'span'];
+    const tagPattern = new RegExp(`<(?!\/?(${allowedTags.join('|')})\\b)[^>]+>`, 'gi');
+    
+    // Remove disallowed tags
+    let sanitized = html.replace(tagPattern, '');
+    
+    // Remove event handlers and javascript:
+    sanitized = sanitized.replace(/on\w+\s*=\s*["'][^"']*["']/gi, '');
+    sanitized = sanitized.replace(/javascript:/gi, '');
+    
+    return sanitized;
   },
 
   /**

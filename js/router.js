@@ -7,13 +7,16 @@ import { Weather } from './weather.js';
 import { Experiments } from './experiments.js';
 import { Tracker } from './tracker.js';
 import { FormAsset } from './form-asset.js';
+import { Schema } from './schema.js';
 
 export const Router = {
   // Configuration
   config: {
     sheetsEndpoint: 'https://script.google.com/macros/s/AKfycbwADS3bPMhTMpCn9irmp5ajAqk6EPVfEDpIiH_5FnaX14ttuOf-hysKi4FXK0F_qFWrSg/exec',
     enableSheetsFetch: false, // Set to true when sheets are ready
-    fallbackToDefaults: true
+    fallbackToDefaults: true,
+    cacheKey: 'trueroof_sheet_cache',
+    cacheTTL: 300000 // 5 minutes
   },
 
   // State
@@ -22,6 +25,7 @@ export const Router = {
   weatherData: null,
   buckets: null,
   sheetData: null,
+  isHydrated: false,
 
   /**
    * Initialize router and orchestrate page setup
@@ -35,7 +39,6 @@ export const Router = {
     // 2. Initialize tracker
     Tracker.init({
       webhookUrl: "/t"
-
     });
     
     // 3. Fetch weather (async, non-blocking)
@@ -44,18 +47,25 @@ export const Router = {
     // 4. Assign experiment buckets
     this.assignBuckets();
     
-    // 5. Fetch sheet data (async)
-    if (this.config.enableSheetsFetch) {
-      await this.fetchSheetData();
-    }
+    // 5. OPTIMISTIC HYDRATION: Load from cache immediately
+    this.hydrateFromCache();
     
-    // 6. Process all sections
+    // 6. Process all sections with cached/default data
     this.processSections();
     
     // 7. Mount forms
     this.mountForms();
     
-    console.log('[Router] Initialization complete');
+    // 8. Fetch fresh sheet data in background (async)
+    if (this.config.enableSheetsFetch) {
+      this.fetchSheetData().then(() => {
+        if (this.sheetData) {
+          this.patchWithFreshData();
+        }
+      });
+    }
+    
+    console.log('[Router] Initialization complete (optimistic)');
   },
 
   /**
@@ -106,7 +116,36 @@ export const Router = {
   },
 
   /**
-   * Fetch sheet data
+   * Hydrate from localStorage cache (instant)
+   */
+  hydrateFromCache() {
+    try {
+      const cached = localStorage.getItem(this.config.cacheKey);
+      if (!cached) {
+        console.log('[Router] No cache found, using defaults');
+        return;
+      }
+      
+      const { data, timestamp, slug } = JSON.parse(cached);
+      const age = Date.now() - timestamp;
+      
+      // Check if cache is valid and matches current page
+      if (age < this.config.cacheTTL && slug === this.slug) {
+        this.sheetData = data;
+        this.isHydrated = true;
+        console.log('[Router] Hydrated from cache', { age: Math.round(age / 1000) + 's' });
+      } else {
+        console.log('[Router] Cache expired or slug mismatch');
+        localStorage.removeItem(this.config.cacheKey);
+      }
+    } catch (error) {
+      console.error('[Router] Cache hydration failed:', error);
+      localStorage.removeItem(this.config.cacheKey);
+    }
+  },
+
+  /**
+   * Fetch sheet data (background)
    */
   async fetchSheetData() {
     try {
@@ -122,6 +161,10 @@ export const Router = {
       // Validate schema
       if (this.validateSheetData(data)) {
         this.sheetData = data;
+        
+        // Cache the fresh data
+        this.cacheSheetData(data);
+        
         console.log('[Router] Sheet data fetched and validated');
       } else {
         throw new Error('Sheet data validation failed');
@@ -135,6 +178,47 @@ export const Router = {
         console.log('[Router] Falling back to hardcoded defaults');
       }
     }
+  },
+
+  /**
+   * Cache sheet data to localStorage
+   * @param {Object} data - Sheet data to cache
+   */
+  cacheSheetData(data) {
+    try {
+      const cacheEntry = {
+        data,
+        timestamp: Date.now(),
+        slug: this.slug,
+        version: '1.0'
+      };
+      
+      localStorage.setItem(this.config.cacheKey, JSON.stringify(cacheEntry));
+      console.log('[Router] Sheet data cached');
+    } catch (error) {
+      console.error('[Router] Failed to cache data:', error);
+      // Quota exceeded - clear old cache
+      localStorage.removeItem(this.config.cacheKey);
+    }
+  },
+
+  /**
+   * Patch slots with fresh data (silent update)
+   */
+  patchWithFreshData() {
+    console.log('[Router] Patching with fresh data...');
+    
+    const sections = document.querySelectorAll('[data-section-id]');
+    
+    sections.forEach(section => {
+      // Re-fill slots with fresh data
+      this.fillSlots(section);
+      
+      // Re-apply weather adjustments
+      this.applyWeatherAdjustments(section);
+    });
+    
+    console.log('[Router] Patch complete');
   },
 
   /**
@@ -241,25 +325,121 @@ export const Router = {
     
     slots.forEach(slot => {
       const slotName = slot.getAttribute('data-slot');
+      const slotType = slot.getAttribute('data-slot-type');
       
       // Get copy from sheet data or keep default
       const copy = this.getCopyForSlot(slotName, sectionId);
       
       if (copy !== null) {
-        // Apply copy based on element type
-        if (slot.tagName === 'INPUT' || slot.tagName === 'TEXTAREA') {
-          slot.placeholder = copy;
-        } else if (slot.tagName === 'IMG') {
-          slot.alt = copy;
+        // Handle different slot types
+        if (slotType === 'rich' || Schema.isRichSlot(slotName)) {
+          this.fillRichSlot(slot, copy);
+        } else if (slotType === 'image' || Schema.isMediaSlot(slotName)) {
+          this.fillMediaSlot(slot, copy);
+        } else if (slotType === 'json-list' || Schema.isJsonSlot(slotName)) {
+          this.fillJsonSlot(slot, copy);
+        } else if (slotType === 'background') {
+          this.fillBackgroundSlot(slot, copy);
         } else {
-          // For most elements, set text content
-          // Preserve HTML structure for complex slots
-          if (typeof copy === 'string') {
-            slot.textContent = copy;
-          }
+          // Standard text slot
+          this.fillTextSlot(slot, copy);
         }
       }
     });
+  },
+
+  /**
+   * Fill standard text slot
+   * @param {HTMLElement} slot - Slot element
+   * @param {string} copy - Copy text
+   */
+  fillTextSlot(slot, copy) {
+    if (slot.tagName === 'INPUT' || slot.tagName === 'TEXTAREA') {
+      slot.placeholder = copy;
+    } else if (slot.tagName === 'IMG') {
+      slot.alt = copy;
+    } else {
+      slot.textContent = copy;
+    }
+  },
+
+  /**
+   * Fill rich HTML slot (innerHTML with sanitization)
+   * @param {HTMLElement} slot - Slot element
+   * @param {string} html - HTML content
+   */
+  fillRichSlot(slot, html) {
+    const sanitized = Schema.sanitizeRichHTML(html);
+    slot.innerHTML = sanitized;
+  },
+
+  /**
+   * Fill media slot (images/videos)
+   * @param {HTMLElement} slot - Slot element
+   * @param {string} url - Media URL
+   */
+  fillMediaSlot(slot, url) {
+    if (!Schema.isValidUrl(url)) {
+      console.warn('[Router] Invalid media URL:', url);
+      return;
+    }
+
+    if (slot.tagName === 'IMG') {
+      slot.src = url;
+      slot.loading = 'lazy';
+    } else if (slot.tagName === 'VIDEO') {
+      slot.src = url;
+    } else if (slot.tagName === 'SOURCE') {
+      slot.src = url;
+    } else {
+      // For div backgrounds
+      slot.style.backgroundImage = `url('${url}')`;
+    }
+  },
+
+  /**
+   * Fill JSON list slot (render array as HTML)
+   * @param {HTMLElement} slot - Slot element
+   * @param {string} jsonString - JSON array string
+   */
+  fillJsonSlot(slot, jsonString) {
+    const items = Schema.parseJsonSlot(jsonString);
+    if (!items) return;
+
+    // Render as list
+    const ul = document.createElement('ul');
+    ul.className = 'benefit-list';
+    
+    items.forEach(item => {
+      const li = document.createElement('li');
+      li.textContent = Schema.sanitizeString(item, 'default');
+      ul.appendChild(li);
+    });
+    
+    slot.innerHTML = '';
+    slot.appendChild(ul);
+  },
+
+  /**
+   * Fill background slot (weather-aware)
+   * @param {HTMLElement} slot - Slot element
+   * @param {string} url - Background URL
+   */
+  fillBackgroundSlot(slot, url) {
+    if (!Schema.isValidUrl(url)) {
+      console.warn('[Router] Invalid background URL:', url);
+      return;
+    }
+
+    const weatherMode = this.weatherData?.derived.mode || 'calm';
+    const bgSlotName = `bg_${weatherMode}`;
+    
+    // Only apply if matches current weather
+    if (slot.getAttribute('data-slot') === bgSlotName) {
+      slot.style.backgroundImage = `url('${url}')`;
+      slot.style.backgroundSize = 'cover';
+      slot.style.backgroundPosition = 'center';
+    }
   },
 
   /**
