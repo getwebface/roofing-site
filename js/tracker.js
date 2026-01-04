@@ -3,15 +3,14 @@
    Comprehensive telemetry with section sensors
    ============================================ */
 
-export const Tracker = {
-  // Configuration
+const Tracker = {
   config: {
-    webhookUrl: 'https://script.google.com/macros/s/AKfycbwADS3bPMhTMpCn9irmp5ajAqk6EPVfEDpIiH_5FnaX14ttuOf-hysKi4FXK0F_qFWrSg/exec',
+    webhookUrl: new URL("/t", window.location.origin).toString(),
     eventQueueMaxSize: 60,
-    idleThreshold: 1200, // ms
+    idleThreshold: 1200,
     rageClickThreshold: 3,
-    rageClickWindow: 1000, // ms
-    flybyVelocityThreshold: 1800, // px/s
+    rageClickWindow: 1000,
+    flybyVelocityThreshold: 1800,
     visibilityThreshold: 0.5
   },
 
@@ -739,8 +738,13 @@ export const Tracker = {
       sensor.lastScrollY = currentScrollY;
       sensor.lastScrollTime = now;
     });
+  window.Tracker = Tracker;
   }
+
+
 };
+
+
 
 // Setup scroll listener
 if (typeof window !== 'undefined') {
