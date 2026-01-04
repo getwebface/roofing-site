@@ -34,7 +34,8 @@ export const Router = {
     
     // 2. Initialize tracker
     Tracker.init({
-      webhookUrl: this.config.sheetsEndpoint
+      webhookUrl: "/t"
+
     });
     
     // 3. Fetch weather (async, non-blocking)
