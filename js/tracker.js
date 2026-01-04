@@ -3,7 +3,7 @@
    Comprehensive telemetry with section sensors
    ============================================ */
 
-const Tracker = {
+ export const Tracker = {
   config: {
     webhookUrl: new URL("/t", window.location.origin).toString(),
     eventQueueMaxSize: 60,
