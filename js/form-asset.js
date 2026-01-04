@@ -1,208 +1,159 @@
 /* ============================================
-   FORM ASSET MODULE
-   Handles Google Form embed mounting
+   PREMIUM NATIVE FORM ASSET MODULE
+   Replaces Iframe embed with high-performance multi-step form
    ============================================ */
 
 export const FormAsset = {
-  // Form configurations (Google Form embed URLs)
-  forms: {
-    lead_default: {
-      embedUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSfA3rKzlgI0-53nK4yXU7l78tlOzQbJ7aTvopgDlOS3JaIEZg/viewform?embedded=true',
-      height: '600px',
-      title: 'Request Free Inspection'
-    },
-    // Add more form variants as needed
-    lead_storm: {
-      embedUrl: '<https://docs.google.com/forms/d/e/1FAIpQLSfA3rKzlgI0-53nK4yXU7l78tlOzQbJ7aTvopgDlOS3JaIEZg/viewform?embedded=true',
-      height: '600px',
-      title: 'Emergency Storm Damage Assessment'
+  // Field Mappings for your specific Google Form
+  config: {
+    endpoint: "https://docs.google.com/forms/d/e/1FAIpQLSeXt8JeqI9PvhDWxu6cOOxX58kfs8J85UQGXk3Tc09HOUA2FA/formResponse",
+    mapping: {
+      "service":      "entry.1354597159",
+      "material":     "entry.214341972",
+      "level":        "entry.1724291652",
+      "suburb":       "entry.131318949",
+      "fullName":     "entry.1890503231",
+      "phone":        "entry.1596600455",
+      "email":        "entry.1842144469",
+      "message":      "entry.1638990837"
     }
   },
 
   /**
-   * Render a placeholder skeleton while form loads
-   * @returns {string} HTML string for placeholder
+   * Renders the HTML structure for the multi-step form
    */
-  renderPlaceholder() {
+  renderFormHTML() {
     return `
-      <div class="form-placeholder" data-loading="true">
-        <div class="form-placeholder-header">
-          <div class="form-placeholder-title"></div>
-          <div class="form-placeholder-subtitle"></div>
+      <div id="true-roof-form" x-data="leadForm()" class="w-full max-w-xl mx-auto">
+        <div class="relative bg-white/95 backdrop-blur-2xl border border-slate-200 rounded-[2rem] shadow-2xl overflow-hidden p-8">
+          
+          <div class="flex justify-between items-end mb-8 border-b border-slate-100 pb-4">
+            <div>
+              <h2 class="text-2xl font-black text-[#0a192f] tracking-tight leading-none">Get a Price.</h2>
+              <p class="text-[10px] font-extrabold uppercase tracking-widest text-[#e36d35] mt-2 flex items-center gap-1">
+                <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> Fast Estimate
+              </p>
+            </div>
+            <div class="flex bg-slate-100 p-1 rounded-full">
+               <div class="px-4 py-1 rounded-full text-[10px] font-bold transition-all" :class="step === 1 ? 'bg-[#0a192f] text-white shadow-lg' : 'text-slate-400'">1. Details</div>
+               <div class="px-4 py-1 rounded-full text-[10px] font-bold transition-all" :class="step === 2 ? 'bg-[#e36d35] text-white shadow-lg' : 'text-slate-400'">2. Contact</div>
+            </div>
+          </div>
+
+          <form @submit.prevent="submitForm($event)" class="space-y-4">
+            <div x-show="step === 1" x-ref="step1" x-transition:enter="transition ease-out duration-300">
+              <div class="grid grid-cols-1 gap-4">
+                <div class="space-y-1">
+                  <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Service Required</label>
+                  <select name="service" required class="w-full bg-slate-50 border-2 border-slate-100 rounded-xl py-3.5 px-4 outline-none focus:border-[#e36d35] font-bold text-sm">
+                    <option value="" disabled selected>Select service...</option>
+                    <option>Full Roof Restoration</option>
+                    <option>Roof Repairs & Leak Fixes</option>
+                    <option>Roof Painting & Sealing</option>
+                    <option>Re-Bedding & Pointing</option>
+                  </select>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                  <select name="material" required class="w-full bg-slate-50 border-2 border-slate-100 rounded-xl py-3.5 px-4 outline-none focus:border-[#e36d35] font-bold text-sm">
+                    <option value="" disabled selected>Material</option>
+                    <option>Cement Tile</option>
+                    <option>Terracotta</option>
+                    <option>Metal/Colorbond</option>
+                  </select>
+                  <select name="level" required class="w-full bg-slate-50 border-2 border-slate-100 rounded-xl py-3.5 px-4 outline-none focus:border-[#e36d35] font-bold text-sm">
+                    <option value="" disabled selected>Storey</option>
+                    <option>Single Storey</option>
+                    <option>Double Storey</option>
+                  </select>
+                </div>
+                <input name="suburb" type="text" placeholder="Suburb (e.g. Ringwood)" required class="w-full bg-slate-50 border-2 border-slate-100 rounded-xl py-3.5 px-4 outline-none focus:border-[#e36d35] font-bold text-sm">
+              </div>
+              <button type="button" @click="validateStep1()" class="w-full bg-[#0a192f] text-white h-14 rounded-xl font-bold text-lg hover:bg-slate-800 transition-all mt-6 shadow-xl">Next Step →</button>
+            </div>
+
+            <div x-show="step === 2" x-cloak x-transition:enter="transition ease-out duration-300">
+              <div class="space-y-4">
+                <input name="fullName" type="text" placeholder="Full Name" required class="w-full bg-slate-50 border-2 border-slate-100 rounded-xl py-3.5 px-4 outline-none focus:border-[#e36d35] font-bold text-sm">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <input name="phone" type="tel" placeholder="Mobile Number" required class="w-full bg-slate-50 border-2 border-slate-100 rounded-xl py-3.5 px-4 outline-none focus:border-[#e36d35] font-bold text-sm">
+                  <input name="email" type="email" placeholder="Email Address" required class="w-full bg-slate-50 border-2 border-slate-100 rounded-xl py-3.5 px-4 outline-none focus:border-[#e36d35] font-bold text-sm">
+                </div>
+                <textarea name="message" placeholder="Additional details (optional)" class="w-full bg-slate-50 border-2 border-slate-100 rounded-xl py-3.5 px-4 outline-none focus:border-[#e36d35] font-bold text-sm h-24"></textarea>
+                <input type="text" name="honeypot" style="display:none" tabindex="-1">
+              </div>
+              <div class="flex gap-3 mt-6">
+                <button type="button" @click="step = 1" class="w-14 h-14 flex items-center justify-center rounded-xl border-2 border-slate-100 text-slate-400 hover:text-[#e36d35]">←</button>
+                <button type="submit" :disabled="isLoading" class="flex-1 bg-[#e36d35] text-white h-14 rounded-xl font-bold text-lg hover:bg-[#c25626] transition-all shadow-lg shadow-orange-500/30">
+                  <span x-show="!isLoading">Get My Free Quote</span>
+                  <span x-show="isLoading" class="flex items-center justify-center gap-2">
+                     <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Sending...
+                  </span>
+                </button>
+              </div>
+            </div>
+          </form>
         </div>
-        <div class="form-placeholder-field"></div>
-        <div class="form-placeholder-field"></div>
-        <div class="form-placeholder-field"></div>
-        <div class="form-placeholder-button"></div>
-        <style>
-          .form-placeholder {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: var(--radius-lg);
-            padding: var(--space-xl);
-            min-height: 400px;
-          }
-          .form-placeholder[data-loading="true"] .form-placeholder-title,
-          .form-placeholder[data-loading="true"] .form-placeholder-subtitle,
-          .form-placeholder[data-loading="true"] .form-placeholder-field,
-          .form-placeholder[data-loading="true"] .form-placeholder-button {
-            background: linear-gradient(90deg, rgba(255,255,255,0.1) 25%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.1) 75%);
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-            border-radius: var(--radius-sm);
-          }
-          .form-placeholder-header {
-            margin-bottom: var(--space-xl);
-          }
-          .form-placeholder-title {
-            height: 32px;
-            width: 60%;
-            margin-bottom: var(--space-md);
-          }
-          .form-placeholder-subtitle {
-            height: 20px;
-            width: 80%;
-          }
-          .form-placeholder-field {
-            height: 48px;
-            margin-bottom: var(--space-md);
-          }
-          .form-placeholder-button {
-            height: 48px;
-            width: 200px;
-            margin-top: var(--space-lg);
-          }
-          @keyframes shimmer {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-          }
-        </style>
       </div>
     `;
   },
 
   /**
-   * Mount a Google Form iframe into target element
-   * @param {HTMLElement} targetEl - Element to mount form into
-   * @param {string} formKey - Key from forms config (e.g., 'lead_default')
-   * @param {Object} options - Additional options
+   * Mounts the native form into the target element
    */
-  mount(targetEl, formKey = 'lead_default', options = {}) {
-    if (!targetEl) {
-      console.error('[FormAsset] Target element not found');
-      return;
+  mount(targetEl) {
+    if (!targetEl) return;
+    
+    targetEl.innerHTML = this.renderFormHTML();
+
+    // Initialize Alpine Logic if not already handled by parent
+    if (!window.leadFormInitialized) {
+      document.addEventListener('alpine:init', () => {
+        Alpine.data('leadForm', () => ({
+          step: 1,
+          isLoading: false,
+          validateStep1() {
+            const inputs = this.$refs.step1.querySelectorAll('[required]');
+            let valid = true;
+            inputs.forEach(el => { if (!el.checkValidity()) { el.reportValidity(); valid = false; } });
+            if (valid) this.step = 2;
+          },
+          async submitForm(event) {
+            this.isLoading = true;
+            const formData = new FormData(event.target);
+            
+            // Honeypot check
+            if (formData.get('honeypot')) return;
+
+            const submissionData = new URLSearchParams();
+            for (const [key, googleId] of Object.entries(FormAsset.config.mapping)) {
+              if (formData.has(key)) submissionData.append(googleId, formData.get(key));
+            }
+
+            try {
+              await fetch(FormAsset.config.endpoint, {
+                method: "POST",
+                mode: "no-cors",
+                body: submissionData
+              });
+              
+              targetEl.innerHTML = `
+                <div class="text-center p-12 bg-white rounded-[2rem] shadow-2xl border border-slate-200">
+                  <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 text-green-600">
+                    <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                  </div>
+                  <h3 class="text-3xl font-black text-[#0a192f]">Quote Sent!</h3>
+                  <p class="text-slate-500 mt-4">We'll respond within 2 hours.</p>
+                </div>
+              `;
+            } catch (err) {
+              console.error("Submission failed", err);
+            } finally {
+              this.isLoading = false;
+            }
+          }
+        }));
+      });
+      window.leadFormInitialized = true;
     }
-
-    const formConfig = this.forms[formKey];
-    if (!formConfig) {
-      console.error(`[FormAsset] Form config not found for key: ${formKey}`);
-      targetEl.innerHTML = `
-        <div class="form-error">
-          <p>Form configuration error. Please contact us directly.</p>
-        </div>
-      `;
-      return;
-    }
-
-    // Show placeholder first
-    targetEl.innerHTML = this.renderPlaceholder();
-
-    // Create iframe
-    const iframe = document.createElement('iframe');
-    iframe.src = formConfig.embedUrl;
-    iframe.width = '100%';
-    iframe.height = options.height || formConfig.height;
-    iframe.frameBorder = '0';
-    iframe.marginHeight = '0';
-    iframe.marginWidth = '0';
-    iframe.title = formConfig.title;
-    iframe.style.border = 'none';
-    iframe.style.borderRadius = 'var(--radius-lg)';
-    iframe.style.background = 'white';
-
-    // Add loading handler
-    iframe.addEventListener('load', () => {
-      // Replace placeholder with iframe after load
-      targetEl.innerHTML = '';
-      targetEl.appendChild(iframe);
-      
-      // Track form exposure
-      if (window.Tracker) {
-        window.Tracker.logEvent('form_mounted', {
-          formKey,
-          timestamp: Date.now()
-        });
-      }
-    });
-
-    // Add error handler
-    iframe.addEventListener('error', () => {
-      console.error('[FormAsset] Failed to load form iframe');
-      targetEl.innerHTML = `
-        <div class="form-error">
-          <p>Unable to load form. Please try refreshing the page or contact us directly.</p>
-        </div>
-      `;
-      
-      if (window.Tracker) {
-        window.Tracker.logEvent('form_load_error', {
-          formKey,
-          timestamp: Date.now()
-        });
-      }
-    });
-
-    // Set a timeout to replace placeholder even if load event doesn't fire
-    setTimeout(() => {
-      if (targetEl.querySelector('.form-placeholder')) {
-        targetEl.innerHTML = '';
-        targetEl.appendChild(iframe);
-      }
-    }, 3000);
-  },
-
-  /**
-   * Render a simple CTA button as fallback (no form)
-   * @param {HTMLElement} targetEl - Element to mount CTA into
-   * @param {Object} options - CTA options
-   */
-  renderCTA(targetEl, options = {}) {
-    const {
-      text = 'Request Free Inspection',
-      phone = '1300 ROOFING',
-      href = 'tel:1300766346'
-    } = options;
-
-    targetEl.innerHTML = `
-      <div class="form-cta-fallback">
-        <h3>${text}</h3>
-        <p>Call us now for immediate assistance</p>
-        <a href="${href}" class="btn btn-primary btn-large" data-goal="cta-phone">
-          📞 ${phone}
-        </a>
-      </div>
-      <style>
-        .form-cta-fallback {
-          background: rgba(255, 255, 255, 0.05);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          border-radius: var(--radius-lg);
-          padding: var(--space-2xl);
-          text-align: center;
-        }
-        .form-cta-fallback h3 {
-          color: white;
-          margin-bottom: var(--space-md);
-        }
-        .form-cta-fallback p {
-          color: rgba(255, 255, 255, 0.8);
-          margin-bottom: var(--space-xl);
-        }
-      </style>
-    `;
   }
 };
-
-// Make available globally for router
-if (typeof window !== 'undefined') {
-  window.FormAsset = FormAsset;
-}
