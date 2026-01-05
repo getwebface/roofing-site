@@ -39,6 +39,15 @@
   z-index: 0;
 }
 
+/* Overlay for hero background image */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(10, 25, 47, 0.9) 0%, rgba(26, 45, 71, 0.85) 100%);
+  z-index: 1;
+}
+
 /* Hero with video background */
 .hero-video-bg {
   position: absolute;
