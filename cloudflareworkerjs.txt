@@ -285,9 +285,9 @@ export default {
             const slotType = el.getAttribute("data-slot-type");
 
             if (tag === "img") {
-              el.setAttribute("src", value);
+              if (value) el.setAttribute("src", value);
             } else if (tag === "a") {
-              el.setAttribute("href", value);
+              if (value) el.setAttribute("href", value);
             } else if (slotType === "rich") {
               el.setInnerContent(value, { html: true });
             } else {
