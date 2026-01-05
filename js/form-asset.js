@@ -31,13 +31,14 @@ export const FormAsset = {
     style.id = "tr-premium-styles";
     style.textContent = `
       :root {
-        --tr-navy: #0a192f;
-        --tr-navy-light: #112240;
-        --tr-orange: #e36d35;
-        --tr-orange-dark: #c25626;
-        --tr-gold: #FFD700;
-        --tr-glass: rgba(255, 255, 255, 0.9);
-        --tr-shadow: 0 20px 50px rgba(0,0,0,0.15);
+        /* PULL FROM CSS VARIABLES defined in tokens.css */
+        --tr-navy: var(--navy, #0a1628); 
+        --tr-navy-light: var(--navy-light, #1a2d47);
+        --tr-orange: var(--orange, #ff6b35);
+        --tr-orange-dark: var(--orange-dark, #e55a2b);
+        --tr-gold: #FFD700; /* Fallback gold color */
+        --tr-glass: rgba(255, 255, 255, 0.95); /* Slightly less transparent for readability */
+        --tr-shadow: var(--shadow-xl);
       }
 
       .tr-container {

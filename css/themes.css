@@ -71,6 +71,8 @@
 
 [data-theme="themeB"] .trust-badge-icon {
   background: var(--orange);
+  color: var(--navy); /* Much higher contrast (Navy on Orange) */
+  border: 2px solid var(--navy);
 }
 
 [data-theme="themeB"] .symptom-icon,

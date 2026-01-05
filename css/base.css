@@ -26,7 +26,6 @@ body {
   line-height: var(--leading-normal);
   color: var(--color-text);
   background-color: var(--color-bg);
-  padding-top: var(--header-height);
 }
 
 /* Headings */
@@ -223,10 +222,6 @@ section[data-bg="dark"] li {
 
 /* Responsive */
 @media (max-width: 768px) {
-  body {
-    padding-top: var(--header-height-mobile);
-  }
-  
   .container {
     padding: 0 var(--space-4);
   }
@@ -266,19 +261,4 @@ button:focus-visible,
 }
 
 /* Global Header & Footer Spacing */
-.site-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: var(--z-fixed);
-  background: var(--white);
-  border-bottom: var(--border-width) solid var(--color-border);
-  height: var(--header-height);
-}
-
-@media (max-width: 768px) {
-  .site-header {
-    height: var(--header-height-mobile);
-  }
-}
+/* Note: Header styles are now defined in sections.css */

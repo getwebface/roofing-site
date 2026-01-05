@@ -743,11 +743,17 @@
   }
 }
 
-/* ===== GLOBAL HEADER ===== */
+/* ===== GLOBAL HEADER (Unified) ===== */
 .site-header {
   background: var(--white);
-  border-bottom: var(--border-width) solid var(--color-border);
-  box-shadow: var(--shadow-sm);
+  /* Use the token border, not a hardcoded hex */
+  border-bottom: 3px solid var(--orange); /* Action color underline for visibility */
+  position: sticky; /* Keep it sticky */
+  top: 0;
+  z-index: var(--z-fixed);
+  box-shadow: var(--shadow-md);
+  height: var(--header-height);
+  transition: transform var(--transition-base);
 }
 
 .header-container {
@@ -757,15 +763,17 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: var(--header-height);
+  height: 100%;
 }
 
+/* Logo: Navy for high contrast on white */
 .header-logo {
+  font-family: var(--font-display);
   font-size: var(--text-2xl);
   font-weight: var(--font-extrabold);
-  color: var(--navy);
+  color: var(--navy); 
   text-decoration: none;
-  font-family: var(--font-display);
+  letter-spacing: -0.5px;
 }
 
 .header-logo:hover {
@@ -788,17 +796,33 @@
   padding: 0;
 }
 
+/* Nav Links: Dark Grey, turning Orange on hover */
 .nav-links a {
-  font-size: var(--text-base);
-  font-weight: var(--font-medium);
+  font-family: var(--font-sans);
+  font-weight: var(--font-bold); /* Thicker font for readability */
   color: var(--navy);
+  font-size: var(--text-sm);
+  text-transform: uppercase;
+  letter-spacing: 1px;
   text-decoration: none;
-  transition: color var(--transition-fast);
+  padding: var(--space-2) 0;
+  position: relative;
 }
 
-.nav-links a:hover {
-  color: var(--orange);
-  text-decoration: none;
+/* subtle hover underline animation */
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: var(--orange);
+  transition: width var(--transition-fast);
+}
+
+.nav-links a:hover::after {
+  width: 100%;
 }
 
 .header-cta {
@@ -853,11 +877,14 @@
   }
 }
 
-/* ===== GLOBAL FOOTER ===== */
+/* ===== GLOBAL FOOTER (Unified) ===== */
 .site-footer {
-  background: var(--navy);
-  color: white;
+  /* Use Brand Navy, NOT #333 */
+  background: var(--navy); 
+  color: var(--white);
   padding: var(--space-16) 0 var(--space-8);
+  /* Top border in orange to separate from content */
+  border-top: 5px solid var(--orange); 
 }
 
 .footer-container {
@@ -873,10 +900,14 @@
   margin-bottom: var(--space-12);
 }
 
+/* Headings in Footer */
 .footer-column h3 {
-  color: white;
-  font-size: var(--text-lg);
-  margin-bottom: var(--space-4);
+  color: var(--white);
+  font-family: var(--font-display);
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--navy-light);
+  padding-bottom: var(--space-3);
+  margin-bottom: var(--space-6);
 }
 
 .footer-column ul {
@@ -889,15 +920,16 @@
   margin-bottom: var(--space-3);
 }
 
+/* Links in Footer - Off-white to White on hover */
 .footer-column a {
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--gray-300); /* Accessible contrast on Navy */
   text-decoration: none;
-  transition: color var(--transition-fast);
+  transition: all var(--transition-fast);
 }
 
 .footer-column a:hover {
-  color: var(--orange-light);
-  text-decoration: none;
+  color: var(--orange); /* Pop color */
+  padding-left: var(--space-2); /* Subtle movement */
 }
 
 .footer-contact p {
@@ -910,12 +942,16 @@
   font-weight: var(--font-semibold);
 }
 
+/* Footer Bottom Bar */
 .footer-bottom {
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  padding-top: var(--space-6);
+  border-top: 1px solid var(--navy-light); /* Subtle separator */
+  margin-top: var(--space-12);
+  padding-top: var(--space-8);
+  color: var(--gray-400);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 1px;
   text-align: center;
-  color: rgba(255, 255, 255, 0.6);
-  font-size: var(--text-sm);
 }
 
 @media (max-width: 768px) {
