@@ -32,29 +32,30 @@ export const FormAsset = {
     style.id = "tr-premium-styles";
     style.textContent = `
       :root {
-        /* PULL FROM CSS VARIABLES defined in tokens.css */
-        --tr-navy: var(--navy, #0a1628); 
-        --tr-navy-light: var(--navy-light, #1a2d47);
-        --tr-orange: var(--orange, #ff6b35);
-        --tr-orange-dark: var(--orange-dark, #e55a2b);
-        --tr-gold: #FFD700; /* Fallback gold color */
-        --tr-glass: rgba(255, 255, 255, 0.95); /* Slightly less transparent for readability */
-        --tr-shadow: var(--shadow-xl);
+        --tr-navy: #0a1628;
+        --tr-orange: #ff6b35;
+        --tr-glass: rgba(255, 255, 255, 0.98); 
+        --tr-font: 'Plus Jakarta Sans', sans-serif; /* Unified Font */
+      }
+
+      /* Force the font on EVERYTHING */
+      .tr-container, .tr-container *, .tr-footer-text {
+        font-family: var(--tr-font) !important;
+        -webkit-font-smoothing: antialiased;
       }
 
       .tr-container {
         max-width: 550px;
         margin: 20px auto;
-        font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
         perspective: 1000px;
       }
 
       .tr-card {
         background: var(--tr-glass);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255,255,255,0.7);
-        border-radius: 28px;
-        box-shadow: var(--tr-shadow);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(0,0,0,0.05); /* Softer border than pure white */
+        border-radius: 24px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
         overflow: hidden;
         transition: transform 0.4s ease;
       }
@@ -71,7 +72,7 @@ export const FormAsset = {
         position: absolute;
         bottom: 0; left: 0; right: 0;
         height: 4px;
-        background: linear-gradient(90deg, var(--tr-orange), var(--tr-gold));
+        background: linear-gradient(90deg, var(--tr-orange), #FFD700);
       }
 
       .tr-badge {
@@ -129,13 +130,12 @@ export const FormAsset = {
 
       .tr-label {
         display: block;
-        font-size: 11px;
-        font-weight: 800;
-        text-transform: uppercase;
+        font-size: 10px;
+        letter-spacing: 0.8px;
         color: var(--tr-navy);
-        margin-bottom: 8px;
-        letter-spacing: 0.5px;
-        /* Removed opacity for perfect contrast ratios */
+        text-transform: uppercase;
+        font-weight: 800;
+        margin-bottom: 6px;
       }
 
       .tr-input, .tr-select, .tr-textarea {
@@ -185,28 +185,31 @@ export const FormAsset = {
       }
 
       .tr-btn-submit {
-        background: linear-gradient(135deg, var(--tr-orange), var(--tr-orange-dark));
-        box-shadow: 0 10px 20px rgba(227, 109, 53, 0.3);
-        color: #0a1628; /* Navy text for perfect 4.5:1+ contrast on orange */
-        font-weight: 900;
+        background: var(--tr-orange);
+        color: #ffffff; 
+        font-weight: 800;
+        /* Pro Tip: To pass AA with white text on orange, 
+           the orange needs to be slightly darker (#e35d2d) */
       }
 
       .tr-btn-submit:hover {
         box-shadow: 0 15px 30px rgba(227, 109, 53, 0.4);
       }
 
+      /* The Footer Security Message - Refined */
       .tr-footer-text {
         text-align: center;
-        font-size: 13px;
-        color: #1A2B3C;
-        margin-top: 25px;
-        font-weight: 700;
-        line-height: 1.6;
-        background: rgba(10, 22, 40, 0.05); /* Navy tint - no visual flattening */
-        padding: 12px 16px;
+        font-size: 12px !important; /* Smaller, more professional */
+        color: #475569 !important; /* Force a dark Slate grey */
+        margin-top: 20px;
+        font-weight: 600;
+        line-height: 1.4;
+        background: rgba(0, 0, 0, 0.03) !important; /* Very subtle grey tint */
+        padding: 10px 14px;
         border-radius: 12px;
-        border: 1px solid rgba(10, 22, 40, 0.1);
-        font-family: 'Plus Jakarta Sans', sans-serif; /* Consistent font */
+        border: 1px dashed rgba(0, 0, 0, 0.1) !important;
+        display: block;
+        width: auto;
       }
 
       .tr-success-ui { 
