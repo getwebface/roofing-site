@@ -54,7 +54,12 @@ export const Router = {
     if (this.pageType === 'local') {
       this.initMap();
     }
-    
+
+    // 9. Initialize hero video if on home page
+    if (this.pageType === 'home') {
+      this.initHeroVideo();
+    }
+
     console.log('[Router] Initialization complete');
   },
 
