@@ -284,7 +284,12 @@ export default {
             const tag = (el.tagName || "").toLowerCase();
             const slotType = el.getAttribute("data-slot-type");
 
-            if (tag === "img" || tag === "video" || tag === "source") {
+            if (tag === "img") {
+              if (value) el.setAttribute("src", value);
+            } else if (tag === "video") {
+              // For video elements, set src attribute
+              if (value) el.setAttribute("src", value);
+            } else if (tag === "source") {
               if (value) el.setAttribute("src", value);
             } else if (tag === "a") {
               if (value) el.setAttribute("href", value);
@@ -292,11 +297,23 @@ export default {
               if (value) el.setAttribute("style", `background-image: url('${value}');`);
             } else if (slotType === "rich") {
               el.setInnerContent(value, { html: true });
+            } else if (slotType === "image") {
+              // For containers with image slot type, find child img and set src
+              // This is handled by nested selector below
             } else {
               el.setInnerContent(value, { html: false });
             }
           },
         });
+        
+        // Handle image containers (divs with data-slot-type="image")
+        if (key.includes('image') || key.includes('logo') || key.includes('icon')) {
+          rewriter.on(`[data-slot="${cssEscape(key)}"] img`, {
+            element(el) {
+              if (value) el.setAttribute("src", value);
+            },
+          });
+        }
       }
     }
 

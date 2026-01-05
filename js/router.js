@@ -115,12 +115,73 @@ export const Router = {
       // Apply weather mode to body for CSS targeting
       if (this.weatherData?.derived?.mode) {
         document.body.setAttribute('data-weather', this.weatherData.derived.mode);
+        
+        // Hydrate weather badge with actual content
+        this.hydrateWeatherBadge();
+        
+        // Apply weather-based backgrounds
+        this.applyWeatherBackgrounds();
+        
+        // Apply weather overlay effect on local hero
+        this.applyWeatherOverlay();
       }
       
       console.log('[Router] Weather fetched:', this.weatherData.derived.mode);
     } catch (error) {
       console.error('[Router] Weather fetch failed:', error);
     }
+  },
+
+  /**
+   * Hydrate weather badge with live data
+   */
+  hydrateWeatherBadge() {
+    const badge = Weather.getBadgeContent(this.weatherData);
+    const wxBadgeElements = document.querySelectorAll('[data-slot="wx_banner_text"]');
+    
+    wxBadgeElements.forEach(el => {
+      el.innerHTML = `<span class="wx-icon">${badge.icon}</span> ${badge.text}`;
+      el.closest('.wx-badge')?.setAttribute('data-mode', this.weatherData.derived.mode);
+    });
+    
+    // Also update microcopy if weather override exists
+    const microOverride = Weather.getMicroOverride(this.weatherData);
+    if (microOverride) {
+      const microElements = document.querySelectorAll('[data-slot="microcopy"]');
+      microElements.forEach(el => {
+        el.textContent = microOverride;
+      });
+    }
+  },
+
+  /**
+   * Apply weather-based background images
+   */
+  applyWeatherBackgrounds() {
+    const mode = this.weatherData?.derived?.mode || 'calm';
+    const bgSlot = `bg_${mode}`;
+    
+    // Find elements with weather background slots
+    const weatherBgElements = document.querySelectorAll('[data-bg-set="true"]');
+    
+    weatherBgElements.forEach(el => {
+      // Check if we have sheet data with the weather-specific background
+      if (this.sheetData?.copy?.[bgSlot]) {
+        el.style.backgroundImage = `url('${this.sheetData.copy[bgSlot]}')`;
+      }
+    });
+  },
+
+  /**
+   * Apply weather overlay effect on local hero
+   */
+  applyWeatherOverlay() {
+    const mode = this.weatherData?.derived?.mode || 'none';
+    const overlays = document.querySelectorAll('.weather-overlay');
+    
+    overlays.forEach(overlay => {
+      overlay.setAttribute('data-weather-effect', mode);
+    });
   },
 
   /**
