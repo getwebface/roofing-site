@@ -26,6 +26,15 @@
     "telephone": "0482022493"
   }
   </script>
+
+  <!-- Initial Data (Edge-injected) -->
+  <script id="__INITIAL_DATA__" type="application/json">
+  {
+    "pageType": "home",
+    "slug": "home",
+    "actualPageType": "home"
+  }
+  </script>
   
   <!-- Critical CSS - Inline for Performance (prevents CLS) -->
   <style>
@@ -115,10 +124,10 @@
       <div class="bento-item bento-video">
         <video data-slot="hero_video_url" class="hero-video-bg" autoplay muted loop></video>
         <div class="bento-content">
-          <h1 data-slot="headline">Professional Roof Repairs</h1>
-          <p data-slot="body">Expert roofing services in Melbourne.</p>
+          <h1 data-slot="headline">Melbourne's Premier Roof Repair Specialists</h1>
+          <p data-slot="body">Protecting Melbourne homes with expert roof repairs, restorations, and maintenance. 20+ years of trusted service with guaranteed results.</p>
           <div class="hero-cta-group">
-            <a href="#lead-form" class="btn btn-primary btn-priority-quote" data-slot="cta_primary_text">Get Priority Quote</a>
+            <a href="#lead-form" class="btn btn-primary btn-priority-quote" data-slot="cta_primary_text">Get Free Inspection</a>
           </div>
         </div>
       </div>
@@ -133,7 +142,7 @@
         <div class="trust-stats">
           <div class="stat" data-slot="social_proof_stat">20+ Years</div>
           <div class="trust-logos">
-            <img data-slot="trust_logo_1" src="https://placehold.co/100x40/007bff/ffffff?text=Trust+1" alt="Trust Logo 1">
+            <img data-slot="trust_logo_1" src="https://placehold.co/100x40/007bff/ffffff?text=Trust+1" alt="Melbourne Roof Repairs Accreditation and Trust Badge">
           </div>
         </div>
       </div>
@@ -146,8 +155,8 @@
       <div class="service-icon-wrapper">
         <img data-slot="service_icon_url" src="https://placehold.co/80x80/007bff/ffffff?text=Icon" alt="Service Icon" class="service-hero-icon">
       </div>
-      <h1 data-slot="headline">Service Name</h1>
-      <p data-slot="body">Expert service description goes here.</p>
+      <h1 data-slot="headline">Expert Roof Services</h1>
+      <p data-slot="body">Tailored roofing solutions for Melbourne properties. From emergency repairs to complete restorations, we deliver quality workmanship with lasting results.</p>
       <div class="wx-badge-permitting" data-slot="wx_badge">
         Weather Permitting
       </div>
@@ -163,8 +172,8 @@
     <img data-slot="hero_bg_image" class="hero-bg-img" src="https://placehold.co/1920x800/007bff/ffffff?text=Local+Landmark" alt="Local Landmark">
     <div class="weather-overlay" data-weather-effect="none"></div>
     <div class="container text-center">
-      <h1 data-slot="headline">Roofing in [Suburb]</h1>
-      <p data-slot="body">Local roofing experts serving your community.</p>
+      <h1 data-slot="headline">Roofing Experts in [Suburb]</h1>
+      <p data-slot="body">Serving [Suburb] and surrounding areas with professional roof repairs and maintenance. Local expertise you can trust.</p>
       <div class="hero-cta-group">
         <a href="#lead-form" class="btn btn-primary btn-priority-quote" data-slot="cta_primary_text">Get Priority Quote</a>
       </div>
@@ -175,7 +184,7 @@
   <section id="lead-form" class="conversion-strip" data-section="conversion-strip">
     <div class="container">
       <div class="conversion-card">
-        <h2 class="text-center mb-6">Get Your Priority Quote</h2>
+        <h2 class="text-center mb-6">Get Your Free Roof Inspection & Quote</h2>
         <div class="lead-form-mount" data-slot="lead_form_mount" data-form-key="lead_default"></div>
       </div>
     </div>
@@ -340,7 +349,7 @@
       <div class="container">
         <h2 data-slot="long_headline">Why Choose Professional Roof Repairs?</h2>
         <div data-slot="long_body_1" data-slot-type="rich">
-          <p>Your roof is your home's first line of defense against Melbourne's unpredictable weather. From scorching summer heat to winter storms, your roof takes a beating year-round. <strong>Professional roof repairs</strong> aren't just about fixing visible damage—they're about protecting your investment and ensuring your family's safety.</p>
+          <p>Your roof is your home's first line of defense against Melbourne's unpredictable weather. From scorching summer heat to winter storms, your roof takes a beating year-round. <strong>Professional roof repairs</strong> aren't just about fixing visible damage—they're about protecting your investment and ensuring your family's safety. Don't wait for a small problem to become a major disaster. Our experienced team uses only the highest quality materials and proven techniques to restore your roof to its best condition.</p>
         </div>
       </div>
     </section>
@@ -398,7 +407,7 @@
                 <span class="before-after-label after">After</span>
               </div>
             </div>
-            <div class="before-after-caption" data-slot="gallery_1">Project description</div>
+            <div class="before-after-caption" data-slot="gallery_1">Complete roof restoration in Brunswick - before and after</div>
           </div>
         </div>
       </div>
@@ -454,7 +463,7 @@
       <div class="container">
         <h2 data-slot="long_headline">Local Roofing Experts</h2>
         <div data-slot="area_description" data-slot-type="rich">
-          <p>Serving the local community with expert roofing solutions tailored to the local climate.</p>
+          <p>As local roofing experts, we understand Melbourne's unique weather challenges. From summer heatwaves to winter storms, our team provides reliable solutions tailored to your suburb's specific needs. We're not just contractors—we're your neighbors committed to protecting your home.</p>
         </div>
       </div>
     </section>
@@ -605,7 +614,7 @@
       
       <div class="final-cta-actions">
         <a href="#lead-form" class="btn btn-primary btn-large smart-call-btn" data-slot="cta_primary_text" data-goal="cta-final-primary">
-          <span class="btn-text">Get Free Quote Today</span>
+          <span class="btn-text">Get Free Inspection Today</span>
         </a>
         <a href="tel:0482022493" class="btn btn-secondary btn-large" data-slot="cta_secondary_text" data-goal="cta-final-secondary">
           Emergency? Call Now
@@ -664,7 +673,7 @@
 
   <!-- Sticky Bottom Action Bar -->
   <div class="sticky-action-bar">
-    <a href="#lead-form" class="btn btn-primary btn-sticky-primary" onclick="scrollToForm(event)">Get Free Quote</a>
+    <a href="#lead-form" class="btn btn-primary btn-sticky-primary" onclick="scrollToForm(event)">Get Free Inspection</a>
     <a href="tel:0482022493" class="btn btn-secondary btn-sticky-secondary">📞 Call Now</a>
   </div>
 

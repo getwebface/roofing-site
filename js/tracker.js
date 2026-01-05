@@ -49,7 +49,6 @@
     // Start telemetry send interval (30 seconds)
     this.startSendInterval();
     
-    console.log('[Tracker] Initialized', { sessionId: this.sessionId });
   },
 
   /**
@@ -112,12 +111,10 @@
     const sectionId = sectionEl.getAttribute('data-section-id');
     
     if (!sectionId) {
-      console.warn('[Tracker] Section missing data-section-id', sectionEl);
       return;
     }
 
     if (this.sectionSensors.has(sectionId)) {
-      console.warn('[Tracker] Section already registered:', sectionId);
       return;
     }
 
@@ -127,8 +124,6 @@
     
     // Start observing
     this.intersectionObserver.observe(sectionEl);
-    
-    console.log('[Tracker] Section registered:', sectionId);
   },
 
   /**
@@ -541,8 +536,6 @@
     if (this.pendingPayloads.length > 50) {
       this.pendingPayloads.shift();
     }
-    
-    console.log('[Tracker] Payload buffered', sensor.sectionId, `(${this.pendingPayloads.length} pending)`);
   },
 
   /**
@@ -555,8 +548,6 @@
         this.sendBatchPayloads();
       }
     }, 30000); // 30 seconds
-    
-    console.log('[Tracker] Send interval started (30s)');
   },
 
   /**
@@ -575,8 +566,6 @@
         body: JSON.stringify({ batch, batchSize: batch.length }),
         keepalive: true
       });
-      
-      console.log('[Tracker] Batch sent', { count: batch.length, status: response.status });
     } catch (error) {
       console.error('[Tracker] Batch send failed:', error);
       // Re-buffer failed payloads
@@ -595,10 +584,8 @@
       // Use sendBeacon for reliability on page exit
       const blob = new Blob([JSON.stringify(payload)], { type: 'text/plain' });
       const queued = navigator.sendBeacon(this.config.webhookUrl, blob);
-      
-      if (queued) {
-        console.log('[Tracker] Payload queued via sendBeacon', sensor.sectionId);
-      } else {
+
+      if (!queued) {
         // Fallback to fetch
         await fetch(this.config.webhookUrl, {
           method: 'POST',
@@ -606,7 +593,6 @@
           body: JSON.stringify(payload),
           keepalive: true
         });
-        console.log('[Tracker] Payload sent via fetch', sensor.sectionId);
       }
     } catch (error) {
       console.error('[Tracker] Failed to send payload:', error);
@@ -692,11 +678,6 @@
         const batch = { batch: this.pendingPayloads, batchSize: this.pendingPayloads.length };
         const blob = new Blob([JSON.stringify(batch)], { type: 'application/json' });
         const queued = navigator.sendBeacon(this.config.webhookUrl, blob);
-        
-        console.log('[Tracker] Final flush via sendBeacon', { 
-          count: this.pendingPayloads.length, 
-          queued 
-        });
       }
     };
     

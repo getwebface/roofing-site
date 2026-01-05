@@ -185,7 +185,14 @@
 }
 
 .weather-overlay[data-weather-effect="rain"] {
-  background: url('https://www.transparenttextures.com/patterns/rain.png');
+  background:
+    repeating-linear-gradient(
+      180deg,
+      transparent,
+      transparent 2px,
+      rgba(255, 255, 255, 0.1) 2px,
+      rgba(255, 255, 255, 0.1) 4px
+    );
   opacity: 0.3;
 }
 

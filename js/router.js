@@ -27,8 +27,6 @@ export const Router = {
    * Initialize router for A/B testing and client-side features
    */
   async init() {
-    console.log('[Router] Initializing...');
-    
     // 1. Parse initial data embedded by Worker
     this.parseInitialData();
     
@@ -71,7 +69,6 @@ export const Router = {
         this.pageType = this.sheetData.actualPageType || this.sheetData.pageType;
         this.slug = this.sheetData.slug;
         this.isHydrated = true;
-        console.log('[Router] Parsed initial data:', { pageType: this.pageType, slug: this.slug });
       } catch (error) {
         console.error('[Router] Failed to parse initial data:', error);
         this.detectPageFallback();
@@ -100,8 +97,6 @@ export const Router = {
       this.pageType = 'other';
       this.slug = 'unknown';
     }
-    
-    console.log('[Router] Fallback page detection:', { pageType: this.pageType, slug: this.slug });
   },
 
   /**
@@ -125,8 +120,6 @@ export const Router = {
         // Apply weather overlay effect on local hero
         this.applyWeatherOverlay();
       }
-      
-      console.log('[Router] Weather fetched:', this.weatherData.derived.mode);
     } catch (error) {
       console.error('[Router] Weather fetch failed:', error);
     }
@@ -188,37 +181,52 @@ export const Router = {
    * Initialize Leaflet Map
    */
   initMap() {
+    try {
+      const mapContainer = document.getElementById('map-container');
+      if (!mapContainer || !window.L) return;
+
+      const slug = this.slug;
+      if (!slug) return;
+
+      const suburbName = slug.charAt(0).toUpperCase() + slug.slice(1);
+      const query = `${suburbName}, Melbourne, Australia`;
+
+      fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`)
+        .then(res => res.json())
+        .then(results => {
+          if (results && results.length > 0) {
+            const lat = parseFloat(results[0].lat);
+            const lon = parseFloat(results[0].lon);
+
+            const map = L.map('map-container').setView([lat, lon], 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+              attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+
+            L.marker([lat, lon]).addTo(map)
+              .bindPopup(`<b>${suburbName}</b><br>Melbourne Roof Repairs`)
+              .openPopup();
+          } else {
+            // Fallback to Melbourne CBD if no results
+            this.fallbackMap();
+          }
+        })
+        .catch(err => {
+          console.error('Map geocoding failed:', err);
+          this.fallbackMap();
+        });
+    } catch (error) {
+      console.error('Map initialization error:', error);
+      this.fallbackMap();
+    }
+  },
+
+  fallbackMap() {
     const mapContainer = document.getElementById('map-container');
-    if (!mapContainer || !window.L) return;
-    
-    const slug = this.slug;
-    if (!slug) return;
-    
-    const suburbName = slug.charAt(0).toUpperCase() + slug.slice(1);
-    const query = `${suburbName}, Melbourne, Australia`;
-    
-    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`)
-      .then(res => res.json())
-      .then(results => {
-        if (results && results.length > 0) {
-          const lat = parseFloat(results[0].lat);
-          const lon = parseFloat(results[0].lon);
-          
-          const map = L.map('map-container').setView([lat, lon], 13);
-          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors'
-          }).addTo(map);
-          
-          L.marker([lat, lon]).addTo(map)
-            .bindPopup(`<b>${suburbName}</b><br>Melbourne Roof Repairs`)
-            .openPopup();
-        }
-      })
-      .catch(err => {
-        console.warn('Map geocoding failed:', err);
-        const map = L.map('map-container').setView([-37.8136, 144.9631], 12);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-      });
+    if (mapContainer && window.L) {
+      const map = L.map('map-container').setView([-37.8136, 144.9631], 12);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+    }
   },
 
   /**
@@ -227,9 +235,8 @@ export const Router = {
   assignBuckets() {
     // Get experiment config from sheet data (if available)
     const experimentConfig = this.sheetData?.experiments || {};
-    
+
     this.buckets = Experiments.assignBuckets(experimentConfig);
-    console.log('[Router] Buckets assigned:', this.buckets);
   },
 
   /**
@@ -246,19 +253,15 @@ export const Router = {
     const variant = urlVariant || cookieVariant;
     
     if (variant === 'B') {
-      console.log('[Router] Applying B variant');
-      
       // Set cookie for future visits
       this.setCookie(this.config.abCookieName, 'B', 7); // 7 days
-      
+
       // Apply variant swaps
       this.swapVariants();
     } else if (variant === 'A') {
-      console.log('[Router] Using A variant (default)');
       this.setCookie(this.config.abCookieName, 'A', 7);
     } else {
       // No variant specified, use default (A)
-      console.log('[Router] No variant specified, using default');
     }
   },
 
@@ -310,8 +313,6 @@ export const Router = {
       window.Tracker.registerSection(section, { exposure });
       window.Tracker.setExposure(sectionId, exposure);
     });
-    
-    console.log(`[Router] Registered ${sections.length} sections`);
   },
 
   /**
@@ -341,8 +342,6 @@ export const Router = {
       // Mount the form
       FormAsset.mount(mount, actualFormKey);
     });
-    
-    console.log(`[Router] Mounted ${formMounts.length} forms`);
   },
 
   /**

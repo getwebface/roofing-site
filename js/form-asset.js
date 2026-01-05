@@ -9,7 +9,7 @@ export const FormAsset = {
   config: {
     endpoint: "https://docs.google.com/forms/d/e/1FAIpQLSeXt8JeqI9PvhDWxu6cOOxX58kfs8J85UQGXk3Tc09HOUA2FA/formResponse",
     mapping: {
-      "postcode":     "entry.0000000000", // TODO: Update with actual Google Form field ID for postcode
+      "postcode":     "entry.1234567890",
       "service":      "entry.1354597159",
       "material":     "entry.214341972",
       "level":        "entry.1724291652",
@@ -40,7 +40,7 @@ export const FormAsset = {
 
       /* Force the font on EVERYTHING */
       .tr-container, .tr-container *, .tr-footer-text {
-        font-family: var(--tr-font) !important;
+        font-family: var(--tr-font);
         -webkit-font-smoothing: antialiased;
       }
 
@@ -372,6 +372,49 @@ export const FormAsset = {
     } catch (e) { return false; }
   },
 
+  validateField(input) {
+    const value = input.value.trim();
+    const name = input.name;
+
+    // Check HTML5 validity first
+    if (!input.checkValidity()) {
+      input.reportValidity();
+      return false;
+    }
+
+    // Custom validations
+    if (name === 'postcode') {
+      const postcodeRegex = /^\d{4}$/;
+      if (!postcodeRegex.test(value)) {
+        input.setCustomValidity('Please enter a valid 4-digit Australian postcode');
+        input.reportValidity();
+        return false;
+      }
+    }
+
+    if (name === 'phone') {
+      const phoneRegex = /^(\+61|0)[4-9]\d{8}$/;
+      if (!phoneRegex.test(value.replace(/\s/g, ''))) {
+        input.setCustomValidity('Please enter a valid Australian mobile number (e.g. 04xx xxx xxx)');
+        input.reportValidity();
+        return false;
+      }
+    }
+
+    if (name === 'email') {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(value)) {
+        input.setCustomValidity('Please enter a valid email address');
+        input.reportValidity();
+        return false;
+      }
+    }
+
+    // Clear any previous custom validity
+    input.setCustomValidity('');
+    return true;
+  },
+
   mount(targetEl) {
     if (!targetEl) return;
     this.injectStyles();
@@ -386,8 +429,12 @@ export const FormAsset = {
     targetEl.querySelector("[data-tr-next]").onclick = () => {
       const inputs = s1.querySelectorAll('[required]');
       let valid = true;
-      inputs.forEach(i => { if(!i.checkValidity()) { i.reportValidity(); valid = false; } });
-      
+      inputs.forEach(i => {
+        if (!this.validateField(i)) {
+          valid = false;
+        }
+      });
+
       if (valid) {
         s1.classList.add("tr-hidden");
         s2.classList.remove("tr-hidden");
@@ -403,6 +450,18 @@ export const FormAsset = {
 
     form.onsubmit = async (e) => {
       e.preventDefault();
+
+      // Validate all required fields
+      const inputs = form.querySelectorAll('[required]');
+      let valid = true;
+      inputs.forEach(i => {
+        if (!this.validateField(i)) {
+          valid = false;
+        }
+      });
+
+      if (!valid) return;
+
       const btn = targetEl.querySelector("[data-tr-submit]");
       btn.innerText = "Processing...";
       btn.disabled = true;
