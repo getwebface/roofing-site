@@ -6,8 +6,8 @@
 /* Theme A: Calmer - More White, Softer Contrast */
 [data-theme="themeA"] {
   --theme-hero-bg: linear-gradient(135deg, var(--navy-light) 0%, var(--navy) 100%);
-  --theme-accent: var(--orange);
-  --theme-accent-hover: var(--orange-light);
+  --theme-accent: var(--orange-accessible);
+  --theme-accent-hover: var(--orange-accessible-hover);
   --theme-cta-shadow: var(--shadow-md);
   --theme-card-border: var(--color-border-light);
   --theme-card-hover-shadow: var(--shadow-lg);
@@ -19,14 +19,14 @@
 /* Theme B: Bolder - More Navy Panels, Stronger Orange, High Contrast */
 [data-theme="themeB"] {
   --theme-hero-bg: linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 100%);
-  --theme-accent: var(--orange-dark);
-  --theme-accent-hover: var(--orange);
+  --theme-accent: var(--orange-accessible-hover);
+  --theme-accent-hover: var(--orange-accessible);
   --theme-cta-shadow: var(--shadow-xl);
   --theme-card-border: var(--color-border);
   --theme-card-hover-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   --theme-section-bg: var(--white);
   --theme-section-alt-bg: var(--navy-light);
-  --theme-text-emphasis: var(--orange);
+  --theme-text-emphasis: var(--orange-accessible);
 }
 
 /* Apply theme tokens to components */

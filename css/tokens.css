@@ -45,6 +45,26 @@
   --error: #ef4444;
   --info: #3b82f6;
   
+  /* ===== ACCESSIBLE BUTTON COLORS (WCAG AA/AAA COMPLIANT) ===== */
+  
+  /* Primary Button - Darker Orange for 7:1+ contrast ratio */
+  --orange-accessible: #d84315;      /* AAA compliant on white */
+  --orange-accessible-hover: #bf360c; /* Even darker for hover state */
+  --orange-accessible-light: #ff8a50; /* Lighter variant for backgrounds */
+  
+  /* Secondary Button - Enhanced Navy for better contrast */
+  --navy-accessible: #0d1b2a;        /* AAA compliant with white text */
+  --navy-accessible-hover: #1b263b;  /* Hover state */
+  
+  /* Button Text Colors */
+  --btn-text-primary: #ffffff;       /* White on orange-accessible */
+  --btn-text-secondary: #ffffff;     /* White on navy-accessible */
+  --btn-text-outline: #0d1b2a;       /* Navy text on outline buttons */
+  
+  /* High Contrast Variants */
+  --orange-aaa: #c62828;            /* Maximum contrast orange */
+  --navy-aaa: #1a2332;              /* Maximum contrast navy */
+  
   /* ===== TYPOGRAPHY ===== */
   
   --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;

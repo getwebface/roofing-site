@@ -1416,27 +1416,30 @@
 }
 
 .btn-sticky-primary {
-  background-color: var(--orange);
-  color: white;
-  border: 2px solid var(--orange);
+  background-color: var(--orange-accessible);
+  color: var(--btn-text-primary);
+  border: 2px solid var(--orange-accessible);
+  font-weight: var(--font-bold);
 }
 
 .btn-sticky-primary:hover {
-  background-color: var(--orange-dark);
-  border-color: var(--orange-dark);
+  background-color: var(--orange-accessible-hover);
+  border-color: var(--orange-accessible-hover);
   transform: translateY(-2px);
   box-shadow: var(--shadow-lg);
 }
 
 .btn-sticky-secondary {
-  background-color: var(--navy);
-  color: white;
-  border: 2px solid var(--navy);
+  background-color: var(--white);
+  color: var(--navy-accessible);
+  border: 2px solid var(--navy-accessible);
+  font-weight: var(--font-bold);
 }
 
 .btn-sticky-secondary:hover {
-  background-color: var(--navy-light);
-  border-color: var(--navy-light);
+  background-color: var(--navy-accessible);
+  color: var(--btn-text-secondary);
+  border-color: var(--navy-accessible);
   transform: translateY(-2px);
   box-shadow: var(--shadow-lg);
 }
