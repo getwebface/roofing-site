@@ -30,15 +30,20 @@
             <span class="btn-text">Call Now</span>
           </a>
         </div>
-        
-        <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        </button>
       </nav>
     </div>
   </header>
+
+  <!-- ===== HORIZONTAL SCROLL CHIPS ===== -->
+  <div class="section-chips">
+    <div class="chips-container">
+      <a href="#services" class="chip" data-section="services">Services</a>
+      <a href="#about" class="chip" data-section="about">About</a>
+      <a href="#contact" class="chip" data-section="contact">Contact</a>
+      <a href="#faq" class="chip" data-section="faq">FAQ</a>
+      <a href="#final-cta" class="chip" data-section="final-cta">Get Quote</a>
+    </div>
+  </div>
 
   <!-- ===== HERO LEAD WEATHER ===== -->
   <section class="hero" data-section="hero-lead-weather" data-section-id="hero-home-001" data-theme="themeA">
@@ -171,7 +176,7 @@
   </section>
 
   <!-- ===== LONG-FORM CONTENT ===== -->
-  <section class="long-content" data-section="long-content" data-section-id="content-home-001">
+  <section class="long-content" data-section="long-content" data-section-id="content-home-001" id="about">
     <div class="container">
       <h2 data-slot="headline">Why Choose Professional Roof Repairs?</h2>
       <div data-slot="long_body_1" data-slot-type="rich">
@@ -220,7 +225,7 @@
   </section>
 
   <!-- ===== FAQ ACCORDION ===== -->
-  <section class="faq-accordion" data-section="faq-accordion" data-section-id="faq-home-001">
+  <section class="faq-accordion" data-section="faq-accordion" data-section-id="faq-home-001" id="faq">
     <div class="container">
       <h2 data-slot="headline">Frequently Asked Questions</h2>
       
@@ -269,7 +274,7 @@
   </section>
 
   <!-- ===== FINAL CTA ===== -->
-  <section class="final-cta" data-section="final-cta" data-section-id="cta-final-home-001">
+  <section class="final-cta" data-section="final-cta" data-section-id="cta-final-home-001" id="contact">
     <div class="container">
       <h2 data-slot="headline">Ready to Fix Your Roof?</h2>
       <p data-slot="body">Get a free, no-obligation inspection and quote. We'll assess your roof and provide honest recommendations.</p>
@@ -332,6 +337,12 @@
     </div>
   </footer>
 
+  <!-- Sticky Bottom Action Bar -->
+  <div class="sticky-action-bar">
+    <a href="#lead_form_mount" class="btn btn-primary btn-sticky-primary">Get Free Quote</a>
+    <a href="tel:0482022493" class="btn btn-secondary btn-sticky-secondary">Call Now</a>
+  </div>
+
   <!-- Scripts -->
   <script src="/js/tracker.js"></script>
   <script type="module" src="js/init.js"></script>
@@ -357,11 +368,88 @@
       });
     });
   </script>
-  
-  <!-- Mobile Menu Toggle -->
+
+  <!-- Section Chips Scroll Highlighting -->
   <script>
-    document.getElementById('mobileMenuToggle')?.addEventListener('click', () => {
-      document.getElementById('navLinks')?.classList.toggle('active');
+    document.addEventListener('DOMContentLoaded', function() {
+      const sectionChips = document.querySelector('.section-chips');
+      const chips = document.querySelectorAll('.chip');
+      const sections = {
+        'services': document.getElementById('services'),
+        'about': document.getElementById('about'),
+        'contact': document.getElementById('contact'),
+        'faq': document.getElementById('faq'),
+        'final-cta': document.querySelector('.final-cta')
+      };
+      
+      // Make chips sticky when scrolling past hero
+      const heroSection = document.querySelector('.hero');
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach(entry => {
+            if (!entry.isIntersecting) {
+              sectionChips.classList.add('sticky-active');
+            } else {
+              sectionChips.classList.remove('sticky-active');
+            }
+          });
+        },
+        { threshold: 0.1 }
+      );
+      
+      if (heroSection) {
+        observer.observe(heroSection);
+      }
+      
+      // Highlight active chip based on scroll position
+      function highlightActiveChip() {
+        let currentSection = null;
+        let closestDistance = Infinity;
+        
+        // Find which section is currently in view
+        Object.entries(sections).forEach(([id, section]) => {
+          if (section) {
+            const rect = section.getBoundingClientRect();
+            const distanceFromTop = Math.abs(rect.top);
+            
+            // If section is in viewport (top is between 0 and window height)
+            if (rect.top <= window.innerHeight * 0.3 && rect.bottom >= window.innerHeight * 0.3) {
+              if (distanceFromTop < closestDistance) {
+                closestDistance = distanceFromTop;
+                currentSection = id;
+              }
+            }
+          }
+        });
+        
+        // Update chip states
+        chips.forEach(chip => {
+          chip.classList.remove('active');
+          if (chip.getAttribute('data-section') === currentSection) {
+            chip.classList.add('active');
+          }
+        });
+      }
+      
+      // Smooth scroll for chips
+      chips.forEach(chip => {
+        chip.addEventListener('click', (e) => {
+          e.preventDefault();
+          const targetId = chip.getAttribute('data-section');
+          const targetSection = sections[targetId];
+          
+          if (targetSection) {
+            targetSection.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+          }
+        });
+      });
+      
+      // Update on scroll
+      window.addEventListener('scroll', highlightActiveChip);
+      highlightActiveChip(); // Initial call
     });
   </script>
 </body>

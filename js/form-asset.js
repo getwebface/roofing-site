@@ -9,6 +9,7 @@ export const FormAsset = {
   config: {
     endpoint: "https://docs.google.com/forms/d/e/1FAIpQLSeXt8JeqI9PvhDWxu6cOOxX58kfs8J85UQGXk3Tc09HOUA2FA/formResponse",
     mapping: {
+      "postcode":     "entry.0000000000", // TODO: Update with actual Google Form field ID for postcode
       "service":      "entry.1354597159",
       "material":     "entry.214341972",
       "level":        "entry.1724291652",
@@ -215,6 +216,21 @@ export const FormAsset = {
           <form data-tr-form class="tr-content">
             <div data-tr-step="1">
               <div class="tr-group">
+                <label class="tr-label">Enter Your Post Code</label>
+                <input type="text" name="postcode" required class="tr-input" placeholder="Enter Post Code (e.g. 3000)">
+                <p class="tr-microcopy" style="font-size: 12px; color: #64748b; margin-top: 8px; font-style: italic;">
+                  We'll check availability in your area
+                </p>
+              </div>
+
+              <button type="button" class="tr-btn-main" data-tr-next>
+                Check Availability
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </button>
+            </div>
+
+            <div data-tr-step="2" class="tr-hidden">
+              <div class="tr-group">
                 <label class="tr-label">Service Required</label>
                 <select name="service" required class="tr-select">
                   <option value="" disabled selected>Select service type...</option>
@@ -250,13 +266,6 @@ export const FormAsset = {
                 <input type="text" name="suburb" required class="tr-input" placeholder="Enter Suburb (e.g. Ringwood)">
               </div>
 
-              <button type="button" class="tr-btn-main" data-tr-next>
-                Continue to Contact
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-              </button>
-            </div>
-
-            <div data-tr-step="2" class="tr-hidden">
               <div class="tr-group">
                 <label class="tr-label">Your Name</label>
                 <input type="text" name="fullName" required class="tr-input" placeholder="Full Name">
@@ -286,7 +295,7 @@ export const FormAsset = {
               </button>
               
               <button type="button" style="background:none; border:none; color:#64748b; font-size:12px; margin-top:15px; cursor:pointer; font-weight:600; width:100%" data-tr-back>
-                Go back to details
+                Go back to post code
               </button>
             </div>
 
