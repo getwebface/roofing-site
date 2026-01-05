@@ -2,9 +2,8 @@
    SECTION-SPECIFIC STYLES
    ============================================ */
 
-/* ===== HERO LEAD WEATHER ===== */
+/* ===== HERO BASE ===== */
 .hero {
-  background: linear-gradient(135deg, var(--navy-light) 0%, var(--navy) 100%);
   color: white;
   padding: 120px 0;
   position: relative;
@@ -12,24 +11,9 @@
   min-height: 600px;
   display: flex;
   align-items: center;
+  background: var(--navy);
 }
 
-/* Hero with background image support */
-.hero[style*="background-image"] {
-  background-blend-mode: overlay;
-  background-size: cover;
-  background-position: center;
-}
-
-.hero[style*="background-image"]::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(10, 25, 47, 0.9) 0%, rgba(26, 45, 71, 0.85) 100%);
-  z-index: 1;
-}
-
-/* Hero background image */
 .hero-bg-img {
   position: absolute;
   inset: 0;
@@ -39,24 +23,129 @@
   z-index: 0;
 }
 
-/* Overlay for hero background image */
 .hero::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(10, 25, 47, 0.9) 0%, rgba(26, 45, 71, 0.85) 100%);
+  background: linear-gradient(135deg, rgba(10, 25, 47, 0.8) 0%, rgba(26, 45, 71, 0.7) 100%);
   z-index: 1;
 }
 
-/* Hero with video background */
 .hero-video-bg {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0.3;
+  opacity: 0.4;
   z-index: 0;
+}
+
+/* ===== HERO A (BENTO GRID) ===== */
+.bento-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: var(--space-4);
+  height: 500px;
+  position: relative;
+  z-index: 2;
+}
+
+.bento-item {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  overflow: hidden;
+  position: relative;
+}
+
+.bento-video {
+  grid-row: span 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: var(--space-10);
+}
+
+.bento-weather {
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bento-trust {
+  padding: var(--space-6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.trust-stats {
+  text-align: center;
+}
+
+.trust-stats .stat {
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
+  color: var(--orange);
+  margin-bottom: var(--space-2);
+}
+
+.trust-logos img {
+  height: 30px;
+  filter: brightness(0) invert(1);
+  opacity: 0.8;
+}
+
+/* ===== HERO B (SERVICE) ===== */
+.hero-service .service-hero-icon {
+  width: 80px;
+  height: 80px;
+  margin-bottom: var(--space-6);
+}
+
+.wx-badge-permitting {
+  display: inline-block;
+  padding: var(--space-2) var(--space-4);
+  background: var(--orange);
+  color: white;
+  border-radius: var(--radius-full);
+  font-weight: var(--font-bold);
+  margin: var(--space-6) 0;
+}
+
+/* ===== HERO C (LOCAL) ===== */
+.weather-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.weather-overlay[data-weather-effect="rain"] {
+  background: url('https://www.transparenttextures.com/patterns/rain.png');
+  opacity: 0.3;
+}
+
+@media (max-width: 768px) {
+  .bento-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    height: auto;
+    gap: var(--space-4);
+  }
+  
+  .bento-video {
+    height: 300px;
+  }
+  
+  .bento-weather, .bento-trust {
+    height: 150px;
+  }
 }
 
 .hero-content {

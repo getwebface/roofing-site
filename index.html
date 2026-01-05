@@ -74,38 +74,67 @@
     </div>
   </div>
 
-  <!-- ===== HERO LEAD WEATHER ===== -->
-  <section class="hero" data-section="hero-lead-weather" data-section-id="hero-universal-001" data-theme="themeA">
-    <img data-slot="section_bg_image" class="hero-bg-img" src="https://placehold.co/1920x800/007bff/ffffff?text=Roof+Hero+Background" alt="Background">
-    <video data-slot="hero_video_url" class="hero-video-bg" autoplay muted loop style="display: none;">
-      <source src="" type="video/mp4">
-    </video>
-    <div class="container">
-      <!-- Weather Badge -->
-      <div class="wx-badge" data-slot="wx_banner_text" data-mode="calm">
-        <span class="wx-badge-icon">☀️</span>
-        <span>Perfect weather for roof inspections in Melbourne</span>
-      </div>
-      
-      <div class="hero-content">
-        <h1 data-slot="headline">Professional Roof Repairs & Restoration in Melbourne</h1>
-        <p data-slot="body">Fast response, guaranteed workmanship, 20+ years experience. From leak detection to complete re-bedding, we fix it right the first time. Fully insured with 10-year warranty.</p>
-        
-        <div class="hero-cta-group">
-          <a href="#lead_form_mount" class="btn btn-primary btn-large smart-call-btn" data-slot="cta_primary_text" data-goal="cta-hero-primary">
-            <span class="btn-text">Get Your Free Quote</span>
-          </a>
-          <a href="#services" class="btn btn-secondary btn-large" data-slot="cta_secondary_text" data-goal="cta-hero-secondary">
-            See Our Services
-          </a>
+  <!-- ===== HERO A (HOME - BENTO GRID) ===== -->
+  <section class="hero hero-home" data-section="hero-home" data-section-id="hero-home-001" style="display: none;">
+    <div class="container bento-grid">
+      <!-- Video Block (Main) -->
+      <div class="bento-item bento-video">
+        <video data-slot="hero_video_url" class="hero-video-bg" autoplay muted loop>
+          <source src="" type="video/mp4">
+        </video>
+        <div class="bento-content">
+          <h1 data-slot="headline">Professional Roof Repairs</h1>
+          <p data-slot="body">Expert roofing services in Melbourne.</p>
+          <div class="hero-cta-group">
+            <a href="#lead_form_mount" class="btn btn-primary" data-slot="cta_primary_text">Get Free Quote</a>
+          </div>
         </div>
-        
-        <p class="hero-microcopy" data-slot="microcopy">
-          ✓ Same-day emergency response available
-        </p>
-        
-        <!-- Form Mount Point -->
-        <div class="lead-form-mount" data-slot="lead_form_mount" data-form-key="lead_default"></div>
+      </div>
+      <!-- Weather Block (Top Right) -->
+      <div class="bento-item bento-weather" data-slot="bg_calm" data-slot-type="image">
+        <div class="wx-badge" data-slot="wx_banner_text">
+          <span>Weather Telemetry Loading...</span>
+        </div>
+      </div>
+      <!-- Trust Block (Bottom Right) -->
+      <div class="bento-item bento-trust">
+        <div class="trust-stats">
+          <div class="stat" data-slot="social_proof_stat">20+ Years</div>
+          <div class="trust-logos">
+            <img data-slot="trust_logo_1" src="" alt="Trust Logo 1">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== HERO B (SERVICE - AUTHORITY) ===== -->
+  <section class="hero hero-service" data-section="hero-service" data-section-id="hero-service-001" style="display: none;">
+    <div class="container text-center">
+      <div class="service-icon-wrapper">
+        <img data-slot="service_icon_url" src="" alt="Service Icon" class="service-hero-icon">
+      </div>
+      <h1 data-slot="headline">Service Name</h1>
+      <p data-slot="body">Expert service description goes here.</p>
+      <div class="wx-badge-permitting" data-slot="wx_badge">
+        Weather Permitting
+      </div>
+      <div class="hero-cta-group">
+        <a href="#lead_form_mount" class="btn btn-primary" data-slot="cta_primary_text">Book Inspection</a>
+        <a href="tel:0482022493" class="btn btn-secondary" data-slot="cta_secondary_text">Call Now</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== HERO C (LOCAL - CONTEXT) ===== -->
+  <section class="hero hero-local" data-section="hero-local" data-section-id="hero-local-001" style="display: none;">
+    <img data-slot="hero_bg_image" class="hero-bg-img" src="" alt="Local Landmark">
+    <div class="weather-overlay" data-weather-effect="none"></div>
+    <div class="container">
+      <h1 data-slot="headline">Roofing in [Suburb]</h1>
+      <p data-slot="body">Local roofing experts serving your community.</p>
+      <div class="hero-cta-group">
+        <a href="#lead_form_mount" class="btn btn-primary" data-slot="cta_primary_text">Get Local Quote</a>
       </div>
     </div>
   </section>
@@ -138,391 +167,271 @@
     </div>
   </section>
 
-  <!-- ===== PROBLEM SYMPTOMS ===== -->
-  <section class="problem-symptoms" data-section="problem-symptoms" data-section-id="symptoms-universal-001">
-    <div class="container">
-      <h2 data-slot="symptoms_headline">Common Roofing Problems We Fix</h2>
-      
-      <div class="symptoms-grid">
-        <div class="symptom-card" data-slot="symptom_1">
-          <div class="symptom-icon">💧</div>
-          <h3 class="symptom-title">Active Leaks</h3>
-          <p class="symptom-description">Water stains, damp patches, or dripping water indicate urgent roof damage requiring immediate attention.</p>
-        </div>
-        
-        <div class="symptom-card" data-slot="symptom_2">
-          <div class="symptom-icon">🔨</div>
-          <h3 class="symptom-title">Broken Tiles</h3>
-          <p class="symptom-description">Cracked or missing tiles expose your roof structure to weather damage and water penetration.</p>
-        </div>
-        
-        <div class="symptom-card" data-slot="symptom_3">
-          <div class="symptom-icon">🌿</div>
-          <h3 class="symptom-title">Deteriorated Mortar</h3>
-          <p class="symptom-description">Old pointing and bedding allows tiles to shift and water to enter your roof cavity.</p>
-        </div>
-        
-        <div class="symptom-card" data-slot="symptom_4">
-          <div class="symptom-icon">⚡</div>
-          <h3 class="symptom-title">Rusted Valleys</h3>
-          <p class="symptom-description">Corroded valley irons are a primary leak source in Melbourne's older tile roofs.</p>
-        </div>
-        
-        <div class="symptom-card" data-slot="symptom_5">
-          <div class="symptom-icon">🌪️</div>
-          <h3 class="symptom-title">Storm Damage</h3>
-          <p class="symptom-description">High winds and hail can cause significant roof damage requiring immediate professional assessment.</p>
-        </div>
-        
-        <div class="symptom-card" data-slot="symptom_6">
-          <div class="symptom-icon">🏗️</div>
-          <h3 class="symptom-title">Structural Issues</h3>
-          <p class="symptom-description">Sagging roofs or foundation movement can compromise your entire roofing system.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== GRID CARDS (SERVICES) - HIDDEN ON SERVICE PAGES ===== -->
-  <section class="grid-cards" data-section="grid-cards" data-section-id="services-universal-001" data-bg="alt" id="services" style="display: none;">
-    <div class="container">
-      <h2 data-slot="services_headline">Our Services</h2>
-      
-      <div class="cards-grid">
-        <a href="services/leak-repair" class="card" data-slot="card_1" data-goal="service-card-leak">
-          <div class="card-icon">🔧</div>
-          <h3 class="card-title">Leak Repair</h3>
-          <p class="card-description">Fast diagnosis and permanent leak fixes. We find the source and repair it properly, with warranty.</p>
-          <span class="card-link">Learn more →</span>
-        </a>
-        
-        <a href="services/restoration" class="card" data-slot="card_2" data-goal="service-card-restoration">
-          <div class="card-icon">✨</div>
-          <h3 class="card-title">Roof Restoration</h3>
-          <p class="card-description">Complete roof renewal including cleaning, repairs, and protective coating for extended life.</p>
-          <span class="card-link">Learn more →</span>
-        </a>
-        
-        <a href="services/rebedding" class="card" data-slot="card_3" data-goal="service-card-rebedding">
-          <div class="card-icon">🧱</div>
-          <h3 class="card-title">Re-bedding & Pointing</h3>
-          <p class="card-description">Replace deteriorated mortar to secure tiles and prevent water penetration.</p>
-          <span class="card-link">Learn more →</span>
-        </a>
-        
-        <a href="services/valley-repair" class="card" data-slot="card_4" data-goal="service-card-valley">
-          <div class="card-icon">⚙️</div>
-          <h3 class="card-title">Valley Repair</h3>
-          <p class="card-description">Replace rusted valley irons with modern materials. Stop leaks at vulnerable points.</p>
-          <span class="card-link">Learn more →</span>
-        </a>
-        
-        <a href="#" class="card" data-slot="card_5" data-goal="service-card-5">
-          <div class="card-icon">🛡️</div>
-          <h3 class="card-title">Roof Coating</h3>
-          <p class="card-description">Protective sealant application to extend roof life and prevent future damage.</p>
-          <span class="card-link">Learn more →</span>
-        </a>
-        
-        <a href="#" class="card" data-slot="card_6" data-goal="service-card-6">
-          <div class="card-icon">🧹</div>
-          <h3 class="card-title">Roof Cleaning</h3>
-          <p class="card-description">Professional cleaning to remove moss, algae, and debris buildup.</p>
-          <span class="card-link">Learn more →</span>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== LONG-FORM CONTENT ===== -->
-  <section class="long-content" data-section="long-content" data-section-id="content-universal-001" id="about">
-    <div class="container">
-      <h2 data-slot="long_headline">Why Choose Professional Roof Repairs?</h2>
-      <div data-slot="long_body_1" data-slot-type="rich">
-        <p>Your roof is your home's first line of defense against Melbourne's unpredictable weather. From scorching summer heat to winter storms, your roof takes a beating year-round. <strong>Professional roof repairs</strong> aren't just about fixing visible damage—they're about protecting your investment and ensuring your family's safety.</p>
-        <p>At TrueRoof, we've spent over 20 years perfecting our craft. We understand the unique challenges of Melbourne roofing, from terracotta tiles that crack in extreme heat to valley irons that rust in our humid climate. Our team doesn't just patch problems—we diagnose root causes and provide lasting solutions.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== PROCESS STEPS (SERVICE PAGES ONLY) ===== -->
-  <section class="process-steps" data-section="process-steps" data-section-id="process-universal-001" style="display: none;">
-    <div class="container">
-      <h2 data-slot="process_headline">Our Service Process</h2>
-      
-      <div class="steps-list">
-        <div class="step" data-slot="step_1">
-          <div class="step-number">1</div>
-          <div class="step-content">
-            <h3 class="step-title">Free Inspection</h3>
-            <p class="step-description">We visit your property, thoroughly assess the damage, and provide a detailed quote. No obligation, no hidden fees.</p>
+  <!-- ===== HOME WRAPPER ===== -->
+  <div id="home-wrapper" style="display: none;">
+    <!-- ===== PROBLEM SYMPTOMS ===== -->
+    <section class="problem-symptoms" data-section="problem-symptoms" data-section-id="symptoms-universal-001">
+      <div class="container">
+        <h2 data-slot="symptoms_headline">Common Roofing Problems We Fix</h2>
+        <div class="symptoms-grid">
+          <div class="symptom-card" data-slot="symptom_1">
+            <div class="symptom-icon">💧</div>
+            <h3 class="symptom-title">Active Leaks</h3>
+            <p class="symptom-description">Water stains, damp patches, or dripping water indicate urgent roof damage requiring immediate attention.</p>
           </div>
-        </div>
-        
-        <div class="step" data-slot="step_2">
-          <div class="step-number">2</div>
-          <div class="step-content">
-            <h3 class="step-title">Clear Quote</h3>
-            <p class="step-description">Transparent pricing with itemized breakdown. You'll know exactly what you're paying for before we start.</p>
+          <div class="symptom-card" data-slot="symptom_2">
+            <div class="symptom-icon">🔨</div>
+            <h3 class="symptom-title">Broken Tiles</h3>
+            <p class="symptom-description">Cracked or missing tiles expose your roof structure to weather damage and water penetration.</p>
           </div>
-        </div>
-        
-        <div class="step" data-slot="step_3">
-          <div class="step-number">3</div>
-          <div class="step-content">
-            <h3 class="step-title">Expert Repairs</h3>
-            <p class="step-description">Our experienced team completes the work efficiently using quality materials. We clean up thoroughly when done.</p>
+          <div class="symptom-card" data-slot="symptom_3">
+            <div class="symptom-icon">🌿</div>
+            <h3 class="symptom-title">Deteriorated Mortar</h3>
+            <p class="symptom-description">Old pointing and bedding allows tiles to shift and water to enter your roof cavity.</p>
           </div>
-        </div>
-        
-        <div class="step" data-slot="step_4">
-          <div class="step-number">4</div>
-          <div class="step-content">
-            <h3 class="step-title">10-Year Warranty</h3>
-            <p class="step-description">All work is backed by our comprehensive warranty. If there's an issue, we'll fix it at no cost.</p>
+          <div class="symptom-card" data-slot="symptom_4">
+            <div class="symptom-icon">⚡</div>
+            <h3 class="symptom-title">Rusted Valleys</h3>
+            <p class="symptom-description">Corroded valley irons are a primary leak source in Melbourne's older tile roofs.</p>
           </div>
-        </div>
-        
-        <div class="step" data-slot="step_5">
-          <div class="step-number">5</div>
-          <div class="step-content">
-            <h3 class="step-title">Quality Materials</h3>
-            <p class="step-description">We use premium Australian-made roofing materials for lasting durability and performance.</p>
+          <div class="symptom-card" data-slot="symptom_5">
+            <div class="symptom-icon">🌪️</div>
+            <h3 class="symptom-title">Storm Damage</h3>
+            <p class="symptom-description">High winds and hail can cause significant roof damage requiring immediate professional assessment.</p>
           </div>
-        </div>
-        
-        <div class="step" data-slot="step_6">
-          <div class="step-number">6</div>
-          <div class="step-content">
-            <h3 class="step-title">Final Inspection</h3>
-            <p class="step-description">We conduct a thorough final walkthrough to ensure every detail meets our standards.</p>
+          <div class="symptom-card" data-slot="symptom_6">
+            <div class="symptom-icon">🏗️</div>
+            <h3 class="symptom-title">Structural Issues</h3>
+            <p class="symptom-description">Sagging roofs or foundation movement can compromise your entire roofing system.</p>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ===== BEFORE/AFTER GALLERY (SERVICE PAGES ONLY) ===== -->
-  <section class="before-after-section" data-section="before-after" data-section-id="gallery-universal-001" style="display: none;">
-    <div class="container">
-      <h2 data-slot="gallery_headline">Real Results from Recent Projects</h2>
-      
-      <div class="before-after-grid">
-        <div class="before-after-item">
-          <div class="before-after-images">
-            <div class="before-after-image-wrapper">
-              <img data-slot="before_image_1" data-slot-type="image" src="https://placehold.co/400x400/e5e7eb/64748b?text=Before" alt="Before repair">
-              <span class="before-after-label before">Before</span>
-            </div>
-            <div class="before-after-image-wrapper">
-              <img data-slot="after_image_1" data-slot-type="image" src="https://placehold.co/400x400/e5e7eb/10b981?text=After" alt="After repair">
-              <span class="before-after-label after">After</span>
-            </div>
+    <!-- ===== SOCIAL PROOF BAR ===== -->
+    <section class="social-proof-bar" data-section="social-proof" data-section-id="proof-universal-001">
+      <div class="container">
+        <div class="social-proof-stats">
+          <div class="social-proof-stat">
+            <div class="social-proof-number" data-slot="social_proof_stat">500+</div>
+            <div class="social-proof-label">Roofs Repaired</div>
           </div>
-          <div class="before-after-caption" data-slot="gallery_1">Complete roof restoration in Brunswick - tiles cleaned, re-bedded, and sealed</div>
-        </div>
-        
-        <div class="before-after-item">
-          <div class="before-after-images">
-            <div class="before-after-image-wrapper">
-              <img data-slot="before_image_2" data-slot-type="image" src="https://placehold.co/400x400/e5e7eb/64748b?text=Before" alt="Before repair">
-              <span class="before-after-label before">Before</span>
-            </div>
-            <div class="before-after-image-wrapper">
-              <img data-slot="after_image_2" data-slot-type="image" src="https://placehold.co/400x400/e5e7eb/10b981?text=After" alt="After repair">
-              <span class="before-after-label after">After</span>
-            </div>
+          <div class="social-proof-stat">
+            <div class="social-proof-number">20</div>
+            <div class="social-proof-label">Years Experience</div>
           </div>
-          <div class="before-after-caption" data-slot="gallery_2">Valley iron replacement - eliminated persistent leak issues</div>
-        </div>
-        
-        <div class="before-after-item">
-          <div class="before-after-images">
-            <div class="before-after-image-wrapper">
-              <img data-slot="before_image_3" data-slot-type="image" src="https://placehold.co/400x400/e5e7eb/64748b?text=Before" alt="Before repair">
-              <span class="before-after-label before">Before</span>
-            </div>
-            <div class="before-after-image-wrapper">
-              <img data-slot="after_image_3" data-slot-type="image" src="https://placehold.co/400x400/e5e7eb/10b981?text=After" alt="After repair">
-              <span class="before-after-label after">After</span>
-            </div>
+          <div class="social-proof-stat">
+            <div class="social-proof-number">98%</div>
+            <div class="social-proof-label">Customer Satisfaction</div>
           </div>
-          <div class="before-after-caption" data-slot="gallery_3">Emergency storm damage repair - completed within 48 hours</div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ===== IMAGE GALLERY (LOCAL PAGES ONLY) ===== -->
-  <section class="image-gallery" data-section="image-gallery" data-section-id="gallery-local-universal-001" style="display: none;">
-    <div class="container">
-      <h2 data-slot="gallery_headline">Recent Projects in Your Area</h2>
-      
-      <div class="gallery-grid-images">
-        <div class="gallery-image-item" data-slot="gallery_image_1" data-slot-type="image">
-          <img src="https://placehold.co/600x450/e5e7eb/64748b?text=Project+1" alt="Recent roofing project" loading="lazy">
-        </div>
-        <div class="gallery-image-item" data-slot="gallery_image_2" data-slot-type="image">
-          <img src="https://placehold.co/600x450/e5e7eb/64748b?text=Project+2" alt="Recent roofing project" loading="lazy">
-        </div>
-        <div class="gallery-image-item" data-slot="gallery_image_3" data-slot-type="image">
-          <img src="https://placehold.co/600x450/e5e7eb/64748b?text=Project+3" alt="Recent roofing project" loading="lazy">
-        </div>
-        <div class="gallery-image-item" data-slot="gallery_image_4" data-slot-type="image">
-          <img src="https://placehold.co/600x450/e5e7eb/64748b?text=Project+4" alt="Recent roofing project" loading="lazy">
-        </div>
-        <div class="gallery-image-item" data-slot="gallery_image_5" data-slot-type="image">
-          <img src="https://placehold.co/600x450/e5e7eb/64748b?text=Project+5" alt="Recent roofing project" loading="lazy">
-        </div>
-        <div class="gallery-image-item" data-slot="gallery_image_6" data-slot-type="image">
-          <img src="https://placehold.co/600x450/e5e7eb/64748b?text=Project+6" alt="Recent roofing project" loading="lazy">
+    <!-- ===== BENEFITS GRID ===== -->
+    <section class="benefits-grid" data-section="benefits-grid" data-section-id="benefits-universal-001">
+      <div class="container">
+        <h2 data-slot="headline">What Sets Us Apart</h2>
+        <div data-slot="benefit_list" data-slot-type="json-list">
+          <ul class="benefit-list">
+            <li>24-hour emergency response for urgent repairs</li>
+            <li>10-year workmanship warranty on all projects</li>
+            <li>Fully licensed and insured with $20M coverage</li>
+            <li>Free, no-obligation roof inspections</li>
+            <li>Transparent pricing with detailed quotes</li>
+            <li>Eco-friendly materials and practices</li>
+          </ul>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ===== BENEFITS GRID (HOME ONLY) ===== -->
-  <section class="benefits-grid" data-section="benefits-grid" data-section-id="benefits-universal-001" style="display: none;">
-    <div class="container">
-      <h2 data-slot="headline">What Sets Us Apart</h2>
-      <div data-slot="benefit_list" data-slot-type="json-list">
-        <!-- JSON array will be rendered here -->
-        <ul class="benefit-list">
-          <li>24-hour emergency response for urgent repairs</li>
-          <li>10-year workmanship warranty on all projects</li>
-          <li>Fully licensed and insured with $20M coverage</li>
-          <li>Free, no-obligation roof inspections</li>
-          <li>Transparent pricing with detailed quotes</li>
-          <li>Eco-friendly materials and practices</li>
-        </ul>
+    <!-- ===== GRID CARDS (SERVICES) ===== -->
+    <section class="grid-cards" data-section="grid-cards" data-section-id="services-universal-001" data-bg="alt" id="services">
+      <div class="container">
+        <h2 data-slot="services_headline">Our Services</h2>
+        <div class="cards-grid">
+          <a href="services/leak-repair" class="card" data-slot="card_1" data-goal="service-card-leak">
+            <div class="card-icon">🔧</div>
+            <h3 class="card-title">Leak Repair</h3>
+            <p class="card-description">Fast diagnosis and permanent leak fixes. We find the source and repair it properly, with warranty.</p>
+            <span class="card-link">Learn more →</span>
+          </a>
+          <a href="services/restoration" class="card" data-slot="card_2" data-goal="service-card-restoration">
+            <div class="card-icon">✨</div>
+            <h3 class="card-title">Roof Restoration</h3>
+            <p class="card-description">Complete roof renewal including cleaning, repairs, and protective coating for extended life.</p>
+            <span class="card-link">Learn more →</span>
+          </a>
+          <a href="services/rebedding" class="card" data-slot="card_3" data-goal="service-card-rebedding">
+            <div class="card-icon">🧱</div>
+            <h3 class="card-title">Re-bedding & Pointing</h3>
+            <p class="card-description">Replace deteriorated mortar to secure tiles and prevent water penetration.</p>
+            <span class="card-link">Learn more →</span>
+          </a>
+          <a href="services/valley-repair" class="card" data-slot="card_4" data-goal="service-card-valley">
+            <div class="card-icon">⚙️</div>
+            <h3 class="card-title">Valley Repair</h3>
+            <p class="card-description">Replace rusted valley irons with modern materials. Stop leaks at vulnerable points.</p>
+            <span class="card-link">Learn more →</span>
+          </a>
+          <a href="#" class="card" data-slot="card_5" data-goal="service-card-5">
+            <div class="card-icon">🛡️</div>
+            <h3 class="card-title">Roof Coating</h3>
+            <p class="card-description">Protective sealant application to extend roof life and prevent future damage.</p>
+            <span class="card-link">Learn more →</span>
+          </a>
+          <a href="#" class="card" data-slot="card_6" data-goal="service-card-6">
+            <div class="card-icon">🧹</div>
+            <h3 class="card-title">Roof Cleaning</h3>
+            <p class="card-description">Professional cleaning to remove moss, algae, and debris buildup.</p>
+            <span class="card-link">Learn more →</span>
+          </a>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
+  </div>
 
-  <!-- ===== SOCIAL PROOF BAR (HOME ONLY) ===== -->
-  <section class="social-proof-bar" data-section="social-proof" data-section-id="proof-universal-001" style="display: none;">
-    <div class="container">
-      <div class="social-proof-stats">
-        <div class="social-proof-stat">
-          <div class="social-proof-number" data-slot="social_proof_stat">500+</div>
-          <div class="social-proof-label">Roofs Repaired</div>
-        </div>
-        <div class="social-proof-stat">
-          <div class="social-proof-number">20</div>
-          <div class="social-proof-label">Years Experience</div>
-        </div>
-        <div class="social-proof-stat">
-          <div class="social-proof-number">98%</div>
-          <div class="social-proof-label">Customer Satisfaction</div>
+  <!-- ===== SERVICE WRAPPER ===== -->
+  <div id="service-wrapper" style="display: none;">
+    <!-- ===== LONG-FORM CONTENT ===== -->
+    <section class="long-content" data-section="long-content" data-section-id="content-universal-001">
+      <div class="container">
+        <h2 data-slot="long_headline">Why Choose Professional Roof Repairs?</h2>
+        <div data-slot="long_body_1" data-slot-type="rich">
+          <p>Your roof is your home's first line of defense against Melbourne's unpredictable weather. From scorching summer heat to winter storms, your roof takes a beating year-round. <strong>Professional roof repairs</strong> aren't just about fixing visible damage—they're about protecting your investment and ensuring your family's safety.</p>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ===== TESTIMONIALS (SERVICE PAGES ONLY) ===== -->
-  <section class="proof-testimonials" data-section="proof-testimonials" data-section-id="testimonials-universal-001" style="display: none;">
-    <div class="container">
-      <h2 data-slot="testimonials_headline">What Our Customers Say</h2>
-      
-      <div class="testimonials-grid">
-        <div class="testimonial" data-slot="testimonial_1">
-          <p class="testimonial-quote" data-slot="testimonial_1_quote">Quick response after storm damage. They had our roof watertight within 24 hours and completed the full repair the following week. Professional and reliable.</p>
-          <div class="testimonial-author">
-            <div class="testimonial-avatar" data-slot="testimonial_1_avatar">MJ</div>
-            <div>
-              <div class="testimonial-name" data-slot="testimonial_1_name">Michael Johnson</div>
-              <div class="testimonial-location" data-slot="testimonial_1_location">Brunswick</div>
+    <!-- ===== PROCESS STEPS ===== -->
+    <section class="process-steps" data-section="process-steps" data-section-id="process-universal-001">
+      <div class="container">
+        <h2 data-slot="process_headline">Our Service Process</h2>
+        <div class="steps-list">
+          <div class="step" data-slot="step_1">
+            <div class="step-number">1</div>
+            <div class="step-content">
+              <h3 class="step-title">Free Inspection</h3>
+              <p class="step-description">We visit your property, thoroughly assess the damage, and provide a detailed quote.</p>
             </div>
           </div>
-        </div>
-        
-        <div class="testimonial" data-slot="testimonial_2">
-          <p class="testimonial-quote" data-slot="testimonial_2_quote">Honest assessment and fair pricing. They could have sold us a full restoration but recommended targeted repairs instead. Saved us thousands.</p>
-          <div class="testimonial-author">
-            <div class="testimonial-avatar" data-slot="testimonial_2_avatar">SC</div>
-            <div>
-              <div class="testimonial-name" data-slot="testimonial_2_name">Sarah Chen</div>
-              <div class="testimonial-location" data-slot="testimonial_2_location">Coburg</div>
+          <div class="step" data-slot="step_2">
+            <div class="step-number">2</div>
+            <div class="step-content">
+              <h3 class="step-title">Clear Quote</h3>
+              <p class="step-description">Transparent pricing with itemized breakdown.</p>
             </div>
           </div>
-        </div>
-        
-        <div class="testimonial" data-slot="testimonial_3">
-          <p class="testimonial-quote" data-slot="testimonial_3_quote">The team was punctual, tidy, and thorough. They explained everything clearly and the workmanship is excellent. Highly recommend.</p>
-          <div class="testimonial-author">
-            <div class="testimonial-avatar" data-slot="testimonial_3_avatar">DP</div>
-            <div>
-              <div class="testimonial-name" data-slot="testimonial_3_name">David Patel</div>
-              <div class="testimonial-location" data-slot="testimonial_3_location">Preston</div>
+          <div class="step" data-slot="step_3">
+            <div class="step-number">3</div>
+            <div class="step-content">
+              <h3 class="step-title">Expert Repairs</h3>
+              <p class="step-description">Our experienced team completes the work efficiently using quality materials.</p>
             </div>
           </div>
-        </div>
-        
-        <div class="testimonial" data-slot="testimonial_4">
-          <p class="testimonial-quote" data-slot="testimonial_4_quote">Emergency leak repair after heavy rain. They arrived within 2 hours and had us watertight the same day. Outstanding service!</p>
-          <div class="testimonial-author">
-            <div class="testimonial-avatar" data-slot="testimonial_4_avatar">LM</div>
-            <div>
-              <div class="testimonial-name" data-slot="testimonial_4_name">Lisa Martinez</div>
-              <div class="testimonial-location" data-slot="testimonial_4_location">Northcote</div>
-            </div>
-          </div>
-        </div>
-        
-        <div class="testimonial" data-slot="testimonial_5">
-          <p class="testimonial-quote" data-slot="testimonial_5_quote">Complete roof restoration done perfectly. The team worked efficiently and left the site spotless. Our roof looks brand new!</p>
-          <div class="testimonial-author">
-            <div class="testimonial-avatar" data-slot="testimonial_5_avatar">JW</div>
-            <div>
-              <div class="testimonial-name" data-slot="testimonial_5_name">James Wilson</div>
-              <div class="testimonial-location" data-slot="testimonial_5_location">Thornbury</div>
-            </div>
-          </div>
-        </div>
-        
-        <div class="testimonial" data-slot="testimonial_6">
-          <p class="testimonial-quote" data-slot="testimonial_6_quote">Very professional from quote to completion. They identified issues others missed and saved us from future problems. Worth every dollar.</p>
-          <div class="testimonial-author">
-            <div class="testimonial-avatar" data-slot="testimonial_6_avatar">AK</div>
-            <div>
-              <div class="testimonial-name" data-slot="testimonial_6_name">Anna Kowalski</div>
-              <div class="testimonial-location" data-slot="testimonial_6_location">Reservoir</div>
+          <div class="step" data-slot="step_4">
+            <div class="step-number">4</div>
+            <div class="step-content">
+              <h3 class="step-title">10-Year Warranty</h3>
+              <p class="step-description">All work is backed by our comprehensive warranty.</p>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ===== MAP & AREAS LIST (LOCAL + HOME) ===== -->
-  <!-- Map (Local Pages Only) -->
-  <section class="local-map-section" data-section="local-map" data-section-id="map-universal-001" style="display: none;">
-    <div class="container">
-      <h2 data-slot="map_headline">Service Area Map</h2>
-      <div id="map-container" style="height: 400px; width: 100%; border-radius: 8px; margin-top: 20px;"></div>
-    </div>
-  </section>
-
-  <!-- Areas List (Home + Local Pages) -->
-  <section class="service-areas-list" data-section="service-areas" data-section-id="areas-universal-001" style="display: none;">
-    <div class="container">
-      <h2 data-slot="areas_headline">We Service These Areas</h2>
-      <div class="areas-list">
-        <div class="area-item" data-slot="area_1">Brunswick</div>
-        <div class="area-item" data-slot="area_2">Coburg</div>
-        <div class="area-item" data-slot="area_3">Preston</div>
-        <div class="area-item" data-slot="area_4">Northcote</div>
-        <div class="area-item" data-slot="area_5">Thornbury</div>
-        <div class="area-item" data-slot="area_6">Reservoir</div>
-        <div class="area-item" data-slot="area_7">Fitzroy</div>
-        <div class="area-item" data-slot="area_8">Collingwood</div>
-        <div class="area-item" data-slot="area_9">Carlton</div>
-        <div class="area-item" data-slot="area_10">Kensington</div>
-        <div class="area-item" data-slot="area_11">Ascot Vale</div>
-        <div class="area-item" data-slot="area_12">Moonee Ponds</div>
+    <!-- ===== BEFORE/AFTER GALLERY ===== -->
+    <section class="before-after-section" data-section="before-after" data-section-id="gallery-universal-001">
+      <div class="container">
+        <h2 data-slot="gallery_headline">Real Results from Recent Projects</h2>
+        <div class="before-after-grid">
+          <div class="before-after-item">
+            <div class="before-after-images">
+              <div class="before-after-image-wrapper">
+                <img data-slot="before_image_1" data-slot-type="image" src="" alt="Before">
+                <span class="before-after-label before">Before</span>
+              </div>
+              <div class="before-after-image-wrapper">
+                <img data-slot="after_image_1" data-slot-type="image" src="" alt="After">
+                <span class="before-after-label after">After</span>
+              </div>
+            </div>
+            <div class="before-after-caption" data-slot="gallery_1">Project description</div>
+          </div>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
+
+    <!-- ===== TESTIMONIALS ===== -->
+    <section class="proof-testimonials" data-section="proof-testimonials" data-section-id="testimonials-universal-001">
+      <div class="container">
+        <h2 data-slot="testimonials_headline">What Our Customers Say</h2>
+        <div class="testimonials-grid">
+          <div class="testimonial" data-slot="testimonial_1">
+            <p class="testimonial-quote" data-slot="testimonial_1_quote">Excellent service!</p>
+            <div class="testimonial-author">
+              <div class="testimonial-avatar" data-slot="testimonial_1_avatar">MJ</div>
+              <div>
+                <div class="testimonial-name" data-slot="testimonial_1_name">Michael Johnson</div>
+                <div class="testimonial-location" data-slot="testimonial_1_location">Brunswick</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== LOCAL WRAPPER ===== -->
+  <div id="local-wrapper" style="display: none;">
+    <!-- ===== CONTEXT ENGINE (LONG CONTENT) ===== -->
+    <section class="long-content" data-section="long-content" data-section-id="content-local-001">
+      <div class="container">
+        <h2 data-slot="long_headline">Local Roofing Experts</h2>
+        <div data-slot="area_description" data-slot-type="rich">
+          <p>Serving the local community with expert roofing solutions tailored to the local climate.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== IMAGE GALLERY ===== -->
+    <section class="image-gallery" data-section="image-gallery" data-section-id="gallery-local-universal-001">
+      <div class="container">
+        <h2 data-slot="gallery_headline">Recent Projects in Your Area</h2>
+        <div class="gallery-grid-images">
+          <div class="gallery-image-item" data-slot="gallery_image_1" data-slot-type="image">
+            <img src="" alt="Project 1" loading="lazy">
+          </div>
+          <div class="gallery-image-item" data-slot="gallery_image_2" data-slot-type="image">
+            <img src="" alt="Project 2" loading="lazy">
+          </div>
+          <div class="gallery-image-item" data-slot="gallery_image_3" data-slot-type="image">
+            <img src="" alt="Project 3" loading="lazy">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== MAP CONTAINER ===== -->
+    <section class="local-map-section" data-section="local-map" data-section-id="map-universal-001">
+      <div class="container">
+        <h2 data-slot="map_headline">Service Area Map</h2>
+        <div id="map-container" style="height: 400px; width: 100%; border-radius: 8px; margin-top: 20px;"></div>
+      </div>
+    </section>
+
+    <!-- ===== AREA LATTICE (AREAS LIST) ===== -->
+    <section class="service-areas-list" data-section="service-areas" data-section-id="areas-universal-001">
+      <div class="container">
+        <h2 data-slot="areas_headline">We Service These Areas</h2>
+        <div class="areas-list">
+          <div class="area-item" data-slot="area_1">Brunswick</div>
+          <div class="area-item" data-slot="area_2">Coburg</div>
+          <div class="area-item" data-slot="area_3">Preston</div>
+        </div>
+      </div>
+    </section>
+  </div>
 
   <!-- ===== FAQ ACCORDION ===== -->
   <section class="faq-accordion" data-section="faq-accordion" data-section-id="faq-universal-001" id="faq">

@@ -263,115 +263,16 @@ export default {
     });
 
     // 4. SECTION VISIBILITY MATRIX
-    // Service Pages: Show Process, Before/After, Testimonials, FAQ
     if (actualPageType === 'service') {
-      // SHOW
-      rewriter.on('[data-section="process-steps"]', {
-        element(el) { el.setAttribute("style", "display: block;"); }
-      });
-      rewriter.on('[data-section="before-after"]', {
-        element(el) { el.setAttribute("style", "display: block;"); }
-      });
-      rewriter.on('[data-section="proof-testimonials"]', {
-        element(el) { el.setAttribute("style", "display: block;"); }
-      });
-      rewriter.on('[data-section="faq-accordion"]', {
-        element(el) { el.setAttribute("style", "display: block;"); }
-      });
-      
-      // HIDE
-      rewriter.on('[data-section="grid-cards"]', {
-        element(el) { el.setAttribute("style", "display: none !important;"); }
-      });
-      rewriter.on('[data-section="local-map"]', {
-        element(el) { el.setAttribute("style", "display: none !important;"); }
-      });
-      rewriter.on('[data-section="service-areas"]', {
-        element(el) { el.setAttribute("style", "display: none !important;"); }
-      });
-      rewriter.on('[data-section="image-gallery"]', {
-        element(el) { el.setAttribute("style", "display: none !important;"); }
-      });
-      rewriter.on('[data-section="benefits-grid"]', {
-        element(el) { el.setAttribute("style", "display: none !important;"); }
-      });
-      rewriter.on('[data-section="social-proof"]', {
-        element(el) { el.setAttribute("style", "display: none !important;"); }
-      });
-    }
-
-    // Local Pages: Show Image Gallery, Map, Areas List, FAQ
-    if (actualPageType === 'local') {
-      // SHOW
-      rewriter.on('[data-section="image-gallery"]', {
-        element(el) { el.setAttribute("style", "display: block;"); }
-      });
-      rewriter.on('[data-section="local-map"]', {
-        element(el) { el.setAttribute("style", "display: block;"); }
-      });
-      rewriter.on('[data-section="service-areas"]', {
-        element(el) { el.setAttribute("style", "display: block;"); }
-      });
-      rewriter.on('[data-section="faq-accordion"]', {
-        element(el) { el.setAttribute("style", "display: block;"); }
-      });
-      
-      // HIDE
-      rewriter.on('[data-section="grid-cards"]', {
-        element(el) { el.setAttribute("style", "display: none !important;"); }
-      });
-      rewriter.on('[data-section="process-steps"]', {
-        element(el) { el.setAttribute("style", "display: none !important;"); }
-      });
-      rewriter.on('[data-section="before-after"]', {
-        element(el) { el.setAttribute("style", "display: none !important;"); }
-      });
-      rewriter.on('[data-section="proof-testimonials"]', {
-        element(el) { el.setAttribute("style", "display: none !important;"); }
-      });
-      rewriter.on('[data-section="benefits-grid"]', {
-        element(el) { el.setAttribute("style", "display: none !important;"); }
-      });
-      rewriter.on('[data-section="social-proof"]', {
-        element(el) { el.setAttribute("style", "display: none !important;"); }
-      });
-    }
-
-    // Home Pages: Show Grid Cards, Benefits, Social Proof, Areas List, FAQ
-    if (actualPageType === 'home') {
-      // SHOW
-      rewriter.on('[data-section="grid-cards"]', {
-        element(el) { el.setAttribute("style", "display: block;"); }
-      });
-      rewriter.on('[data-section="benefits-grid"]', {
-        element(el) { el.setAttribute("style", "display: block;"); }
-      });
-      rewriter.on('[data-section="social-proof"]', {
-        element(el) { el.setAttribute("style", "display: block;"); }
-      });
-      rewriter.on('[data-section="service-areas"]', {
-        element(el) { el.setAttribute("style", "display: block;"); }
-      });
-      rewriter.on('[data-section="faq-accordion"]', {
-        element(el) { el.setAttribute("style", "display: block;"); }
-      });
-      
-      // HIDE
-      rewriter.on('[data-section="process-steps"]', {
-        element(el) { el.setAttribute("style", "display: none !important;"); }
-      });
-      rewriter.on('[data-section="before-after"]', {
-        element(el) { el.setAttribute("style", "display: none !important;"); }
-      });
-      rewriter.on('[data-section="image-gallery"]', {
-        element(el) { el.setAttribute("style", "display: none !important;"); }
-      });
-      rewriter.on('[data-section="proof-testimonials"]', {
-        element(el) { el.setAttribute("style", "display: none !important;"); }
-      });
-      rewriter.on('[data-section="local-map"]', {
-        element(el) { el.setAttribute("style", "display: none !important;"); }
-      });
+      rewriter.on('[data-section="hero-service"]', { element(el) { el.setAttribute("style", "display: block;"); } });
+      rewriter.on('#service-wrapper', { element(el) { el.setAttribute("style", "display: block;"); } });
+    } else if (actualPageType === 'local') {
+      rewriter.on('[data-section="hero-local"]', { element(el) { el.setAttribute("style", "display: block;"); } });
+      rewriter.on('#local-wrapper', { element(el) { el.setAttribute("style", "display: block;"); } });
+    } else {
+      // Default to Home
+      rewriter.on('[data-section="hero-home"]', { element(el) { el.setAttribute("style", "display: block;"); } });
+      rewriter.on('#home-wrapper', { element(el) { el.setAttribute("style", "display: block;"); } });
     }
 
     // 5. STANDARD COPY SLOTS
@@ -381,9 +282,17 @@ export default {
         rewriter.on(`[data-slot="${cssEscape(key)}"]`, {
           element(el) {
             const tag = (el.tagName || "").toLowerCase();
-            if (tag === "img") el.setAttribute("src", value);
-            else if (tag === "a") el.setAttribute("href", value);
-            else el.setInnerContent(value, { html: false });
+            const slotType = el.getAttribute("data-slot-type");
+
+            if (tag === "img") {
+              el.setAttribute("src", value);
+            } else if (tag === "a") {
+              el.setAttribute("href", value);
+            } else if (slotType === "rich") {
+              el.setInnerContent(value, { html: true });
+            } else {
+              el.setInnerContent(value, { html: false });
+            }
           },
         });
       }

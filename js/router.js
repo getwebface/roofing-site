@@ -38,7 +38,7 @@ export const Router = {
     });
     
     // 3. Fetch weather (async, non-blocking)
-    this.fetchWeather();
+    await this.fetchWeather();
     
     // 4. Assign experiment buckets
     this.assignBuckets();
@@ -51,6 +51,11 @@ export const Router = {
     
     // 7. Register sections with tracker
     this.registerSections();
+
+    // 8. Initialize Map if on local page
+    if (this.pageType === 'local') {
+      this.initMap();
+    }
     
     console.log('[Router] Initialization complete');
   },
@@ -106,10 +111,53 @@ export const Router = {
     try {
       this.weatherData = await Weather.fetch();
       window.Tracker.setWeatherData(this.weatherData);
+      
+      // Apply weather mode to body for CSS targeting
+      if (this.weatherData?.derived?.mode) {
+        document.body.setAttribute('data-weather', this.weatherData.derived.mode);
+      }
+      
       console.log('[Router] Weather fetched:', this.weatherData.derived.mode);
     } catch (error) {
       console.error('[Router] Weather fetch failed:', error);
     }
+  },
+
+  /**
+   * Initialize Leaflet Map
+   */
+  initMap() {
+    const mapContainer = document.getElementById('map-container');
+    if (!mapContainer || !window.L) return;
+    
+    const slug = this.slug;
+    if (!slug) return;
+    
+    const suburbName = slug.charAt(0).toUpperCase() + slug.slice(1);
+    const query = `${suburbName}, Melbourne, Australia`;
+    
+    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`)
+      .then(res => res.json())
+      .then(results => {
+        if (results && results.length > 0) {
+          const lat = parseFloat(results[0].lat);
+          const lon = parseFloat(results[0].lon);
+          
+          const map = L.map('map-container').setView([lat, lon], 13);
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+          }).addTo(map);
+          
+          L.marker([lat, lon]).addTo(map)
+            .bindPopup(`<b>${suburbName}</b><br>Melbourne Roof Repairs`)
+            .openPopup();
+        }
+      })
+      .catch(err => {
+        console.warn('Map geocoding failed:', err);
+        const map = L.map('map-container').setView([-37.8136, 144.9631], 12);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+      });
   },
 
   /**
