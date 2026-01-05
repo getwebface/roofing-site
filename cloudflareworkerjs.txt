@@ -284,10 +284,12 @@ export default {
             const tag = (el.tagName || "").toLowerCase();
             const slotType = el.getAttribute("data-slot-type");
 
-            if (tag === "img") {
+            if (tag === "img" || tag === "video" || tag === "source") {
               if (value) el.setAttribute("src", value);
             } else if (tag === "a") {
               if (value) el.setAttribute("href", value);
+            } else if (el.getAttribute("data-bg-set") === "true") {
+              if (value) el.setAttribute("style", `background-image: url('${value}');`);
             } else if (slotType === "rich") {
               el.setInnerContent(value, { html: true });
             } else {

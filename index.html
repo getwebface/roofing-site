@@ -79,49 +79,47 @@
     <div class="container bento-grid">
       <!-- Video Block (Main) -->
       <div class="bento-item bento-video">
-        <video data-slot="hero_video_url" class="hero-video-bg" autoplay muted loop>
-          <source src="" type="video/mp4">
-        </video>
+        <video data-slot="hero_video_url" class="hero-video-bg" autoplay muted loop></video>
         <div class="bento-content">
           <h1 data-slot="headline">Professional Roof Repairs</h1>
           <p data-slot="body">Expert roofing services in Melbourne.</p>
           <div class="hero-cta-group">
-            <a href="#lead_form_mount" class="btn btn-primary smart-call-btn" data-slot="cta_primary_text">Get Free Quote</a>
+            <a href="#lead-form" class="btn btn-primary btn-priority-quote" data-slot="cta_primary_text">Get Priority Quote</a>
           </div>
         </div>
       </div>
       <!-- Weather Block (Top Right) -->
-      <div class="bento-item bento-weather" data-slot="bg_calm" data-slot-type="image">
+      <div class="bento-item bento-weather" data-slot="bg_calm" data-bg-set="true">
         <div class="wx-badge" data-slot="wx_banner_text">
           <span>Weather Telemetry Loading...</span>
         </div>
       </div>
-      <!-- Form Block (Bottom Right) - ABOVE THE FOLD -->
-      <div class="bento-item bento-form">
-        <div class="lead-form-mount" data-slot="lead_form_mount" data-form-key="lead_home"></div>
+      <!-- Trust Block (Bottom Right) -->
+      <div class="bento-item bento-trust">
+        <div class="trust-stats">
+          <div class="stat" data-slot="social_proof_stat">20+ Years</div>
+          <div class="trust-logos">
+            <img data-slot="trust_logo_1" src="https://placehold.co/100x40/007bff/ffffff?text=Trust+1" alt="Trust Logo 1">
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- ===== HERO B (SERVICE - AUTHORITY) ===== -->
   <section class="hero hero-service" data-section="hero-service" data-section-id="hero-service-001" style="display: none;">
-    <div class="container hero-flex">
-      <div class="hero-text-content">
-        <div class="service-icon-wrapper">
-          <img data-slot="service_icon_url" src="https://placehold.co/80x80/007bff/ffffff?text=Icon" alt="Service Icon" class="service-hero-icon">
-        </div>
-        <h1 data-slot="headline">Service Name</h1>
-        <p data-slot="body">Expert service description goes here.</p>
-        <div class="wx-badge-permitting" data-slot="wx_badge">
-          Weather Permitting
-        </div>
-        <div class="hero-cta-group">
-          <a href="#lead_form_mount" class="btn btn-primary smart-call-btn" data-slot="cta_primary_text">Book Inspection</a>
-          <a href="tel:0482022493" class="btn btn-secondary" data-slot="cta_secondary_text">Call Now</a>
-        </div>
+    <div class="container text-center">
+      <div class="service-icon-wrapper">
+        <img data-slot="service_icon_url" src="https://placehold.co/80x80/007bff/ffffff?text=Icon" alt="Service Icon" class="service-hero-icon">
       </div>
-      <div class="hero-form-content">
-        <div class="lead-form-mount" data-slot="lead_form_mount" data-form-key="lead_service"></div>
+      <h1 data-slot="headline">Service Name</h1>
+      <p data-slot="body">Expert service description goes here.</p>
+      <div class="wx-badge-permitting" data-slot="wx_badge">
+        Weather Permitting
+      </div>
+      <div class="hero-cta-group">
+        <a href="#lead-form" class="btn btn-primary btn-priority-quote" data-slot="cta_primary_text">Get Priority Quote</a>
+        <a href="tel:0482022493" class="btn btn-secondary" data-slot="cta_secondary_text">Call Now</a>
       </div>
     </div>
   </section>
@@ -130,16 +128,21 @@
   <section class="hero hero-local" data-section="hero-local" data-section-id="hero-local-001" style="display: none;">
     <img data-slot="hero_bg_image" class="hero-bg-img" src="https://placehold.co/1920x800/007bff/ffffff?text=Local+Landmark" alt="Local Landmark">
     <div class="weather-overlay" data-weather-effect="none"></div>
-    <div class="container hero-flex">
-      <div class="hero-text-content">
-        <h1 data-slot="headline">Roofing in [Suburb]</h1>
-        <p data-slot="body">Local roofing experts serving your community.</p>
-        <div class="hero-cta-group">
-          <a href="#lead_form_mount" class="btn btn-primary smart-call-btn" data-slot="cta_primary_text">Get Local Quote</a>
-        </div>
+    <div class="container text-center">
+      <h1 data-slot="headline">Roofing in [Suburb]</h1>
+      <p data-slot="body">Local roofing experts serving your community.</p>
+      <div class="hero-cta-group">
+        <a href="#lead-form" class="btn btn-primary btn-priority-quote" data-slot="cta_primary_text">Get Priority Quote</a>
       </div>
-      <div class="hero-form-content">
-        <div class="lead-form-mount" data-slot="lead_form_mount" data-form-key="lead_local"></div>
+    </div>
+  </section>
+
+  <!-- ===== CONVERSION STRIP (ZONE 1.5) ===== -->
+  <section id="lead-form" class="conversion-strip" data-section="conversion-strip">
+    <div class="container">
+      <div class="conversion-card">
+        <h2 class="text-center mb-6">Get Your Priority Quote</h2>
+        <div class="lead-form-mount" data-slot="lead_form_mount" data-form-key="lead_default"></div>
       </div>
     </div>
   </section>
