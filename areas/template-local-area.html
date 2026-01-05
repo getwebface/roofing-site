@@ -43,7 +43,10 @@
   </header>
 
   <!-- ===== HERO LEAD WEATHER ===== -->
-  <section class="hero" data-section="hero-lead-weather" data-section-id="hero-area-001" data-theme="themeA">
+  <section class="hero" data-section="hero-lead-weather" data-section-id="hero-area-001" data-theme="themeA" data-slot="section_bg_image" style="background-image: url('https://placehold.co/1920x800/007bff/ffffff?text=Local+Area+Hero+Background');">
+    <video data-slot="hero_video_url" class="hero-video-bg" autoplay muted loop style="display: none;">
+      <source src="" type="video/mp4">
+    </video>
     <div class="container">
       <!-- Weather Badge -->
       <div class="wx-badge" data-slot="wx_banner_text" data-mode="calm">
@@ -131,6 +134,18 @@
           <h3 class="symptom-title">Storm Response</h3>
           <p class="symptom-description">Quick emergency repairs after severe weather to prevent further damage to your property.</p>
         </div>
+        
+        <div class="symptom-card" data-slot="symptom_5">
+          <div class="symptom-icon">🌪️</div>
+          <h3 class="symptom-title">Storm Damage</h3>
+          <p class="symptom-description">High winds and hail can cause significant roof damage requiring immediate professional assessment.</p>
+        </div>
+        
+        <div class="symptom-card" data-slot="symptom_6">
+          <div class="symptom-icon">🏗️</div>
+          <h3 class="symptom-title">Structural Issues</h3>
+          <p class="symptom-description">Sagging roofs or foundation movement can compromise your entire roofing system.</p>
+        </div>
       </div>
     </div>
   </section>
@@ -208,6 +223,95 @@
           <p class="card-description">Replace rusted valley irons with modern materials. Stop leaks at vulnerable points.</p>
           <span class="card-link">Learn more →</span>
         </a>
+        
+        <a href="#" class="card" data-slot="card_5" data-goal="service-card-5">
+          <div class="card-icon">🛡️</div>
+          <h3 class="card-title">Roof Coating</h3>
+          <p class="card-description">Protective sealant application to extend roof life and prevent future damage.</p>
+          <span class="card-link">Learn more →</span>
+        </a>
+        
+        <a href="#" class="card" data-slot="card_6" data-goal="service-card-6">
+          <div class="card-icon">🧹</div>
+          <h3 class="card-title">Roof Cleaning</h3>
+          <p class="card-description">Professional cleaning to remove moss, algae, and debris buildup.</p>
+          <span class="card-link">Learn more →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TESTIMONIALS ===== -->
+  <section class="proof-testimonials" data-section="proof-testimonials" data-section-id="testimonials-area-001">
+    <div class="container">
+      <h2 data-slot="testimonials_headline">What Our Local Customers Say</h2>
+      
+      <div class="testimonials-grid">
+        <div class="testimonial" data-slot="testimonial_1">
+          <p class="testimonial-quote" data-slot="testimonial_1_quote">Quick response after storm damage. They had our roof watertight within 24 hours and completed the full repair the following week. Professional and reliable.</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar" data-slot="testimonial_1_avatar">MJ</div>
+            <div>
+              <div class="testimonial-name" data-slot="testimonial_1_name">Michael Johnson</div>
+              <div class="testimonial-location" data-slot="testimonial_1_location">Brunswick</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="testimonial" data-slot="testimonial_2">
+          <p class="testimonial-quote" data-slot="testimonial_2_quote">Honest assessment and fair pricing. They could have sold us a full restoration but recommended targeted repairs instead. Saved us thousands.</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar" data-slot="testimonial_2_avatar">SC</div>
+            <div>
+              <div class="testimonial-name" data-slot="testimonial_2_name">Sarah Chen</div>
+              <div class="testimonial-location" data-slot="testimonial_2_location">Coburg</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="testimonial" data-slot="testimonial_3">
+          <p class="testimonial-quote" data-slot="testimonial_3_quote">The team was punctual, tidy, and thorough. They explained everything clearly and the workmanship is excellent. Highly recommend.</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar" data-slot="testimonial_3_avatar">DP</div>
+            <div>
+              <div class="testimonial-name" data-slot="testimonial_3_name">David Patel</div>
+              <div class="testimonial-location" data-slot="testimonial_3_location">Preston</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="testimonial" data-slot="testimonial_4">
+          <p class="testimonial-quote" data-slot="testimonial_4_quote">Emergency leak repair after heavy rain. They arrived within 2 hours and had us watertight the same day. Outstanding service!</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar" data-slot="testimonial_4_avatar">LM</div>
+            <div>
+              <div class="testimonial-name" data-slot="testimonial_4_name">Lisa Martinez</div>
+              <div class="testimonial-location" data-slot="testimonial_4_location">Northcote</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="testimonial" data-slot="testimonial_5">
+          <p class="testimonial-quote" data-slot="testimonial_5_quote">Complete roof restoration done perfectly. The team worked efficiently and left the site spotless. Our roof looks brand new!</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar" data-slot="testimonial_5_avatar">JW</div>
+            <div>
+              <div class="testimonial-name" data-slot="testimonial_5_name">James Wilson</div>
+              <div class="testimonial-location" data-slot="testimonial_5_location">Thornbury</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="testimonial" data-slot="testimonial_6">
+          <p class="testimonial-quote" data-slot="testimonial_6_quote">Very professional from quote to completion. They identified issues others missed and saved us from future problems. Worth every dollar.</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar" data-slot="testimonial_6_avatar">AK</div>
+            <div>
+              <div class="testimonial-name" data-slot="testimonial_6_name">Anna Kowalski</div>
+              <div class="testimonial-location" data-slot="testimonial_6_location">Reservoir</div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -255,6 +359,46 @@
           </button>
           <div class="faq-answer">
             <p>Absolutely. We're fully licensed roofing contractors with $20 million public liability insurance and WorkCover for all team members.</p>
+          </div>
+        </div>
+        
+        <div class="faq-item" data-slot="faq_5" data-open="false">
+          <button class="faq-question" aria-expanded="false">
+            <span>What payment options do you offer?</span>
+            <span class="faq-icon">▼</span>
+          </button>
+          <div class="faq-answer">
+            <p>We accept all major credit cards, bank transfers, and offer flexible payment plans for larger projects. No payment required until work is complete.</p>
+          </div>
+        </div>
+        
+        <div class="faq-item" data-slot="faq_6" data-open="false">
+          <button class="faq-question" aria-expanded="false">
+            <span>How long does a typical repair take?</span>
+            <span class="faq-icon">▼</span>
+          </button>
+          <div class="faq-answer">
+            <p>Most repairs are completed in 1-2 days. Complex restorations may take 3-5 days. We'll provide a detailed timeline with your quote.</p>
+          </div>
+        </div>
+        
+        <div class="faq-item" data-slot="faq_7" data-open="false">
+          <button class="faq-question" aria-expanded="false">
+            <span>Do you work with insurance claims?</span>
+            <span class="faq-icon">▼</span>
+          </button>
+          <div class="faq-answer">
+            <p>Yes! We work directly with insurance companies and provide all necessary documentation. We can help streamline your claim process.</p>
+          </div>
+        </div>
+        
+        <div class="faq-item" data-slot="faq_8" data-open="false">
+          <button class="faq-question" aria-expanded="false">
+            <span>What areas do you service?</span>
+            <span class="faq-icon">▼</span>
+          </button>
+          <div class="faq-answer">
+            <p>We service all Melbourne suburbs and surrounding areas. Check our service areas section for a complete list of locations we cover.</p>
           </div>
         </div>
       </div>
