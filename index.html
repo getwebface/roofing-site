@@ -3,8 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Professional roof repairs and restoration in Melbourne. Fast response, guaranteed workmanship, 20+ years experience. Free inspections available.">
-  <title>Melbourne Roof Repairs | Expert Roofing Services | Free Inspection</title>
+  
+  <!-- Leaflet CSS & JS for Map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  
+  <!-- Dynamic Metadata Slots (Edge-injected) -->
+  <title data-slot="meta_title">Melbourne Roof Repairs | Expert Roofing Services | Free Inspection</title>
+  <meta name="description" data-slot="meta_description" content="Professional roof repairs and restoration in Melbourne. Fast response, guaranteed workmanship, 20+ years experience. Free inspections available.">
+  <meta property="og:title" data-slot="og_title" content="Melbourne Roof Repairs | Expert Roofing Services">
+  <meta property="og:description" data-slot="og_description" content="Professional roof repairs and restoration in Melbourne. Fast response, guaranteed workmanship, 20+ years experience.">
+  <meta property="og:image" data-slot="og_image" content="https://placehold.co/1200x630/007bff/ffffff?text=Melbourne+Roof+Repairs">
+  
+  <!-- JSON-LD Schema (Edge-injected) -->
+  <script type="application/ld+json" data-slot="schema_json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Melbourne Roof Repairs",
+    "description": "Professional roof repairs and restoration in Melbourne",
+    "url": "https://melbourneroofrepairs.com.au",
+    "telephone": "0482022493"
+  }
+  </script>
   
   <!-- Styles -->
   <link rel="stylesheet" href="css/base.css">
@@ -13,21 +34,29 @@
 </head>
 <body>
 
+  <!-- ===== BREADCRUMBS ===== -->
+  <nav class="breadcrumbs" data-slot="breadcrumbs">
+    <div class="container">
+      <a href="/">Home</a> > <span data-slot="breadcrumb_current">Melbourne Roof Repairs</span>
+    </div>
+  </nav>
+
   <!-- ===== GLOBAL HEADER ===== -->
   <header class="site-header" data-section="nav" data-section-id="nav-001">
     <div class="header-container">
-      <a href="#" class="header-logo">Melbourne Roof Repairs</a>
+      <a href="#" class="header-logo" data-slot="logo_text">Melbourne Roof Repairs</a>
       
       <nav class="header-nav">
         <ul class="nav-links" id="navLinks">
           <li><a href="#services">Services</a></li>
+          <li><a href="#areas">Areas</a></li>
           <li><a href="#about">About</a></li>
           <li><a href="#contact">Contact</a></li>
         </ul>
         
         <div class="header-cta">
           <a href="tel:0482022493" class="btn btn-primary smart-call-btn" id="headerCallBtn" data-goal="nav-call">
-            <span class="btn-text">📞 Call Now - 24/7</span>
+            <span class="btn-text" data-slot="header_phone_text">📞 Call Now - 24/7</span>
           </a>
         </div>
       </nav>
@@ -38,15 +67,15 @@
   <div class="section-chips">
     <div class="chips-container">
       <a href="#services" class="chip" data-section="services">Services</a>
+      <a href="#areas" class="chip" data-section="areas">Areas</a>
       <a href="#about" class="chip" data-section="about">About</a>
-      <a href="#contact" class="chip" data-section="contact">Contact</a>
       <a href="#faq" class="chip" data-section="faq">FAQ</a>
       <a href="#final-cta" class="chip" data-section="final-cta">Get Quote</a>
     </div>
   </div>
 
   <!-- ===== HERO LEAD WEATHER ===== -->
-  <section class="hero" data-section="hero-lead-weather" data-section-id="hero-home-001" data-theme="themeA">
+  <section class="hero" data-section="hero-lead-weather" data-section-id="hero-universal-001" data-theme="themeA">
     <div class="container">
       <!-- Weather Badge -->
       <div class="wx-badge" data-slot="wx_banner_text" data-mode="calm">
@@ -78,7 +107,7 @@
   </section>
 
   <!-- ===== TRUST STRIP ===== -->
-  <section class="trust-strip" data-section="trust-strip" data-section-id="trust-home-001">
+  <section class="trust-strip" data-section="trust-strip" data-section-id="trust-universal-001">
     <div class="container">
       <div class="trust-badges">
         <div class="trust-badge" data-slot="proof_badge_1">
@@ -106,9 +135,9 @@
   </section>
 
   <!-- ===== PROBLEM SYMPTOMS ===== -->
-  <section class="problem-symptoms" data-section="problem-symptoms" data-section-id="symptoms-home-001">
+  <section class="problem-symptoms" data-section="problem-symptoms" data-section-id="symptoms-universal-001">
     <div class="container">
-      <h2 data-slot="headline">Common Roofing Problems We Fix</h2>
+      <h2 data-slot="symptoms_headline">Common Roofing Problems We Fix</h2>
       
       <div class="symptoms-grid">
         <div class="symptom-card" data-slot="symptom_1">
@@ -138,34 +167,34 @@
     </div>
   </section>
 
-  <!-- ===== GRID CARDS (SERVICES) ===== -->
-  <section class="grid-cards" data-section="grid-cards" data-section-id="services-home-001" data-bg="alt" id="services">
+  <!-- ===== GRID CARDS (SERVICES) - HIDDEN ON SERVICE PAGES ===== -->
+  <section class="grid-cards" data-section="grid-cards" data-section-id="services-universal-001" data-bg="alt" id="services" style="display: none;">
     <div class="container">
-      <h2 data-slot="headline">Our Services</h2>
+      <h2 data-slot="services_headline">Our Services</h2>
       
       <div class="cards-grid">
-        <a href="services/leak-repair.html" class="card" data-slot="card_1" data-goal="service-card-leak">
+        <a href="services/leak-repair" class="card" data-slot="card_1" data-goal="service-card-leak">
           <div class="card-icon">🔧</div>
           <h3 class="card-title">Leak Repair</h3>
           <p class="card-description">Fast diagnosis and permanent leak fixes. We find the source and repair it properly, with warranty.</p>
           <span class="card-link">Learn more →</span>
         </a>
         
-        <a href="services/restoration.html" class="card" data-slot="card_2" data-goal="service-card-restoration">
+        <a href="services/restoration" class="card" data-slot="card_2" data-goal="service-card-restoration">
           <div class="card-icon">✨</div>
           <h3 class="card-title">Roof Restoration</h3>
           <p class="card-description">Complete roof renewal including cleaning, repairs, and protective coating for extended life.</p>
           <span class="card-link">Learn more →</span>
         </a>
         
-        <a href="services/rebedding.html" class="card" data-slot="card_3" data-goal="service-card-rebedding">
+        <a href="services/rebedding" class="card" data-slot="card_3" data-goal="service-card-rebedding">
           <div class="card-icon">🧱</div>
           <h3 class="card-title">Re-bedding & Pointing</h3>
           <p class="card-description">Replace deteriorated mortar to secure tiles and prevent water penetration.</p>
           <span class="card-link">Learn more →</span>
         </a>
         
-        <a href="services/valley-repair.html" class="card" data-slot="card_4" data-goal="service-card-valley">
+        <a href="services/valley-repair" class="card" data-slot="card_4" data-goal="service-card-valley">
           <div class="card-icon">⚙️</div>
           <h3 class="card-title">Valley Repair</h3>
           <p class="card-description">Replace rusted valley irons with modern materials. Stop leaks at vulnerable points.</p>
@@ -176,9 +205,9 @@
   </section>
 
   <!-- ===== LONG-FORM CONTENT ===== -->
-  <section class="long-content" data-section="long-content" data-section-id="content-home-001" id="about">
+  <section class="long-content" data-section="long-content" data-section-id="content-universal-001" id="about">
     <div class="container">
-      <h2 data-slot="headline">Why Choose Professional Roof Repairs?</h2>
+      <h2 data-slot="long_headline">Why Choose Professional Roof Repairs?</h2>
       <div data-slot="long_body_1" data-slot-type="rich">
         <p>Your roof is your home's first line of defense against Melbourne's unpredictable weather. From scorching summer heat to winter storms, your roof takes a beating year-round. <strong>Professional roof repairs</strong> aren't just about fixing visible damage—they're about protecting your investment and ensuring your family's safety.</p>
         <p>At TrueRoof, we've spent over 20 years perfecting our craft. We understand the unique challenges of Melbourne roofing, from terracotta tiles that crack in extreme heat to valley irons that rust in our humid climate. Our team doesn't just patch problems—we diagnose root causes and provide lasting solutions.</p>
@@ -186,8 +215,128 @@
     </div>
   </section>
 
-  <!-- ===== BENEFITS GRID ===== -->
-  <section class="benefits-grid" data-section="benefits-grid" data-section-id="benefits-home-001">
+  <!-- ===== PROCESS STEPS (SERVICE PAGES ONLY) ===== -->
+  <section class="process-steps" data-section="process-steps" data-section-id="process-universal-001" style="display: none;">
+    <div class="container">
+      <h2 data-slot="process_headline">Our Service Process</h2>
+      
+      <div class="steps-list">
+        <div class="step" data-slot="step_1">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h3 class="step-title">Free Inspection</h3>
+            <p class="step-description">We visit your property, thoroughly assess the damage, and provide a detailed quote. No obligation, no hidden fees.</p>
+          </div>
+        </div>
+        
+        <div class="step" data-slot="step_2">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h3 class="step-title">Clear Quote</h3>
+            <p class="step-description">Transparent pricing with itemized breakdown. You'll know exactly what you're paying for before we start.</p>
+          </div>
+        </div>
+        
+        <div class="step" data-slot="step_3">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h3 class="step-title">Expert Repairs</h3>
+            <p class="step-description">Our experienced team completes the work efficiently using quality materials. We clean up thoroughly when done.</p>
+          </div>
+        </div>
+        
+        <div class="step" data-slot="step_4">
+          <div class="step-number">4</div>
+          <div class="step-content">
+            <h3 class="step-title">10-Year Warranty</h3>
+            <p class="step-description">All work is backed by our comprehensive warranty. If there's an issue, we'll fix it at no cost.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== BEFORE/AFTER GALLERY (SERVICE PAGES ONLY) ===== -->
+  <section class="before-after-section" data-section="before-after" data-section-id="gallery-universal-001" style="display: none;">
+    <div class="container">
+      <h2 data-slot="gallery_headline">Real Results from Recent Projects</h2>
+      
+      <div class="before-after-grid">
+        <div class="before-after-item">
+          <div class="before-after-images">
+            <div class="before-after-image-wrapper">
+              <img data-slot="before_image_1" data-slot-type="image" src="https://placehold.co/400x400/e5e7eb/64748b?text=Before" alt="Before repair">
+              <span class="before-after-label before">Before</span>
+            </div>
+            <div class="before-after-image-wrapper">
+              <img data-slot="after_image_1" data-slot-type="image" src="https://placehold.co/400x400/e5e7eb/10b981?text=After" alt="After repair">
+              <span class="before-after-label after">After</span>
+            </div>
+          </div>
+          <div class="before-after-caption" data-slot="gallery_1">Complete roof restoration in Brunswick - tiles cleaned, re-bedded, and sealed</div>
+        </div>
+        
+        <div class="before-after-item">
+          <div class="before-after-images">
+            <div class="before-after-image-wrapper">
+              <img data-slot="before_image_2" data-slot-type="image" src="https://placehold.co/400x400/e5e7eb/64748b?text=Before" alt="Before repair">
+              <span class="before-after-label before">Before</span>
+            </div>
+            <div class="before-after-image-wrapper">
+              <img data-slot="after_image_2" data-slot-type="image" src="https://placehold.co/400x400/e5e7eb/10b981?text=After" alt="After repair">
+              <span class="before-after-label after">After</span>
+            </div>
+          </div>
+          <div class="before-after-caption" data-slot="gallery_2">Valley iron replacement - eliminated persistent leak issues</div>
+        </div>
+        
+        <div class="before-after-item">
+          <div class="before-after-images">
+            <div class="before-after-image-wrapper">
+              <img data-slot="before_image_3" data-slot-type="image" src="https://placehold.co/400x400/e5e7eb/64748b?text=Before" alt="Before repair">
+              <span class="before-after-label before">Before</span>
+            </div>
+            <div class="before-after-image-wrapper">
+              <img data-slot="after_image_3" data-slot-type="image" src="https://placehold.co/400x400/e5e7eb/10b981?text=After" alt="After repair">
+              <span class="before-after-label after">After</span>
+            </div>
+          </div>
+          <div class="before-after-caption" data-slot="gallery_3">Emergency storm damage repair - completed within 48 hours</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== IMAGE GALLERY (LOCAL PAGES ONLY) ===== -->
+  <section class="image-gallery" data-section="image-gallery" data-section-id="gallery-local-universal-001" style="display: none;">
+    <div class="container">
+      <h2 data-slot="gallery_headline">Recent Projects in Your Area</h2>
+      
+      <div class="gallery-grid-images">
+        <div class="gallery-image-item" data-slot="gallery_image_1" data-slot-type="image">
+          <img src="https://placehold.co/600x450/e5e7eb/64748b?text=Project+1" alt="Recent roofing project" loading="lazy">
+        </div>
+        <div class="gallery-image-item" data-slot="gallery_image_2" data-slot-type="image">
+          <img src="https://placehold.co/600x450/e5e7eb/64748b?text=Project+2" alt="Recent roofing project" loading="lazy">
+        </div>
+        <div class="gallery-image-item" data-slot="gallery_image_3" data-slot-type="image">
+          <img src="https://placehold.co/600x450/e5e7eb/64748b?text=Project+3" alt="Recent roofing project" loading="lazy">
+        </div>
+        <div class="gallery-image-item" data-slot="gallery_image_4" data-slot-type="image">
+          <img src="https://placehold.co/600x450/e5e7eb/64748b?text=Project+4" alt="Recent roofing project" loading="lazy">
+        </div>
+        <div class="gallery-image-item" data-slot="gallery_image_5" data-slot-type="image">
+          <img src="https://placehold.co/600x450/e5e7eb/64748b?text=Project+5" alt="Recent roofing project" loading="lazy">
+        </div>
+        <div class="gallery-image-item" data-slot="gallery_image_6" data-slot-type="image">
+          <img src="https://placehold.co/600x450/e5e7eb/64748b?text=Project+6" alt="Recent roofing project" loading="lazy">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== BENEFITS GRID (HOME ONLY) ===== -->
+  <section class="benefits-grid" data-section="benefits-grid" data-section-id="benefits-universal-001" style="display: none;">
     <div class="container">
       <h2 data-slot="headline">What Sets Us Apart</h2>
       <div data-slot="benefit_list" data-slot-type="json-list">
@@ -204,8 +353,8 @@
     </div>
   </section>
 
-  <!-- ===== SOCIAL PROOF BAR ===== -->
-  <section class="social-proof-bar" data-section="social-proof" data-section-id="proof-home-001">
+  <!-- ===== SOCIAL PROOF BAR (HOME ONLY) ===== -->
+  <section class="social-proof-bar" data-section="social-proof" data-section-id="proof-universal-001" style="display: none;">
     <div class="container">
       <div class="social-proof-stats">
         <div class="social-proof-stat">
@@ -224,10 +373,82 @@
     </div>
   </section>
 
-  <!-- ===== FAQ ACCORDION ===== -->
-  <section class="faq-accordion" data-section="faq-accordion" data-section-id="faq-home-001" id="faq">
+  <!-- ===== TESTIMONIALS (SERVICE PAGES ONLY) ===== -->
+  <section class="proof-testimonials" data-section="proof-testimonials" data-section-id="testimonials-universal-001" style="display: none;">
     <div class="container">
-      <h2 data-slot="headline">Frequently Asked Questions</h2>
+      <h2 data-slot="testimonials_headline">What Our Customers Say</h2>
+      
+      <div class="testimonials-grid">
+        <div class="testimonial" data-slot="testimonial_1">
+          <p class="testimonial-quote" data-slot="testimonial_1_quote">Quick response after storm damage. They had our roof watertight within 24 hours and completed the full repair the following week. Professional and reliable.</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar" data-slot="testimonial_1_avatar">MJ</div>
+            <div>
+              <div class="testimonial-name" data-slot="testimonial_1_name">Michael Johnson</div>
+              <div class="testimonial-location" data-slot="testimonial_1_location">Brunswick</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="testimonial" data-slot="testimonial_2">
+          <p class="testimonial-quote" data-slot="testimonial_2_quote">Honest assessment and fair pricing. They could have sold us a full restoration but recommended targeted repairs instead. Saved us thousands.</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar" data-slot="testimonial_2_avatar">SC</div>
+            <div>
+              <div class="testimonial-name" data-slot="testimonial_2_name">Sarah Chen</div>
+              <div class="testimonial-location" data-slot="testimonial_2_location">Coburg</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="testimonial" data-slot="testimonial_3">
+          <p class="testimonial-quote" data-slot="testimonial_3_quote">The team was punctual, tidy, and thorough. They explained everything clearly and the workmanship is excellent. Highly recommend.</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar" data-slot="testimonial_3_avatar">DP</div>
+            <div>
+              <div class="testimonial-name" data-slot="testimonial_3_name">David Patel</div>
+              <div class="testimonial-location" data-slot="testimonial_3_location">Preston</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MAP & AREAS LIST (LOCAL + HOME) ===== -->
+  <!-- Map (Local Pages Only) -->
+  <section class="local-map-section" data-section="local-map" data-section-id="map-universal-001" style="display: none;">
+    <div class="container">
+      <h2 data-slot="map_headline">Service Area Map</h2>
+      <div id="map-container" style="height: 400px; width: 100%; border-radius: 8px; margin-top: 20px;"></div>
+    </div>
+  </section>
+
+  <!-- Areas List (Home + Local Pages) -->
+  <section class="service-areas-list" data-section="service-areas" data-section-id="areas-universal-001" style="display: none;">
+    <div class="container">
+      <h2 data-slot="areas_headline">We Service These Areas</h2>
+      <div class="areas-list">
+        <div class="area-item" data-slot="area_1">Brunswick</div>
+        <div class="area-item" data-slot="area_2">Coburg</div>
+        <div class="area-item" data-slot="area_3">Preston</div>
+        <div class="area-item" data-slot="area_4">Northcote</div>
+        <div class="area-item" data-slot="area_5">Thornbury</div>
+        <div class="area-item" data-slot="area_6">Reservoir</div>
+        <div class="area-item" data-slot="area_7">Fitzroy</div>
+        <div class="area-item" data-slot="area_8">Collingwood</div>
+        <div class="area-item" data-slot="area_9">Carlton</div>
+        <div class="area-item" data-slot="area_10">Kensington</div>
+        <div class="area-item" data-slot="area_11">Ascot Vale</div>
+        <div class="area-item" data-slot="area_12">Moonee Ponds</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FAQ ACCORDION ===== -->
+  <section class="faq-accordion" data-section="faq-accordion" data-section-id="faq-universal-001" id="faq">
+    <div class="container">
+      <h2 data-slot="faq_headline">Frequently Asked Questions</h2>
       
       <div class="faq-list">
         <div class="faq-item" data-slot="faq_1" data-open="false">
@@ -274,10 +495,10 @@
   </section>
 
   <!-- ===== FINAL CTA ===== -->
-  <section class="final-cta" data-section="final-cta" data-section-id="cta-final-home-001" id="contact">
+  <section class="final-cta" data-section="final-cta" data-section-id="cta-final-universal-001" id="contact">
     <div class="container">
-      <h2 data-slot="headline">Ready to Fix Your Roof?</h2>
-      <p data-slot="body">Get a free, no-obligation inspection and quote. We'll assess your roof and provide honest recommendations.</p>
+      <h2 data-slot="cta_headline">Ready to Fix Your Roof?</h2>
+      <p data-slot="cta_body">Get a free, no-obligation inspection and quote. We'll assess your roof and provide honest recommendations.</p>
       
       <div class="final-cta-actions">
         <a href="#lead_form_mount" class="btn btn-primary btn-large smart-call-btn" data-slot="cta_primary_text" data-goal="cta-final-primary">
@@ -307,6 +528,7 @@
           <h3>Services</h3>
           <ul>
             <li><a href="#services">Our Services</a></li>
+            <li><a href="#areas">Service Areas</a></li>
             <li><a href="#about">About Us</a></li>
             <li><a href="#contact">Contact</a></li>
           </ul>
@@ -375,7 +597,7 @@
     });
   </script>
   
-  <!-- FAQ Accordion Interaction (inline for simplicity) -->
+  <!-- FAQ Accordion Interaction -->
   <script>
     document.querySelectorAll('.faq-question').forEach(button => {
       button.addEventListener('click', () => {
@@ -391,8 +613,8 @@
         });
         
         // Toggle current item
-        item.setAttribute('data-open',!isOpen);
-        button.setAttribute('aria-expanded',!isOpen);
+        item.setAttribute('data-open', !isOpen);
+        button.setAttribute('aria-expanded', !isOpen);
       });
     });
   </script>
@@ -404,6 +626,7 @@
       const chips = document.querySelectorAll('.chip');
       const sections = {
         'services': document.getElementById('services'),
+        'areas': document.getElementById('areas'),
         'about': document.getElementById('about'),
         'contact': document.getElementById('contact'),
         'faq': document.getElementById('faq'),
@@ -478,6 +701,99 @@
       // Update on scroll
       window.addEventListener('scroll', highlightActiveChip);
       highlightActiveChip(); // Initial call
+    });
+  </script>
+
+  <!-- ===== CLIENT-SIDE MAP & A/B LOGIC ===== -->
+  <script>
+    // Leaflet Map Initialization (only on Local pages)
+    function initMap() {
+      const mapContainer = document.getElementById('map-container');
+      if (!mapContainer || !window.L) return;
+      
+      // Get slug from initial data
+      const initialData = document.getElementById('__INITIAL_DATA__');
+      if (!initialData) return;
+      
+      const data = JSON.parse(initialData.textContent);
+      const slug = data.slug;
+      
+      if (!slug || data.actualPageType !== 'local') return;
+      
+      // Geocode slug using Nominatim (free OSM)
+      const suburbName = slug.charAt(0).toUpperCase() + slug.slice(1);
+      const query = `${suburbName}, Melbourne, Australia`;
+      
+      fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`)
+        .then(res => res.json())
+        .then(results => {
+          if (results && results.length > 0) {
+            const lat = parseFloat(results[0].lat);
+            const lon = parseFloat(results[0].lon);
+            
+            // Initialize map
+            const map = L.map('map-container').setView([lat, lon], 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+              attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+            
+            // Add marker
+            L.marker([lat, lon]).addTo(map)
+              .bindPopup(`<b>${suburbName}</b><br>Melbourne Roof Repairs`)
+              .openPopup();
+          }
+        })
+        .catch(err => {
+          console.warn('Map geocoding failed:', err);
+          // Fallback: Center on Melbourne CBD
+          const map = L.map('map-container').setView([-37.8136, 144.9631], 12);
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        });
+    }
+
+    // A/B Testing Client-Side Hydration
+    function initABTesting() {
+      const initialData = document.getElementById('__INITIAL_DATA__');
+      if (!initialData) return;
+      
+      const data = JSON.parse(initialData.textContent);
+      const urlParams = new URLSearchParams(window.location.search);
+      const variant = urlParams.get('v') || getCookie('ab_variant');
+      
+      if (variant === 'B' && data.copy) {
+        // Swap variants
+        Object.keys(data.copy).forEach(key => {
+          const variantKey = `${key}_variantB`;
+          if (data.copy[variantKey]) {
+            // Find element and swap content
+            const elements = document.querySelectorAll(`[data-slot="${key}"]`);
+            elements.forEach(el => {
+              const tag = el.tagName.toLowerCase();
+              if (tag === 'img') {
+                el.setAttribute('src', data.copy[variantKey]);
+              } else if (tag === 'a') {
+                el.setAttribute('href', data.copy[variantKey]);
+              } else {
+                el.textContent = data.copy[variantKey];
+              }
+            });
+          }
+        });
+      }
+    }
+
+    // Helper functions
+    function getCookie(name) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+      return null;
+    }
+
+    // Initialize on load
+    document.addEventListener('DOMContentLoaded', () => {
+      initMap();
+      initABTesting();
     });
   </script>
 </body>

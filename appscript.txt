@@ -126,6 +126,7 @@ function getPageData_(slug, pageType, ctx, debug) {
   // Find row by normalized slug + normalized pageType
   let foundRow = null;
   let foundRowIndex = -1;
+  let actualPageType = pageType; // Default to requested type
 
   for (let r = 1; r < values.length; r++) {
     const row = values[r];
@@ -133,9 +134,14 @@ function getPageData_(slug, pageType, ctx, debug) {
     const rowSlug = normalizeSlug_(row[slugCol]);
     const rowType = normalizeType_(row[typeCol]);
 
-    if (rowSlug === slug && rowType === pageType) {
+    // Match on slug only if pageType is "auto"
+    if (rowSlug === slug && (pageType === "auto" || rowType === pageType)) {
       foundRow = row;
       foundRowIndex = r + 1; // 1-based row number for humans
+      
+      // CRITICAL: Update local variable to the actual type found in the sheet
+      // so it can be returned to the Worker for telemetry/logic.
+      actualPageType = rowType;
       break;
     }
   }
@@ -185,7 +191,7 @@ function getPageData_(slug, pageType, ctx, debug) {
         success: true,
         exists: true,
         slug,
-        pageType,
+        pageType: actualPageType, // Return actual type found
         copy: canonicalCopy,
         raw: rawCopy,
         debug: {
@@ -200,7 +206,7 @@ function getPageData_(slug, pageType, ctx, debug) {
           ]
         }
       }
-    : { success: true, exists: true, slug, pageType, copy: canonicalCopy, raw: rawCopy };
+    : { success: true, exists: true, slug, pageType: actualPageType, copy: canonicalCopy, raw: rawCopy };
 }
 
 // ============================

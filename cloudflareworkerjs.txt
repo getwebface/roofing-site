@@ -1,4 +1,4 @@
-// Cloudflare Worker — Roofing Router (Strategy A: slug-only) + Debug + Telemetry Proxy
+// Cloudflare Worker — Universal Template Router with Edge-Side Rendering
 // Env vars required:
 //   SHEETS_API   e.g. https://script.google.com/macros/s/XXXX/exec
 //   API_KEY      shared secret (or leave empty if your Apps Script doesn't require it)
@@ -6,13 +6,11 @@
 //
 // Env vars optional:
 //   DEFAULT_TEMPLATE  default "/index.html"
-//   SERVICE_TEMPLATE  default "/services/template-service.html"
-//   AREA_TEMPLATE     default "/areas/template-local-area.html"
 //
 // Routes:
 //   /                      -> {pageType:"home",   slug:"home"}     uses DEFAULT_TEMPLATE
-//   /services/<slug>       -> {pageType:"service",slug:<slug>}     uses SERVICE_TEMPLATE
-//   /areas/<slug>          -> {pageType:"local",  slug:<slug>}     uses AREA_TEMPLATE
+//   /services/<slug>       -> {pageType:"auto",   slug:<slug>}     uses DEFAULT_TEMPLATE
+//   /areas/<slug>          -> {pageType:"auto",   slug:<slug>}     uses DEFAULT_TEMPLATE
 //
 // Debug:
 //   Add ?debug=1 to any page request to get JSON explaining what failed.
@@ -32,8 +30,6 @@ export default {
     const ASSET_ORIGIN = (env.ASSET_ORIGIN || "").replace(/\/+$/, "");
 
     const DEFAULT_TEMPLATE = env.DEFAULT_TEMPLATE || "/index.html";
-    const SERVICE_TEMPLATE = env.SERVICE_TEMPLATE || "/services/template-service.html";
-    const AREA_TEMPLATE = env.AREA_TEMPLATE || "/areas/template-local-area.html";
 
     if (!SHEETS_API || !ASSET_ORIGIN) {
       return new Response(
@@ -95,31 +91,10 @@ export default {
       return fetch(`${ASSET_ORIGIN}${url.pathname}`, request);
     }
 
-    // ---- Routing (Strategy A: slug-only) ----
-    let templatePath = DEFAULT_TEMPLATE;
-    let pageType = "home";
-    let slug = "home";
-
-    if (url.pathname === "/" || url.pathname === "") {
-      templatePath = DEFAULT_TEMPLATE;
-      pageType = "home";
-      slug = "home";
-    } else if (url.pathname.startsWith("/services/")) {
-      templatePath = SERVICE_TEMPLATE;
-      pageType = "service";
-      slug = normalizeSlug(lastSegment(url.pathname));
-    } else if (url.pathname.startsWith("/areas/")) {
-      templatePath = AREA_TEMPLATE;
-      pageType = "local";
-      slug = normalizeSlug(lastSegment(url.pathname));
-    } else {
-      return debugJson(
-        debug,
-        404,
-        { where: "routing", requestPath: url.pathname, hint: "Expected /, /services/<slug>, /areas/<slug>" },
-        "Not found"
-      );
-    }
+    // ---- SIMPLIFIED ROUTING LOGIC ----
+    let slug = normalizeSlug(url.pathname === "/" || url.pathname === "" ? "home" : lastSegment(url.pathname));
+    let pageType = "auto"; // Let Apps Script determine if it's a service/local page
+    let templatePath = DEFAULT_TEMPLATE; // Forces usage of the Universal Template (index.html)
 
     // ---- Fetch template (force GET) ----
     const templateURL = `${ASSET_ORIGIN}${templatePath}`;
@@ -231,25 +206,190 @@ export default {
       );
     }
 
-    // ---- HTML rewrite (safe text injection) ----
+    // ---- HTML rewrite (enhanced with section visibility matrix) ----
     const rewriter = new HTMLRewriter();
+    const actualPageType = sheetData?.actualPageType || sheetData?.pageType || "home";
 
+    // 1. METADATA INJECTION
+    rewriter.on('title[data-slot="meta_title"]', {
+      element(el) {
+        const title = sheetData?.copy?.headline || "Melbourne Roof Repairs";
+        el.setInnerContent(title, { html: false });
+      }
+    });
+
+    rewriter.on('meta[name="description"]', {
+      element(el) {
+        const desc = sheetData?.copy?.service_description || sheetData?.copy?.area_description || sheetData?.copy?.body || "";
+        el.setAttribute("content", desc.substring(0, 160));
+      }
+    });
+
+    rewriter.on('meta[property="og:title"]', {
+      element(el) {
+        const title = sheetData?.copy?.headline || "Melbourne Roof Repairs";
+        el.setAttribute("content", title);
+      }
+    });
+
+    rewriter.on('meta[property="og:description"]', {
+      element(el) {
+        const desc = sheetData?.copy?.service_description || sheetData?.copy?.area_description || sheetData?.copy?.body || "";
+        el.setAttribute("content", desc.substring(0, 160));
+      }
+    });
+
+    rewriter.on('meta[property="og:image"]', {
+      element(el) {
+        const image = sheetData?.copy?.og_image || "https://placehold.co/1200x630/007bff/ffffff?text=Melbourne+Roof+Repairs";
+        el.setAttribute("content", image);
+      }
+    });
+
+    // 2. SCHEMA GENERATION
+    rewriter.on('script[data-slot="schema_json"]', {
+      element(el) {
+        const schema = generateSchema(sheetData);
+        el.setInnerContent(JSON.stringify(schema, null, 2), { html: true });
+      }
+    });
+
+    // 3. BREADCRUMBS
+    rewriter.on('[data-slot="breadcrumbs"]', {
+      element(el) {
+        const breadcrumbs = generateBreadcrumbs(sheetData);
+        el.setInnerContent(breadcrumbs, { html: true });
+      }
+    });
+
+    // 4. SECTION VISIBILITY MATRIX
+    // Service Pages: Show Process, Before/After, Testimonials, FAQ
+    if (actualPageType === 'service') {
+      // SHOW
+      rewriter.on('[data-section="process-steps"]', {
+        element(el) { el.setAttribute("style", "display: block;"); }
+      });
+      rewriter.on('[data-section="before-after"]', {
+        element(el) { el.setAttribute("style", "display: block;"); }
+      });
+      rewriter.on('[data-section="proof-testimonials"]', {
+        element(el) { el.setAttribute("style", "display: block;"); }
+      });
+      rewriter.on('[data-section="faq-accordion"]', {
+        element(el) { el.setAttribute("style", "display: block;"); }
+      });
+      
+      // HIDE
+      rewriter.on('[data-section="grid-cards"]', {
+        element(el) { el.setAttribute("style", "display: none !important;"); }
+      });
+      rewriter.on('[data-section="local-map"]', {
+        element(el) { el.setAttribute("style", "display: none !important;"); }
+      });
+      rewriter.on('[data-section="service-areas"]', {
+        element(el) { el.setAttribute("style", "display: none !important;"); }
+      });
+      rewriter.on('[data-section="image-gallery"]', {
+        element(el) { el.setAttribute("style", "display: none !important;"); }
+      });
+      rewriter.on('[data-section="benefits-grid"]', {
+        element(el) { el.setAttribute("style", "display: none !important;"); }
+      });
+      rewriter.on('[data-section="social-proof"]', {
+        element(el) { el.setAttribute("style", "display: none !important;"); }
+      });
+    }
+
+    // Local Pages: Show Image Gallery, Map, Areas List, FAQ
+    if (actualPageType === 'local') {
+      // SHOW
+      rewriter.on('[data-section="image-gallery"]', {
+        element(el) { el.setAttribute("style", "display: block;"); }
+      });
+      rewriter.on('[data-section="local-map"]', {
+        element(el) { el.setAttribute("style", "display: block;"); }
+      });
+      rewriter.on('[data-section="service-areas"]', {
+        element(el) { el.setAttribute("style", "display: block;"); }
+      });
+      rewriter.on('[data-section="faq-accordion"]', {
+        element(el) { el.setAttribute("style", "display: block;"); }
+      });
+      
+      // HIDE
+      rewriter.on('[data-section="grid-cards"]', {
+        element(el) { el.setAttribute("style", "display: none !important;"); }
+      });
+      rewriter.on('[data-section="process-steps"]', {
+        element(el) { el.setAttribute("style", "display: none !important;"); }
+      });
+      rewriter.on('[data-section="before-after"]', {
+        element(el) { el.setAttribute("style", "display: none !important;"); }
+      });
+      rewriter.on('[data-section="proof-testimonials"]', {
+        element(el) { el.setAttribute("style", "display: none !important;"); }
+      });
+      rewriter.on('[data-section="benefits-grid"]', {
+        element(el) { el.setAttribute("style", "display: none !important;"); }
+      });
+      rewriter.on('[data-section="social-proof"]', {
+        element(el) { el.setAttribute("style", "display: none !important;"); }
+      });
+    }
+
+    // Home Pages: Show Grid Cards, Benefits, Social Proof, Areas List, FAQ
+    if (actualPageType === 'home') {
+      // SHOW
+      rewriter.on('[data-section="grid-cards"]', {
+        element(el) { el.setAttribute("style", "display: block;"); }
+      });
+      rewriter.on('[data-section="benefits-grid"]', {
+        element(el) { el.setAttribute("style", "display: block;"); }
+      });
+      rewriter.on('[data-section="social-proof"]', {
+        element(el) { el.setAttribute("style", "display: block;"); }
+      });
+      rewriter.on('[data-section="service-areas"]', {
+        element(el) { el.setAttribute("style", "display: block;"); }
+      });
+      rewriter.on('[data-section="faq-accordion"]', {
+        element(el) { el.setAttribute("style", "display: block;"); }
+      });
+      
+      // HIDE
+      rewriter.on('[data-section="process-steps"]', {
+        element(el) { el.setAttribute("style", "display: none !important;"); }
+      });
+      rewriter.on('[data-section="before-after"]', {
+        element(el) { el.setAttribute("style", "display: none !important;"); }
+      });
+      rewriter.on('[data-section="image-gallery"]', {
+        element(el) { el.setAttribute("style", "display: none !important;"); }
+      });
+      rewriter.on('[data-section="proof-testimonials"]', {
+        element(el) { el.setAttribute("style", "display: none !important;"); }
+      });
+      rewriter.on('[data-section="local-map"]', {
+        element(el) { el.setAttribute("style", "display: none !important;"); }
+      });
+    }
+
+    // 5. STANDARD COPY SLOTS
     if (sheetData?.copy && typeof sheetData.copy === "object") {
       for (const [key, rawVal] of Object.entries(sheetData.copy)) {
         const value = rawVal == null ? "" : String(rawVal);
-
         rewriter.on(`[data-slot="${cssEscape(key)}"]`, {
           element(el) {
             const tag = (el.tagName || "").toLowerCase();
             if (tag === "img") el.setAttribute("src", value);
             else if (tag === "a") el.setAttribute("href", value);
-            else el.setInnerContent(value, { html: false }); // TEXT ONLY
+            else el.setInnerContent(value, { html: false });
           },
         });
       }
     }
 
-    // Embed JSON in head for inspection / client JS (non-executable)
+    // 6. EMBED INITIAL DATA FOR CLIENT-SIDE A/B
     rewriter.on("head", {
       element(el) {
         const json = safeJsonForHtml(sheetData);
@@ -257,18 +397,96 @@ export default {
           `<script type="application/json" id="__INITIAL_DATA__">${json}</script>`,
           { html: true }
         );
-      },
+      }
     });
 
     const out = rewriter.transform(templateRes);
     out.headers.set("content-type", "text/html; charset=utf-8");
     out.headers.set("cache-control", "no-store");
-    out.headers.set("x-router", `${pageType}:${slug}:${templatePath}`); // helpful always
+    out.headers.set("x-router", `${actualPageType}:${slug}:${templatePath}`);
     return out;
   },
 };
 
-// ---------- helpers ----------
+// ---------- Schema Generation ----------
+function generateSchema(sheetData) {
+  const pageType = sheetData?.actualPageType || sheetData?.pageType || "home";
+  const copy = sheetData?.copy || {};
+  const slug = sheetData?.slug || "";
+
+  if (pageType === 'service') {
+    return {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      "name": copy.headline || "Roofing Service",
+      "description": copy.service_description || copy.body || "",
+      "provider": {
+        "@type": "Organization",
+        "name": "Melbourne Roof Repairs",
+        "telephone": copy.phone_number || "0482022493"
+      },
+      "areaServed": {
+        "@type": "City",
+        "name": "Melbourne"
+      }
+    };
+  } else if (pageType === 'local') {
+    const areaServed = slug ? slug.charAt(0).toUpperCase() + slug.slice(1) : "Melbourne";
+    
+    return {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": copy.headline || "Local Roofing Service",
+      "description": copy.area_description || copy.body || "",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": areaServed,
+        "addressRegion": "VIC",
+        "addressCountry": "AU"
+      },
+      "telephone": copy.phone_number || "0482022493",
+      "priceRange": "$$",
+      "areaServed": {
+        "@type": "City",
+        "name": areaServed
+      }
+    };
+  } else if (pageType === 'home') {
+    return {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Melbourne Roof Repairs",
+      "description": copy.body || "",
+      "url": "https://melbourneroofrepairs.com.au",
+      "telephone": copy.phone_number || "0482022493",
+      "priceRange": "$$"
+    };
+  } else {
+    return {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": copy.headline || "Melbourne Roof Repairs",
+      "description": copy.body || ""
+    };
+  }
+}
+
+function generateBreadcrumbs(sheetData) {
+  const pageType = sheetData?.actualPageType || sheetData?.pageType || "home";
+  const slug = sheetData?.slug;
+
+  if (pageType === 'service') {
+    const serviceName = slug ? slug.replace(/-/g, ' ') : 'Service';
+    return `<a href="/">Home</a> > <a href="/#services">Services</a> > <span data-slot="breadcrumb_current">${serviceName}</span>`;
+  } else if (pageType === 'local') {
+    const areaName = slug ? slug.charAt(0).toUpperCase() + slug.slice(1) : 'Area';
+    return `<a href="/">Home</a> > <a href="/#areas">Service Areas</a> > <span data-slot="breadcrumb_current">${areaName}</span>`;
+  } else {
+    return `<a href="/">Home</a> > <span data-slot="breadcrumb_current">Current Page</span>`;
+  }
+}
+
+// ---------- Helpers ----------
 function debugJson(isDebug, status, obj, fallbackText) {
   if (!isDebug) return new Response(fallbackText || "Error", { status });
   return new Response(JSON.stringify(obj, null, 2), {
