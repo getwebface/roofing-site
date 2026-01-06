@@ -249,7 +249,7 @@ export const Router = {
       const videoUrl = this.sheetData?.copy?.hero_video_url;
       const imgUrl = this.sheetData?.copy?.hero_bg_image;
 
-      // Priority: video if present, else image if present
+      // Priority: video if present, else image if present or has default src
       if (videoUrl && videoUrl.trim()) {
         videoEl.src = videoUrl;
         videoEl.style.display = 'block';
@@ -258,6 +258,10 @@ export const Router = {
         videoEl.play().catch(err => console.warn('Video autoplay failed:', err));
       } else if (imgUrl && imgUrl.trim()) {
         imgEl.src = imgUrl;
+        imgEl.style.display = 'block';
+        videoEl.style.display = 'none';
+      } else if (imgEl.src && imgEl.src !== window.location.href) {
+        // Has default src, show image
         imgEl.style.display = 'block';
         videoEl.style.display = 'none';
       } else {
