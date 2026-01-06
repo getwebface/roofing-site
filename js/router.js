@@ -245,24 +245,32 @@ export const Router = {
 
       if (!videoEl || !imgEl) return;
 
-      // Get slot values from sheet data
-      const videoUrl = this.sheetData?.copy?.hero_video_url;
-      const imgUrl = this.sheetData?.copy?.hero_bg_image;
+      let videoUrl = this.sheetData?.copy?.hero_video_url;
+      let imgUrl = this.sheetData?.copy?.hero_bg_image;
 
-      // Priority: video if present, else image if present or has default src
+      // 2. Fallback: Check if Worker already injected it (Robustness)
+      if (!videoUrl && videoEl.getAttribute('src')) {
+         videoUrl = videoEl.getAttribute('src');
+      }
+      if (!imgUrl && imgEl.getAttribute('src')) {
+         imgUrl = imgEl.getAttribute('src');
+      }
+
+      // Priority: video if present, else image
       if (videoUrl && videoUrl.trim()) {
         videoEl.src = videoUrl;
-        videoEl.style.display = 'block';
+        videoEl.style.display = 'block'; // Ensure visible
         imgEl.style.display = 'none';
-        // Auto-play video
+        
+        // Ensure standard attributes for autoplay
+        videoEl.muted = true;
+        videoEl.loop = true;
+        videoEl.playsInline = true;
+        
         videoEl.play().catch(err => console.warn('Video autoplay failed:', err));
       } else if (imgUrl && imgUrl.trim()) {
         imgEl.src = imgUrl;
-        imgEl.style.display = 'block';
-        videoEl.style.display = 'none';
-      } else if (imgEl.src && imgEl.src !== window.location.href) {
-        // Has default src, show image
-        imgEl.style.display = 'block';
+        imgEl.style.display = 'block'; // Ensure visible
         videoEl.style.display = 'none';
       } else {
         // No media, hide both
