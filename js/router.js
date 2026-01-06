@@ -55,10 +55,8 @@ export const Router = {
       this.initMap();
     }
 
-    // 9. Initialize hero video if on home page
-    if (this.pageType === 'home') {
-      this.initHeroVideo();
-    }
+    // 9. Initialize hero media for all page types
+    this.initHeroMedia();
 
     console.log('[Router] Initialization complete');
   },
@@ -232,6 +230,42 @@ export const Router = {
       const map = L.map('map-container').setView([-37.8136, 144.9631], 12);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
     }
+  },
+
+  /**
+   * Initialize hero media (video or image) for all page types
+   */
+  initHeroMedia() {
+    // Find all hero sections
+    const heroSections = document.querySelectorAll('.hero');
+
+    heroSections.forEach(hero => {
+      const videoEl = hero.querySelector('[data-slot="hero_video_url"]');
+      const imgEl = hero.querySelector('[data-slot="hero_bg_image"]');
+
+      if (!videoEl || !imgEl) return;
+
+      // Get slot values from sheet data
+      const videoUrl = this.sheetData?.copy?.hero_video_url;
+      const imgUrl = this.sheetData?.copy?.hero_bg_image;
+
+      // Priority: video if present, else image if present
+      if (videoUrl && videoUrl.trim()) {
+        videoEl.src = videoUrl;
+        videoEl.style.display = 'block';
+        imgEl.style.display = 'none';
+        // Auto-play video
+        videoEl.play().catch(err => console.warn('Video autoplay failed:', err));
+      } else if (imgUrl && imgUrl.trim()) {
+        imgEl.src = imgUrl;
+        imgEl.style.display = 'block';
+        videoEl.style.display = 'none';
+      } else {
+        // No media, hide both
+        videoEl.style.display = 'none';
+        imgEl.style.display = 'none';
+      }
+    });
   },
 
   /**
