@@ -401,6 +401,25 @@
   background: var(--orange);
 }
 
+.trust-logos {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-4);
+  margin-bottom: var(--space-8);
+}
+
+.trust-logos img {
+  max-height: 40px;
+  width: auto;
+  opacity: 0.9;
+  transition: opacity var(--transition-fast);
+}
+
+.trust-logos img:hover {
+  opacity: 1;
+}
+
 .trust-badges {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -452,6 +471,16 @@
   .trust-badges {
     grid-template-columns: repeat(2, 1fr);
     gap: var(--space-6);
+  }
+
+  .trust-logos {
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+
+  .trust-logos img {
+    max-height: 35px;
   }
 }
 
