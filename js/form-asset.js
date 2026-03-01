@@ -264,14 +264,14 @@ export const FormAsset = {
             <div data-tr-step="1">
               <div class="tr-group">
                 <label class="tr-label">Enter Your Post Code</label>
-                <input type="text" name="postcode" required class="tr-input" placeholder="Enter Post Code (e.g. 3000)">
-                <p class="tr-microcopy" style="font-size: 12px; color: #475569; margin-top: 8px; font-style: italic; font-weight: 600;">
-                  We'll check availability in your area
+                <input type="text" name="postcode" required class="tr-input" placeholder="e.g. 3000">
+                <p class="tr-microcopy" style="font-size: 12px; color: #475569; margin-top: 8px; font-weight: 600;">
+                  ⚡ Fast dispatch available. We'll check if our team is near you.
                 </p>
               </div>
 
               <button type="button" class="tr-btn-main" data-tr-next>
-                Check Availability
+                Start Free Quote
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
               </button>
             </div>
@@ -280,7 +280,7 @@ export const FormAsset = {
               <div class="tr-group">
                 <label class="tr-label">Service Required</label>
                 <select name="service" required class="tr-select">
-                  <option value="" disabled selected>Select service type...</option>
+                  <option value="" disabled selected>What do you need help with?</option>
                   <option>Full Roof Restoration</option>
                   <option>Roof Repairs & Leak Fixes</option>
                   <option>Roof Painting & Sealing</option>
@@ -292,7 +292,7 @@ export const FormAsset = {
                 <div class="tr-group">
                   <label class="tr-label">Roof Material</label>
                   <select name="material" required class="tr-select">
-                    <option value="" disabled selected>Material</option>
+                    <option value="" disabled selected>What is your roof made of?</option>
                     <option>Cement Tile</option>
                     <option>Terracotta</option>
                     <option>Metal / Colorbond</option>
@@ -301,7 +301,7 @@ export const FormAsset = {
                 <div class="tr-group">
                   <label class="tr-label">Storey Level</label>
                   <select name="level" required class="tr-select">
-                    <option value="" disabled selected>Height</option>
+                    <option value="" disabled selected>How many storeys?</option>
                     <option>Single Storey</option>
                     <option>Double Storey</option>
                   </select>
@@ -337,7 +337,7 @@ export const FormAsset = {
               <input type="text" name="honeypot" class="tr-hidden" tabindex="-1">
               
               <button type="submit" class="tr-btn-main tr-btn-submit" data-tr-submit>
-                Confirm Quote Request
+                Get My Free Quote
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
               </button>
               
