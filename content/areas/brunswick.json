@@ -1,0 +1,23 @@
+{
+  "slug": "brunswick",
+  "pageType": "local",
+  "copy": {
+    "headline": "Roofing Experts in Brunswick",
+    "body": "Serving Brunswick and surrounding areas with professional roof repairs and maintenance. Local expertise you can trust.",
+    "area_description": "<p>As local roofing experts serving Brunswick, we understand the area's unique architectural heritage and weather challenges. From Victorian terraces with slate roofs to modern extensions, our team provides reliable solutions tailored to your property. We're not just contractors—we're your neighbors committed to protecting Brunswick homes.</p>",
+    "cta_primary_text": "Get Priority Quote",
+    "hero_bg_image": "https://placehold.co/1920x800/0a1628/ffffff?text=Brunswick+Roofing",
+    "gallery_headline": "Recent Projects in Brunswick",
+    "gallery_image_1": "https://placehold.co/600x400/0a1628/ffffff?text=Brunswick+Project+1",
+    "gallery_image_2": "https://placehold.co/600x400/0a1628/ffffff?text=Brunswick+Project+2",
+    "gallery_image_3": "https://placehold.co/600x400/0a1628/ffffff?text=Brunswick+Project+3",
+    "map_headline": "Brunswick Service Area",
+    "areas_headline": "We Service Brunswick & Surrounds",
+    "area_1": "Brunswick",
+    "area_2": "Brunswick East",
+    "area_3": "Brunswick West",
+    "area_4": "Coburg",
+    "area_5": "Carlton North",
+    "area_6": "Fitzroy North"
+  }
+}

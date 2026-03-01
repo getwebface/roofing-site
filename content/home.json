@@ -1,0 +1,28 @@
+{
+  "slug": "home",
+  "pageType": "home",
+  "copy": {
+    "headline": "Melbourne's Premier Roof Repair Specialists",
+    "headline_storm": "Emergency Roof Repairs Available Now",
+    "body": "Protecting Melbourne homes with expert roof repairs, restorations, and maintenance. 20+ years of trusted service with guaranteed results.",
+    "cta_primary_text": "Get Free Inspection",
+    "cta_primary_text_storm": "Get Emergency Help",
+    "hero_bg_image": "https://placehold.co/1920x800/0a1628/ffffff?text=Melbourne+Roof+Repairs",
+    "social_proof_stat": "500+",
+    "symptoms_headline": "Common Roofing Problems We Fix",
+    "symptom_1": "Active Leaks",
+    "symptom_2": "Broken Tiles",
+    "symptom_3": "Deteriorated Mortar",
+    "symptom_4": "Rusted Valleys",
+    "symptom_5": "Storm Damage",
+    "symptom_6": "Structural Issues",
+    "benefit_list": "[\"24-hour emergency response for urgent repairs\", \"10-year workmanship warranty on all projects\", \"Fully licensed and insured with $20M coverage\", \"Free, no-obligation roof inspections\", \"Transparent pricing with detailed quotes\", \"Eco-friendly materials and practices\"]",
+    "services_headline": "Our Services",
+    "card_1": "Leak Repair",
+    "card_2": "Roof Restoration",
+    "card_3": "Re-bedding & Pointing",
+    "card_4": "Valley Repair",
+    "card_5": "Roof Coating",
+    "card_6": "Roof Cleaning"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "slug": "leak-repair",
+  "pageType": "service",
+  "copy": {
+    "headline": "Expert Leak Repair Service",
+    "headline_storm": "Storm Damage Leak Repairs",
+    "body": "Fast leak detection and permanent fixes. We find the source and repair it properly, with warranty.",
+    "service_description": "Our leak repair service includes a comprehensive roof inspection, isolation of the leak source, replacing damaged tiles or flashing, and ensuring a watertight seal. We stand by our work with a 10-year workmanship warranty.",
+    "cta_primary_text": "Get Priority Quote",
+    "cta_secondary_text": "Call Now",
+    "hero_bg_image": "https://placehold.co/1920x800/0a1628/ffffff?text=Leak+Repair+Service",
+    "service_icon_url": "https://placehold.co/80x80/0a1628/ffffff?text=🔧",
+    "long_headline": "Why Choose Professional Roof Leak Repairs?",
+    "long_body_1": "<p>A roof leak can quickly lead to extensive structural damage, mold growth, and compromised insulation. <strong>Professional leak repair</strong> isn't just about patching a hole—it's about identifying the root cause. Whether it's cracked tiles, failing mortar, or rusted valley irons, our experienced team pinpoints the exact issue and provides a lasting solution.</p>",
+    "process_headline": "Our Leak Repair Process",
+    "step_1": "Free Inspection & Diagnosis",
+    "step_2": "Clear Quote with Photos",
+    "step_3": "Expert Targeted Repairs",
+    "step_4": "Water Testing & 10-Year Warranty",
+    "gallery_headline": "Real Results from Recent Leak Repairs",
+    "gallery_1": "Emergency leak repair on a tile roof in Melbourne",
+    "before_image_1": "https://placehold.co/600x400/0a1628/ffffff?text=Before+Repair",
+    "after_image_1": "https://placehold.co/600x400/0a1628/ffffff?text=After+Repair",
+    "testimonials_headline": "What Our Customers Say",
+    "testimonial_1_quote": "\"Quick response after storm damage. The team arrived same day and made our roof watertight. Professional, clean, and reasonably priced. Highly recommend!\"",
+    "testimonial_1_name": "Michael Johnson",
+    "testimonial_1_location": "Brunswick",
+    "testimonial_1_avatar": "MJ"
+  }
+}
