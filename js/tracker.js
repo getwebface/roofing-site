@@ -318,18 +318,35 @@
    * @param {Event} e - Pointer event
    */
   handlePointerMove(sensor, e) {
-    const now = Date.now();
+    // Store the latest event to ensure we process the most recent position
+    sensor.latestPointerEvent = e;
+
+    // Throttle via requestAnimationFrame to prevent main thread blocking
+    if (sensor.isPointerUpdatePending) return;
     
-    // Update idle timer
-    sensor.lastPointerMoveTime = now;
-    
-    // Calculate distance
-    const dx = e.clientX - sensor.lastPointerPos.x;
-    const dy = e.clientY - sensor.lastPointerPos.y;
-    const distance = Math.sqrt(dx * dx + dy * dy);
-    
-    sensor.pointerDistance += distance;
-    sensor.lastPointerPos = { x: e.clientX, y: e.clientY };
+    sensor.isPointerUpdatePending = true;
+    requestAnimationFrame(() => {
+      const latestEvent = sensor.latestPointerEvent;
+      if (!latestEvent) {
+        sensor.isPointerUpdatePending = false;
+        return;
+      }
+
+      const now = Date.now();
+
+      // Update idle timer
+      sensor.lastPointerMoveTime = now;
+
+      // Calculate distance
+      const dx = latestEvent.clientX - sensor.lastPointerPos.x;
+      const dy = latestEvent.clientY - sensor.lastPointerPos.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      sensor.pointerDistance += distance;
+      sensor.lastPointerPos = { x: latestEvent.clientX, y: latestEvent.clientY };
+
+      sensor.isPointerUpdatePending = false;
+    });
   },
 
   /**
