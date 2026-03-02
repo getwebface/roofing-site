@@ -263,8 +263,8 @@ export const FormAsset = {
           <form data-tr-form class="tr-content">
             <div data-tr-step="1">
               <div class="tr-group">
-                <label class="tr-label">Enter Your Post Code</label>
-                <input type="text" name="postcode" required class="tr-input" placeholder="Enter Post Code (e.g. 3000)">
+                <label for="postcode" class="tr-label">Enter Your Post Code</label>
+                <input id="postcode" type="text" name="postcode" required class="tr-input" placeholder="Enter Post Code (e.g. 3000)">
                 <p class="tr-microcopy" style="font-size: 12px; color: #475569; margin-top: 8px; font-style: italic; font-weight: 600;">
                   We'll check availability in your area
                 </p>
@@ -278,8 +278,8 @@ export const FormAsset = {
 
             <div data-tr-step="2" class="tr-hidden">
               <div class="tr-group">
-                <label class="tr-label">Service Required</label>
-                <select name="service" required class="tr-select">
+                <label for="service" class="tr-label">Service Required</label>
+                <select id="service" name="service" required class="tr-select">
                   <option value="" disabled selected>Select service type...</option>
                   <option>Full Roof Restoration</option>
                   <option>Roof Repairs & Leak Fixes</option>
@@ -290,8 +290,8 @@ export const FormAsset = {
 
               <div class="tr-grid">
                 <div class="tr-group">
-                  <label class="tr-label">Roof Material</label>
-                  <select name="material" required class="tr-select">
+                  <label for="material" class="tr-label">Roof Material</label>
+                  <select id="material" name="material" required class="tr-select">
                     <option value="" disabled selected>Material</option>
                     <option>Cement Tile</option>
                     <option>Terracotta</option>
@@ -299,8 +299,8 @@ export const FormAsset = {
                   </select>
                 </div>
                 <div class="tr-group">
-                  <label class="tr-label">Storey Level</label>
-                  <select name="level" required class="tr-select">
+                  <label for="level" class="tr-label">Storey Level</label>
+                  <select id="level" name="level" required class="tr-select">
                     <option value="" disabled selected>Height</option>
                     <option>Single Storey</option>
                     <option>Double Storey</option>
@@ -309,29 +309,29 @@ export const FormAsset = {
               </div>
 
               <div class="tr-group">
-                <label class="tr-label">Property Location</label>
-                <input type="text" name="suburb" required class="tr-input" placeholder="Enter Suburb (e.g. Ringwood)">
+                <label for="suburb" class="tr-label">Property Location</label>
+                <input id="suburb" type="text" name="suburb" required class="tr-input" placeholder="Enter Suburb (e.g. Ringwood)">
               </div>
 
               <div class="tr-group">
-                <label class="tr-label">Your Name</label>
-                <input type="text" name="fullName" required class="tr-input" placeholder="Full Name">
+                <label for="fullName" class="tr-label">Your Name</label>
+                <input id="fullName" type="text" name="fullName" required class="tr-input" placeholder="Full Name">
               </div>
 
               <div class="tr-grid">
                 <div class="tr-group">
-                  <label class="tr-label">Mobile Number</label>
-                  <input type="tel" name="phone" required class="tr-input" placeholder="04xx xxx xxx">
+                  <label for="phone" class="tr-label">Mobile Number</label>
+                  <input id="phone" type="tel" name="phone" required class="tr-input" placeholder="04xx xxx xxx">
                 </div>
                 <div class="tr-group">
-                  <label class="tr-label">Email Address</label>
-                  <input type="email" name="email" required class="tr-input" placeholder="name@email.com">
+                  <label for="email" class="tr-label">Email Address</label>
+                  <input id="email" type="email" name="email" required class="tr-input" placeholder="name@email.com">
                 </div>
               </div>
 
               <div class="tr-group">
-                <label class="tr-label">Project Notes (Optional)</label>
-                <textarea name="message" class="tr-textarea" placeholder="Any specific issues like leaks or storm damage?"></textarea>
+                <label for="message" class="tr-label">Project Notes (Optional)</label>
+                <textarea id="message" name="message" class="tr-textarea" placeholder="Any specific issues like leaks or storm damage?"></textarea>
               </div>
 
               <input type="text" name="honeypot" class="tr-hidden" tabindex="-1">
