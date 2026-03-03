@@ -774,6 +774,9 @@
       }
       
       // Highlight active chip based on scroll position
+      let lastActiveSection = null;
+      let isScrolling = false;
+
       function highlightActiveChip() {
         let currentSection = null;
         let closestDistance = Infinity;
@@ -794,13 +797,19 @@
           }
         });
         
-        // Update chip states
-        chips.forEach(chip => {
-          chip.classList.remove('active');
-          if (chip.getAttribute('data-section') === currentSection) {
-            chip.classList.add('active');
-          }
-        });
+        // Only update DOM if the active section changed
+        if (currentSection !== lastActiveSection) {
+          chips.forEach(chip => {
+            if (chip.getAttribute('data-section') === currentSection) {
+              chip.classList.add('active');
+            } else {
+              chip.classList.remove('active');
+            }
+          });
+          lastActiveSection = currentSection;
+        }
+
+        isScrolling = false;
       }
       
       // Smooth scroll for chips
@@ -819,8 +828,13 @@
         });
       });
       
-      // Update on scroll
-      window.addEventListener('scroll', highlightActiveChip);
+      // Update on scroll with requestAnimationFrame and passive listener
+      window.addEventListener('scroll', () => {
+        if (!isScrolling) {
+          window.requestAnimationFrame(highlightActiveChip);
+          isScrolling = true;
+        }
+      }, { passive: true });
       highlightActiveChip(); // Initial call
     });
   </script>
