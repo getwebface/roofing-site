@@ -532,85 +532,85 @@
       <h2 class="section-heading" data-slot="faq_headline">Frequently Asked Questions</h2>
       
       <div class="faq-list">
-        <div class="faq-item" data-slot="faq_1" data-open="false">
-          <button class="faq-question" aria-expanded="false">
-            <span>How quickly can you respond?</span>
+        <details class="faq-item" name="faq-group">
+          <summary class="faq-question">
+            <span data-slot="faq_1">How quickly can you respond?</span>
             <span class="faq-icon">▼</span>
-          </button>
+          </summary>
           <div class="faq-answer">
             <p>We offer same-day emergency response for active leaks. We'll make your roof watertight immediately, then schedule permanent repairs within 3-5 days.</p>
           </div>
-        </div>
+        </details>
         
-        <div class="faq-item" data-slot="faq_2" data-open="false">
-          <button class="faq-question" aria-expanded="false">
-            <span>Do you provide warranties?</span>
+        <details class="faq-item" name="faq-group">
+          <summary class="faq-question">
+            <span data-slot="faq_2">Do you provide warranties?</span>
             <span class="faq-icon">▼</span>
-          </button>
+          </summary>
           <div class="faq-answer">
             <p>Yes, all our work comes with a 10-year workmanship warranty. Materials carry manufacturer warranties ranging from 10-25 years.</p>
           </div>
-        </div>
+        </details>
         
-        <div class="faq-item" data-slot="faq_3" data-open="false">
-          <button class="faq-question" aria-expanded="false">
-            <span>Are you licensed and insured?</span>
+        <details class="faq-item" name="faq-group">
+          <summary class="faq-question">
+            <span data-slot="faq_3">Are you licensed and insured?</span>
             <span class="faq-icon">▼</span>
-          </button>
+          </summary>
           <div class="faq-answer">
             <p>Absolutely. We're fully licensed roofing contractors with $20 million public liability insurance and WorkCover for all team members.</p>
           </div>
-        </div>
+        </details>
         
-        <div class="faq-item" data-slot="faq_4" data-open="false">
-          <button class="faq-question" aria-expanded="false">
-            <span>Do you offer free inspections?</span>
+        <details class="faq-item" name="faq-group">
+          <summary class="faq-question">
+            <span data-slot="faq_4">Do you offer free inspections?</span>
             <span class="faq-icon">▼</span>
-          </button>
+          </summary>
           <div class="faq-answer">
             <p>Yes! We provide free, no-obligation roof inspections and detailed quotes. Contact us to schedule your inspection.</p>
           </div>
-        </div>
+        </details>
         
-        <div class="faq-item" data-slot="faq_5" data-open="false">
-          <button class="faq-question" aria-expanded="false">
-            <span>What payment options do you offer?</span>
+        <details class="faq-item" name="faq-group">
+          <summary class="faq-question">
+            <span data-slot="faq_5">What payment options do you offer?</span>
             <span class="faq-icon">▼</span>
-          </button>
+          </summary>
           <div class="faq-answer">
             <p>We accept all major credit cards, bank transfers, and offer flexible payment plans for larger projects. No payment required until work is complete.</p>
           </div>
-        </div>
+        </details>
         
-        <div class="faq-item" data-slot="faq_6" data-open="false">
-          <button class="faq-question" aria-expanded="false">
-            <span>How long does a typical repair take?</span>
+        <details class="faq-item" name="faq-group">
+          <summary class="faq-question">
+            <span data-slot="faq_6">How long does a typical repair take?</span>
             <span class="faq-icon">▼</span>
-          </button>
+          </summary>
           <div class="faq-answer">
             <p>Most repairs are completed in 1-2 days. Complex restorations may take 3-5 days. We'll provide a detailed timeline with your quote.</p>
           </div>
-        </div>
+        </details>
         
-        <div class="faq-item" data-slot="faq_7" data-open="false">
-          <button class="faq-question" aria-expanded="false">
-            <span>Do you work with insurance claims?</span>
+        <details class="faq-item" name="faq-group">
+          <summary class="faq-question">
+            <span data-slot="faq_7">Do you work with insurance claims?</span>
             <span class="faq-icon">▼</span>
-          </button>
+          </summary>
           <div class="faq-answer">
             <p>Yes! We work directly with insurance companies and provide all necessary documentation. We can help streamline your claim process.</p>
           </div>
-        </div>
+        </details>
         
-        <div class="faq-item" data-slot="faq_8" data-open="false">
-          <button class="faq-question" aria-expanded="false">
-            <span>What areas do you service?</span>
+        <details class="faq-item" name="faq-group">
+          <summary class="faq-question">
+            <span data-slot="faq_8">What areas do you service?</span>
             <span class="faq-icon">▼</span>
-          </button>
+          </summary>
           <div class="faq-answer">
             <p>We service all Melbourne suburbs and surrounding areas. Check our service areas section for a complete list of locations we cover.</p>
           </div>
-        </div>
+        </details>
       </div>
     </div>
   </section>
@@ -718,28 +718,6 @@
     });
   </script>
   
-  <!-- FAQ Accordion Interaction -->
-  <script>
-    document.querySelectorAll('.faq-question').forEach(button => {
-      button.addEventListener('click', () => {
-        const item = button.closest('.faq-item');
-        const isOpen = item.getAttribute('data-open') === 'true';
-        
-        // Close all other items
-        document.querySelectorAll('.faq-item').forEach(otherItem => {
-          if (otherItem!== item) {
-            otherItem.setAttribute('data-open', 'false');
-            otherItem.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
-          }
-        });
-        
-        // Toggle current item
-        item.setAttribute('data-open', !isOpen);
-        button.setAttribute('aria-expanded', !isOpen);
-      });
-    });
-  </script>
-
   <!-- Section Chips Scroll Highlighting -->
   <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -774,6 +752,9 @@
       }
       
       // Highlight active chip based on scroll position
+      let lastActiveSection = null;
+      let isScrolling = false;
+
       function highlightActiveChip() {
         let currentSection = null;
         let closestDistance = Infinity;
@@ -794,13 +775,19 @@
           }
         });
         
-        // Update chip states
-        chips.forEach(chip => {
-          chip.classList.remove('active');
-          if (chip.getAttribute('data-section') === currentSection) {
-            chip.classList.add('active');
-          }
-        });
+        // Only update DOM if the active section changed
+        if (currentSection !== lastActiveSection) {
+          chips.forEach(chip => {
+            if (chip.getAttribute('data-section') === currentSection) {
+              chip.classList.add('active');
+            } else {
+              chip.classList.remove('active');
+            }
+          });
+          lastActiveSection = currentSection;
+        }
+
+        isScrolling = false;
       }
       
       // Smooth scroll for chips
@@ -819,8 +806,13 @@
         });
       });
       
-      // Update on scroll
-      window.addEventListener('scroll', highlightActiveChip);
+      // Update on scroll with requestAnimationFrame and passive listener
+      window.addEventListener('scroll', () => {
+        if (!isScrolling) {
+          window.requestAnimationFrame(highlightActiveChip);
+          isScrolling = true;
+        }
+      }, { passive: true });
       highlightActiveChip(); // Initial call
     });
   </script>
