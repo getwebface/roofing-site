@@ -266,12 +266,12 @@ export const FormAsset = {
                 <label class="tr-label">Enter Your Post Code</label>
                 <input type="text" name="postcode" required class="tr-input" placeholder="Enter Post Code (e.g. 3000)">
                 <p class="tr-microcopy" style="font-size: 12px; color: #475569; margin-top: 8px; font-style: italic; font-weight: 600;">
-                  We'll check availability in your area
+                  Fast response. We'll check if our team is near you.
                 </p>
               </div>
 
               <button type="button" class="tr-btn-main" data-tr-next>
-                Check Availability
+                See If We Serve Your Area
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
               </button>
             </div>
@@ -337,7 +337,7 @@ export const FormAsset = {
               <input type="text" name="honeypot" class="tr-hidden" tabindex="-1">
               
               <button type="submit" class="tr-btn-main tr-btn-submit" data-tr-submit>
-                Confirm Quote Request
+                Get My Free Quote
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
               </button>
               
@@ -346,7 +346,7 @@ export const FormAsset = {
               </button>
             </div>
 
-            <p class="tr-footer-text">🛡️ Trusted by 5,000+ Melbourne homeowners. Your data is secure & we respond within 2 hours.</p>
+            <p class="tr-footer-text">🛡️ Trusted by 5,000+ locals. 100% Secure. We respond fast.</p>
           </form>
         </div>
       </div>
